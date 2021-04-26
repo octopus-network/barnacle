@@ -11,10 +11,11 @@ use sp_consensus_babe::{AuthorityId as BabeId};
 use pallet_im_online::sr25519::{AuthorityId as ImOnlineId};
 use node_template_runtime::{
 	ImOnlineConfig, SessionConfig, opaque::SessionKeys,
-	StakingConfig, Balance, DOLLARS,
+	StakingConfig, Balance, DOLLARS, OctopusAppchainConfig,
 };
 use pallet_staking::StakerStatus;
 use sp_runtime::Perbill;
+use pallet_octopus_appchain::crypto::AuthorityId as OctopusId;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -26,8 +27,9 @@ fn session_keys(
 	babe: BabeId,
 	grandpa: GrandpaId,
 	im_online: ImOnlineId,
+	octopus: OctopusId,
 ) -> SessionKeys {
-	SessionKeys { babe, grandpa, im_online }
+	SessionKeys { babe, grandpa, im_online, octopus }
 }
 
 /// Generate a crypto pair from seed.
@@ -47,13 +49,14 @@ pub fn get_account_id_from_seed<TPublic: Public>(seed: &str) -> AccountId where
 }
 
 /// Generate an Aura authority key.
-pub fn authority_keys_from_seed(s: &str) -> (AccountId, AccountId, BabeId, GrandpaId, ImOnlineId) {
+pub fn authority_keys_from_seed(s: &str) -> (AccountId, BabeId, GrandpaId, ImOnlineId, OctopusId, u64) {
 	(
-		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", s)),
 		get_account_id_from_seed::<sr25519::Public>(s),
 		get_from_seed::<BabeId>(s),
 		get_from_seed::<GrandpaId>(s),
 		get_from_seed::<ImOnlineId>(s),
+		get_from_seed::<OctopusId>(s),
+		100,
 	)
 }
 
@@ -147,7 +150,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 /// Configure initial storage state for FRAME modules.
 fn testnet_genesis(
 	wasm_binary: &[u8],
-	initial_authorities: Vec<(AccountId, AccountId, BabeId, GrandpaId, ImOnlineId)>,
+	initial_authorities: Vec<(AccountId, BabeId, GrandpaId, ImOnlineId, OctopusId, u64)>,
 	root_key: AccountId,
 	endowed_accounts: Vec<AccountId>,
 	_enable_println: bool,
@@ -176,6 +179,7 @@ fn testnet_genesis(
 		pallet_session: Some(SessionConfig {
 			keys: initial_authorities.iter().map(|x| {
 				(x.0.clone(), x.0.clone(), session_keys(
+					x.1.clone(),
 					x.2.clone(),
 					x.3.clone(),
 					x.4.clone(),
@@ -186,7 +190,7 @@ fn testnet_genesis(
 			validator_count: initial_authorities.len() as u32 * 2,
 			minimum_validator_count: initial_authorities.len() as u32,
 			stakers: initial_authorities.iter().map(|x| {
-				(x.0.clone(), x.1.clone(), STASH, StakerStatus::Validator)
+				(x.0.clone(), x.0.clone(), STASH, StakerStatus::Validator)
 			}).collect(),
 			invulnerables: initial_authorities.iter().map(|x| x.0.clone()).collect(),
 			slash_reward_fraction: Perbill::from_percent(10),
@@ -194,6 +198,9 @@ fn testnet_genesis(
 		}),
 		pallet_im_online: Some(ImOnlineConfig {
 			keys: vec![],
+		}),
+		pallet_octopus_appchain: Some(OctopusAppchainConfig {
+			validators: initial_authorities.iter().map(|x| (x.0.clone(), x.5)).collect(),
 		}),
 	}
 }

@@ -27,7 +27,7 @@ use frame_support::{
 	weights::DispatchClass,
 	traits::U128CurrencyToVote,
 };
-use sp_runtime::traits::{self, OpaqueKeys, SaturatedConversion, StaticLookup};
+use sp_runtime::traits::{self, ConvertInto, OpaqueKeys, SaturatedConversion, StaticLookup};
 use frame_system::{
 	EnsureRoot,
 	limits::{BlockWeights, BlockLength}
@@ -108,6 +108,7 @@ pub mod opaque {
 			pub babe: Babe,
 			pub grandpa: Grandpa,
 			pub im_online: ImOnline,
+			pub octopus: OctopusAppchain,
 		}
 	}
 }
@@ -439,10 +440,10 @@ parameter_types! {
 impl pallet_session::Config for Runtime {
 	type Event = Event;
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
-	type ValidatorIdOf = pallet_staking::StashOf<Self>;
+	type ValidatorIdOf = ConvertInto;
 	type ShouldEndSession = Babe;
 	type NextSessionRotation = Babe;
-	type SessionManager = pallet_session::historical::NoteHistoricalRoot<Self, Staking>;
+	type SessionManager = OctopusAppchain;
 	type SessionHandler = <opaque::SessionKeys as OpaqueKeys>::KeyTypeIdProviders;
 	type Keys = opaque::SessionKeys;
 	type DisabledValidatorsThreshold = DisabledValidatorsThreshold;
@@ -560,6 +561,32 @@ impl<C> frame_system::offchain::SendTransactionTypes<C> for Runtime where
 	type OverarchingCall = Call;
 }
 
+pub struct OctopusAppCrypto;
+
+impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature> for OctopusAppCrypto {
+	type RuntimeAppPublic = pallet_octopus_appchain::crypto::AuthorityId;
+	type GenericSignature = sp_core::sr25519::Signature;
+	type GenericPublic = sp_core::sr25519::Public;
+}
+
+parameter_types! {
+	pub const AppchainId: pallet_octopus_appchain::ChainId = 0;
+	pub const Motherchain: pallet_octopus_appchain::MotherchainType = pallet_octopus_appchain::MotherchainType::NEAR;
+	pub const GracePeriod: u32 = 5;
+	pub const UnsignedPriority: u64 = 1 << 20;
+}
+
+impl pallet_octopus_appchain::Config for Runtime {
+	type Event = Event;
+	type AppCrypto = OctopusAppCrypto;
+	type Call = Call;
+	type AppchainId = AppchainId;
+	type Motherchain = Motherchain;
+	const RELAY_CONTRACT_NAME: &'static [u8] = b"dev-1616239154529-4812993";
+	type GracePeriod = GracePeriod;
+	type UnsignedPriority = UnsignedPriority;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -584,6 +611,7 @@ construct_runtime!(
 		Mmr: pallet_mmr::{Module, Storage},
 		// Include the custom logic from the template pallet in the runtime.
 		TemplateModule: pallet_template::{Module, Call, Storage, Event<T>},
+		OctopusAppchain: pallet_octopus_appchain::{Module, Call, Storage, Config<T>, Event<T>, ValidateUnsigned},
 	}
 );
 

@@ -65,6 +65,8 @@ sc-sync-state-rpc = '0.9.0'
 # local dependencies
 node-template-runtime = { path = '../runtime', version = '3.0.0' }
 
+pallet-octopus-appchain = { git = 'https://github.com/octopus-network/pallet-octopus-appchain.git' }
+
 [features]
 default = []
 runtime-benchmarks = ['node-template-runtime/runtime-benchmarks']

@@ -56,6 +56,7 @@ sp-staking = { default-features = false, version = '3.0.0' }
 
 # local dependencies
 pallet-template = { default-features = false, path = '../pallets/template', version = '3.0.0' }
+pallet-octopus-appchain = { default-features = false, git = 'https://github.com/octopus-network/pallet-octopus-appchain.git' }
 
 [features]
 default = ['std']
@@ -104,4 +105,5 @@ std = [
     'pallet-session/std',
     'pallet-staking/std',
     'sp-staking/std',
+    'pallet-octopus-appchain/std',
 ]
