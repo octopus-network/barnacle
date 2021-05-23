@@ -7,3 +7,163 @@ members = [
 	'pallets/*',
 	'runtime',
 ]
+
+[patch."https://github.com/paritytech/substrate"]
+# beefy
+substrate-prometheus-endpoint = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-application-crypto = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-arithmetic = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-keystore = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-utils = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-network = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-network-gossip = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-session = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+# node-template
+frame-benchmarking-cli = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-benchmarking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-executive = {  git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-support = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-system-benchmarking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-system = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-system-rpc-runtime-api = {  git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-babe = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-balances = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-grandpa = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-randomness-collective-flip = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-sudo = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-timestamp = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-transaction-payment = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-transaction-payment-rpc-runtime-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-transaction-payment-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-basic-authorship = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-client-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-cli = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-babe = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-executor = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-finality-grandpa = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-keystore = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-rpc-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-service = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-telemetry = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-transaction-pool = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-block-builder = {  git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-blockchain = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-consensus-babe = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-consensus = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-core = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-finality-grandpa = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-inherents = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-io = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-offchain = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-runtime = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master'}
+sp-session = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-std = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-transaction-pool = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-version = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+substrate-build-script-utils = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+substrate-frame-rpc-system = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+substrate-wasm-builder={ git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+sp-staking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-assets = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-authorship = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-im-online = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-mmr = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-staking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-staking-reward-curve = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-election-provider-support = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+sc-chain-spec = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-babe-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-epochs = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-slots = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-uncles = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-finality-grandpa-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-sync-state-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-authorship = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-timestamp = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-mmr-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+[patch.crates-io]
+# beefy
+substrate-prometheus-endpoint = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-application-crypto = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-arithmetic = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-keystore = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-utils = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-network = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-network-gossip = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-session = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+# node-template
+frame-benchmarking-cli = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-benchmarking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-executive = {  git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-support = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-system-benchmarking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-system = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-system-rpc-runtime-api = {  git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-babe = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-balances = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-grandpa = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-randomness-collective-flip = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-sudo = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-timestamp = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-transaction-payment = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-transaction-payment-rpc-runtime-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-transaction-payment-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-basic-authorship = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-client-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-cli = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-babe = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-executor = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-finality-grandpa = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-keystore = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-rpc-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-service = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-telemetry = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-transaction-pool = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-api = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-block-builder = {  git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-blockchain = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-consensus-babe = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-consensus = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-core = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-finality-grandpa = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-inherents = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-io = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-offchain = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-runtime = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master'}
+sp-session = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-std = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-transaction-pool = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-version = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+substrate-build-script-utils = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+substrate-frame-rpc-system = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+substrate-wasm-builder={ git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+sp-staking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-assets = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-authorship = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-im-online = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-mmr = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-staking = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-staking-reward-curve = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+frame-election-provider-support = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+
+sc-chain-spec = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-babe-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-epochs = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-slots = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-consensus-uncles = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-finality-grandpa-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sc-sync-state-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-authorship = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+sp-timestamp = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
+pallet-mmr-rpc = { git = 'https://github.com/octopus-network/substrate.git', branch = 'master' }
