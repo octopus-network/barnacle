@@ -75,6 +75,8 @@ beefy-primitives = { git = "https://github.com/octopus-network/grandpa-bridge-ga
 beefy-gadget = { git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "octopus" }
 beefy-gadget-rpc = { git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "octopus" }
 
+pallet-octopus-appchain = { git = 'https://github.com/octopus-network/pallet-octopus-appchain.git', branch = 'master' }
+
 [features]
 default = []
 runtime-benchmarks = ['appchain-barnacle-runtime/runtime-benchmarks']

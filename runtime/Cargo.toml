@@ -63,6 +63,8 @@ frame-election-provider-support = { version = "3.0.0", default-features = false,
 beefy-primitives = { git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "octopus", default-features = false }
 pallet-beefy = { git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "octopus", default-features = false }
 
+pallet-octopus-appchain = { git = 'https://github.com/octopus-network/pallet-octopus-appchain.git', branch = 'master', default-features = false }
+
 [features]
 default = ['std']
 runtime-benchmarks = [
@@ -113,4 +115,5 @@ std = [
 	'frame-election-provider-support/std',
 	'beefy-primitives/std',
 	'pallet-beefy/std',
+	'pallet-octopus-appchain/std',
 ]

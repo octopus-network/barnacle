@@ -12,10 +12,12 @@ use pallet_im_online::sr25519::{AuthorityId as ImOnlineId};
 use appchain_barnacle_runtime::{
 	ImOnlineConfig, SessionConfig, opaque::SessionKeys,
 	StakingConfig, Balance, DOLLARS, BeefyConfig,
+	OctopusAppchainConfig,
 };
 use pallet_staking::StakerStatus;
 use sp_runtime::Perbill;
 use beefy_primitives::ecdsa::AuthorityId as BeefyId;
+use pallet_octopus_appchain::crypto::AuthorityId as OctopusId;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -28,8 +30,9 @@ fn session_keys(
 	grandpa: GrandpaId,
 	im_online: ImOnlineId,
 	beefy: BeefyId,
+	octopus: OctopusId,
 ) -> SessionKeys {
-	SessionKeys { babe, grandpa, im_online, beefy }
+	SessionKeys { babe, grandpa, im_online, beefy, octopus }
 }
 
 /// Generate a crypto pair from seed.
@@ -49,14 +52,15 @@ pub fn get_account_id_from_seed<TPublic: Public>(seed: &str) -> AccountId where
 }
 
 /// Generate an Aura authority key.
-pub fn authority_keys_from_seed(s: &str) -> (AccountId, AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId) {
+pub fn authority_keys_from_seed(s: &str) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId, u64) {
 	(
-		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", s)),
 		get_account_id_from_seed::<sr25519::Public>(s),
 		get_from_seed::<BabeId>(s),
 		get_from_seed::<GrandpaId>(s),
 		get_from_seed::<ImOnlineId>(s),
 		get_from_seed::<BeefyId>(s),
+		get_from_seed::<OctopusId>(s),
+		100,
 	)
 }
 
@@ -152,7 +156,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 /// Configure initial storage state for FRAME modules.
 fn testnet_genesis(
 	wasm_binary: &[u8],
-	initial_authorities: Vec<(AccountId, AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId)>,
+	initial_authorities: Vec<(AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId, u64)>,
 	initial_nominators: Vec<AccountId>,
 	root_key: AccountId,
 	endowed_accounts: Option<Vec<AccountId>>,
@@ -185,7 +189,7 @@ fn testnet_genesis(
 	let mut rng = rand::thread_rng();
 	let stakers = initial_authorities
 		.iter()
-		.map(|x| (x.0.clone(), x.1.clone(), STASH, StakerStatus::Validator))
+		.map(|x| (x.0.clone(), x.0.clone(), STASH, StakerStatus::Validator))
 		.chain(initial_nominators.iter().map(|x| {
 			use rand::{seq::SliceRandom, Rng};
 			let limit = (16 as usize).min(initial_authorities.len());
@@ -225,6 +229,7 @@ fn testnet_genesis(
 		pallet_session: SessionConfig {
 			keys: initial_authorities.iter().map(|x| {
 				(x.0.clone(), x.0.clone(), session_keys(
+					x.1.clone(),
 					x.2.clone(),
 					x.3.clone(),
 					x.4.clone(),
@@ -245,6 +250,9 @@ fn testnet_genesis(
 		},
 		pallet_beefy: BeefyConfig {
 			authorities: vec![],
+		},
+		pallet_octopus_appchain: OctopusAppchainConfig {
+			validators: initial_authorities.iter().map(|x| (x.0.clone(), x.6)).collect(),
 		},
 	}
 }
