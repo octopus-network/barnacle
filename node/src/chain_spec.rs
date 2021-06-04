@@ -17,7 +17,7 @@ use appchain_barnacle_runtime::{
 use pallet_staking::StakerStatus;
 use sp_runtime::Perbill;
 use beefy_primitives::ecdsa::AuthorityId as BeefyId;
-use pallet_octopus_appchain::crypto::AuthorityId as OctopusId;
+use pallet_octopus_appchain::AuthorityId as OctopusId;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -252,6 +252,7 @@ fn testnet_genesis(
 			authorities: vec![],
 		},
 		pallet_octopus_appchain: OctopusAppchainConfig {
+			appchain_id: vec![],
 			validators: initial_authorities.iter().map(|x| (x.0.clone(), x.6)).collect(),
 		},
 	}

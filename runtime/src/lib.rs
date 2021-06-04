@@ -586,27 +586,24 @@ impl pallet_beefy::Config for Runtime {
 pub struct OctopusAppCrypto;
 
 impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature> for OctopusAppCrypto {
-	type RuntimeAppPublic = pallet_octopus_appchain::crypto::AuthorityId;
+	type RuntimeAppPublic = pallet_octopus_appchain::AuthorityId;
 	type GenericSignature = sp_core::sr25519::Signature;
 	type GenericPublic = sp_core::sr25519::Public;
 }
 
 parameter_types! {
-	pub const AppchainId: pallet_octopus_appchain::ChainId = 0;
-	pub const Motherchain: pallet_octopus_appchain::MotherchainType = pallet_octopus_appchain::MotherchainType::NEAR;
 	pub const GracePeriod: u32 = 5;
 	pub const UnsignedPriority: u64 = 1 << 20;
 }
 
 impl pallet_octopus_appchain::Config for Runtime {
+	type AuthorityId = OctopusAppCrypto;
 	type Event = Event;
-	type AppCrypto = OctopusAppCrypto;
 	type Call = Call;
-	type AppchainId = AppchainId;
-	type Motherchain = Motherchain;
-	const RELAY_CONTRACT_NAME: &'static [u8] = b"dev-1616239154529-4812993";
+	type Assets = Assets;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
+	const RELAY_CONTRACT: &'static [u8] = b"oct-relay.testnet";
 }
 
 impl pallet_sudo::Config for Runtime {
