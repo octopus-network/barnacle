@@ -252,7 +252,7 @@ fn testnet_genesis(
 			authorities: vec![],
 		},
 		pallet_octopus_appchain: OctopusAppchainConfig {
-			appchain_id: vec![],
+			appchain_id: "".to_string(),
 			validators: initial_authorities.iter().map(|x| (x.0.clone(), x.6)).collect(),
 		},
 	}
