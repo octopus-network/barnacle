@@ -1,6 +1,17 @@
-# Substrate Node Template
+# A minimal template for Octopus Appchain
 
-[![Try on playground](https://img.shields.io/badge/Playground-Node_Template-brightgreen?logo=Parity%20Substrate)](https://playground.substrate.dev/?deploy=node-template)
+This template is based on [Substrate Node Template](https://github.com/substrate-developer-hub/substrate-node-template).
+
+**Changes**
+
+* Replace the consensus [Aura](https://github.com/paritytech/substrate/tree/master/frame/aura) with [Babe](https://github.com/paritytech/substrate/tree/master/frame/babe) which is more suitable for a production Appchain.
+*  Adding some necessary pallets for Octopus Appchain as below:
+   * [Assets](https://github.com/paritytech/substrate/tree/master/frame/assets)
+   * [Authorship](https://github.com/paritytech/substrate/tree/master/frame/authorship)
+   * [Im-online](https://github.com/paritytech/substrate/tree/master/frame/im-online)
+   * [Merkle-mountain-range](https://github.com/paritytech/substrate/tree/master/frame/merkle-mountain-range), MMR
+   * [Session](https://github.com/paritytech/substrate/tree/master/frame/session)
+   * [Staking](https://github.com/paritytech/substrate/tree/master/frame/staking)
 
 A fresh FRAME-based [Substrate](https://www.substrate.io/) node, ready for hacking :rocket:
 
