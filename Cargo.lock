@@ -548,7 +548,7 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 [[package]]
 name = "beefy-gadget"
 version = "0.1.0"
-source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#cdd42cfdb29809c5ee1ee6ac272a4220b26ab155"
+source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#7ce80243c4295e5bb088a365d85bd1da89a3ca68"
 dependencies = [
  "beefy-primitives",
  "futures 0.3.15",
@@ -576,7 +576,7 @@ dependencies = [
 [[package]]
 name = "beefy-gadget-rpc"
 version = "0.1.0"
-source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#cdd42cfdb29809c5ee1ee6ac272a4220b26ab155"
+source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#7ce80243c4295e5bb088a365d85bd1da89a3ca68"
 dependencies = [
  "beefy-gadget",
  "beefy-primitives",
@@ -597,7 +597,7 @@ dependencies = [
 [[package]]
 name = "beefy-primitives"
 version = "0.1.0"
-source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#cdd42cfdb29809c5ee1ee6ac272a4220b26ab155"
+source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#7ce80243c4295e5bb088a365d85bd1da89a3ca68"
 dependencies = [
  "parity-scale-codec",
  "sp-api",
@@ -4100,7 +4100,7 @@ dependencies = [
 [[package]]
 name = "pallet-beefy"
 version = "0.1.0"
-source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#cdd42cfdb29809c5ee1ee6ac272a4220b26ab155"
+source = "git+https://github.com/octopus-network/grandpa-bridge-gadget?branch=octopus#7ce80243c4295e5bb088a365d85bd1da89a3ca68"
 dependencies = [
  "beefy-primitives",
  "frame-support",
@@ -8230,7 +8230,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04f8ab788026715fa63b31960869617cba39117e520eb415b0139543e325ab59"
 dependencies = [
  "cfg-if 0.1.10",
- "rand 0.7.3",
+ "rand 0.3.23",
  "static_assertions",
 ]
 
