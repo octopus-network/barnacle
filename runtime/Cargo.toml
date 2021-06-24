@@ -46,7 +46,7 @@ version = '3.0.0'
 optional = true
 version = '0.3.1'
 
-[dependencies.pallet-aura]
+[dependencies.pallet-babe]
 default-features = false
 git = 'https://github.com/paritytech/substrate.git'
 rev = 'd6c33e7ec313f9bd5e319dc0a5a3ace5543f9617'
@@ -111,7 +111,7 @@ git = 'https://github.com/paritytech/substrate.git'
 rev = 'd6c33e7ec313f9bd5e319dc0a5a3ace5543f9617'
 version = '3.0.0'
 
-[dependencies.sp-consensus-aura]
+[dependencies.sp-consensus-babe]
 default-features = false
 git = 'https://github.com/paritytech/substrate.git'
 rev = 'd6c33e7ec313f9bd5e319dc0a5a3ace5543f9617'
@@ -165,13 +165,31 @@ git = 'https://github.com/paritytech/substrate.git'
 rev = 'd6c33e7ec313f9bd5e319dc0a5a3ace5543f9617'
 version = '3.0.0'
 
+
+[dependencies]
+log = { version = "0.4.14", default-features = false }
+
+frame-election-provider-support = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+pallet-assets = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+pallet-authorship = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+pallet-im-online = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+pallet-mmr = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+pallet-session = { version = "3.0.0", features = ["historical"], git = "https://github.com/paritytech/substrate.git", default-features = false }
+pallet-staking = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+pallet-staking-reward-curve = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+sp-staking = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
+
+beefy-primitives = { git = "https://github.com/octopus-network/grandpa-bridge-gadget", default-features = false, branch = "octopus" }
+pallet-beefy = { git = "https://github.com/octopus-network/grandpa-bridge-gadget", default-features = false, branch = "octopus" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/pallet-octopus-appchain", branch = "master" }
+
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
+authors = ['Octopus Network <hi@oct.network>']
 edition = '2018'
-homepage = 'https://substrate.dev'
-license = 'Unlicense'
-name = 'node-template-runtime'
-repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
+homepage = 'https://oct.network'
+license = 'Apache-2.0'
+name = 'appchain-barnacle-runtime'
+repository = 'https://github.com/octopus-network/barnacle'
 version = '3.0.0'
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
@@ -199,7 +217,7 @@ std = [
     'frame-support/std',
     'frame-system-rpc-runtime-api/std',
     'frame-system/std',
-    'pallet-aura/std',
+    'pallet-babe/std',
     'pallet-balances/std',
     'pallet-grandpa/std',
     'pallet-randomness-collective-flip/std',
@@ -210,7 +228,7 @@ std = [
     'pallet-transaction-payment/std',
     'sp-api/std',
     'sp-block-builder/std',
-    'sp-consensus-aura/std',
+    'sp-consensus-babe/std',
     'sp-core/std',
     'sp-inherents/std',
     'sp-offchain/std',
@@ -219,4 +237,16 @@ std = [
     'sp-std/std',
     'sp-transaction-pool/std',
     'sp-version/std',
+    'log/std',
+    'frame-election-provider-support/std',
+    'pallet-assets/std',
+    'pallet-authorship/std',
+    'pallet-im-online/std',
+    'pallet-mmr/std',
+    'pallet-session/std',
+    'pallet-staking/std',
+    'sp-staking/std',
+    'beefy-primitives/std',
+    'pallet-beefy/std',
+    'pallet-octopus-appchain/std',
 ]
