@@ -493,7 +493,6 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type Assets = Assets;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
-	const RELAY_CONTRACT: &'static [u8] = b"oct-relay.testnet";
 }
 
 impl pallet_sudo::Config for Runtime {
