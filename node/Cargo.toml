@@ -1,12 +1,12 @@
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
-description = 'A fresh FRAME-based Substrate node, ready for hacking.'
+authors = ['Octopus Network <hi@oct.network>']
+description = 'A minimal template for octopus appchain.'
 edition = '2018'
-homepage = 'https://substrate.dev'
-license = 'Unlicense'
-name = 'node-template'
+homepage = 'https://oct.network/'
+license = 'Apache-2.0'
+name = 'appchain-barnacle'
 publish = false
-repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
+repository = 'https://github.com/octopus-network/barnacle/'
 version = '3.0.0-monthly-2021-08'
 build = 'build.rs'
 
@@ -14,13 +14,13 @@ build = 'build.rs'
 targets = ['x86_64-unknown-linux-gnu']
 
 [[bin]]
-name = 'node-template'
+name = 'appchain-barnacle'
 [build-dependencies.substrate-build-script-utils]
 git = 'https://github.com/paritytech/substrate.git'
 tag = 'monthly-2021-08'
 version = '3.0.0'
 
-[dependencies.node-template-runtime]
+[dependencies.appchain-barnacle-runtime]
 path = '../runtime'
 version = '3.0.0-monthly-2021-08'
 
@@ -196,4 +196,4 @@ version = '3.0.0'
 
 [features]
 default = []
-runtime-benchmarks = ['node-template-runtime/runtime-benchmarks']
+runtime-benchmarks = ['appchain-barnacle-runtime/runtime-benchmarks']

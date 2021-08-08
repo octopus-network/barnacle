@@ -1,12 +1,12 @@
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
+authors = ['Octopus Network <hi@oct.network>']
 description = 'Substrate FRAME based template for composing and building WASM runtimes.'
 edition = '2018'
-homepage = 'https://substrate.dev'
-license = 'Unlicense'
-name = 'node-template-runtime'
+homepage = 'https://oct.network'
+license = 'Apache-2.0'
+name = 'appchain-barnacle-runtime'
 publish = false
-repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
+repository = 'https://github.com/octopus-network/barnacle'
 version = '3.0.0-monthly-2021-08'
 
 [package.metadata.docs.rs]
