@@ -154,7 +154,7 @@ dependencies = [
  "pallet-im-online",
  "pallet-mmr-rpc",
  "pallet-octopus-appchain",
- "pallet-staking",
+ "pallet-octopus-lpos",
  "pallet-transaction-payment-rpc",
  "rand 0.7.3",
  "sc-basic-authorship",
@@ -219,10 +219,10 @@ dependencies = [
  "pallet-im-online",
  "pallet-mmr",
  "pallet-octopus-appchain",
+ "pallet-octopus-lpos",
+ "pallet-octopus-lpos-reward-curve",
  "pallet-randomness-collective-flip",
  "pallet-session",
- "pallet-staking",
- "pallet-staking-reward-curve",
  "pallet-sudo",
  "pallet-template",
  "pallet-timestamp",
@@ -1827,7 +1827,7 @@ dependencies = [
  "frame-system",
  "parity-scale-codec",
  "sp-arithmetic",
- "sp-npos-elections",
+ "sp-npos-elections 3.0.0 (git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8)",
  "sp-std",
 ]
 
@@ -4230,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/pallet-octopus-appchain?branch=master#5084a804f3b2524fa2fcf35ddca994f8307aa078"
+source = "git+https://github.com/octopus-network/pallet-octopus-appchain?branch=dev#1b3585cf4323e1d50cd66df95caf1e36c6074797"
 dependencies = [
  "base64 0.13.0",
  "borsh",
@@ -4241,6 +4241,7 @@ dependencies = [
  "log",
  "pallet-assets",
  "pallet-balances",
+ "pallet-octopus-lpos",
  "pallet-session",
  "parity-scale-codec",
  "serde",
@@ -4248,8 +4249,42 @@ dependencies = [
  "serde_json",
  "sp-core",
  "sp-io",
+ "sp-npos-elections 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "sp-runtime",
  "sp-std",
+]
+
+[[package]]
+name = "pallet-octopus-lpos"
+version = "3.0.0"
+source = "git+https://github.com/octopus-network/pallet-octopus-lpos?branch=main#d573880f4e2bb6ac2498c1ff71b764f257327ad9"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "log",
+ "pallet-authorship",
+ "pallet-session",
+ "parity-scale-codec",
+ "paste",
+ "serde",
+ "sp-application-crypto",
+ "sp-io",
+ "sp-npos-elections 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sp-runtime",
+ "sp-staking",
+ "sp-std",
+ "static_assertions",
+]
+
+[[package]]
+name = "pallet-octopus-lpos-reward-curve"
+version = "3.0.0"
+source = "git+https://github.com/octopus-network/pallet-octopus-lpos?branch=main#d573880f4e2bb6ac2498c1ff71b764f257327ad9"
+dependencies = [
+ "proc-macro-crate 1.0.0",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -4283,39 +4318,6 @@ dependencies = [
  "sp-staking",
  "sp-std",
  "sp-trie",
-]
-
-[[package]]
-name = "pallet-staking"
-version = "3.0.0"
-source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
-dependencies = [
- "frame-election-provider-support",
- "frame-support",
- "frame-system",
- "log",
- "pallet-authorship",
- "pallet-session",
- "parity-scale-codec",
- "paste",
- "serde",
- "sp-application-crypto",
- "sp-io",
- "sp-runtime",
- "sp-staking",
- "sp-std",
- "static_assertions",
-]
-
-[[package]]
-name = "pallet-staking-reward-curve"
-version = "3.0.0"
-source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
-dependencies = [
- "proc-macro-crate 1.0.0",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -7197,14 +7199,40 @@ dependencies = [
 [[package]]
 name = "sp-npos-elections"
 version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "54e6e8b84ee0dc7bb65b55beba55ffbc17803222ab7c746a74f72fc5869c7320"
+dependencies = [
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-npos-elections-compact 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sp-std",
+]
+
+[[package]]
+name = "sp-npos-elections"
+version = "3.0.0"
 source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
 dependencies = [
  "parity-scale-codec",
  "serde",
  "sp-arithmetic",
  "sp-core",
- "sp-npos-elections-compact",
+ "sp-npos-elections-compact 3.0.0 (git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8)",
  "sp-std",
+]
+
+[[package]]
+name = "sp-npos-elections-compact"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "085fbb1aa72d85a17524047fc1e708bc3bd038b02b46dc7ac601fa39c8af93d3"
+dependencies = [
+ "proc-macro-crate 0.1.5",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -8305,7 +8333,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04f8ab788026715fa63b31960869617cba39117e520eb415b0139543e325ab59"
 dependencies = [
  "cfg-if 0.1.10",
- "rand 0.3.23",
+ "rand 0.7.3",
  "static_assertions",
 ]
 
@@ -9074,3 +9102,23 @@ dependencies = [
  "cc",
  "libc",
 ]
+
+[[patch.unused]]
+name = "pallet-staking"
+version = "3.0.0"
+source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
+
+[[patch.unused]]
+name = "pallet-staking-reward-curve"
+version = "3.0.0"
+source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
+
+[[patch.unused]]
+name = "pallet-staking"
+version = "3.0.0"
+source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
+
+[[patch.unused]]
+name = "pallet-staking-reward-curve"
+version = "3.0.0"
+source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
