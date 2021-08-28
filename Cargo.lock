@@ -4230,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/pallet-octopus-appchain?branch=dev#1b3585cf4323e1d50cd66df95caf1e36c6074797"
+source = "git+https://github.com/octopus-network/pallet-octopus-appchain?branch=dev#6ac355e62ebe7a097160b7c52cf1ed3304b4fab5"
 dependencies = [
  "base64 0.13.0",
  "borsh",
@@ -4241,7 +4241,6 @@ dependencies = [
  "log",
  "pallet-assets",
  "pallet-balances",
- "pallet-octopus-lpos",
  "pallet-session",
  "parity-scale-codec",
  "serde",
@@ -4257,12 +4256,13 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "3.0.0"
-source = "git+https://github.com/octopus-network/pallet-octopus-lpos?branch=main#d573880f4e2bb6ac2498c1ff71b764f257327ad9"
+source = "git+https://github.com/octopus-network/pallet-octopus-lpos?branch=main#3609149aba76a1cd8ac105c577db07ec1578a404"
 dependencies = [
  "frame-support",
  "frame-system",
  "log",
  "pallet-authorship",
+ "pallet-octopus-appchain",
  "pallet-session",
  "parity-scale-codec",
  "paste",
@@ -4279,7 +4279,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos-reward-curve"
 version = "3.0.0"
-source = "git+https://github.com/octopus-network/pallet-octopus-lpos?branch=main#d573880f4e2bb6ac2498c1ff71b764f257327ad9"
+source = "git+https://github.com/octopus-network/pallet-octopus-lpos?branch=main#3609149aba76a1cd8ac105c577db07ec1578a404"
 dependencies = [
  "proc-macro-crate 1.0.0",
  "proc-macro2",
@@ -8333,7 +8333,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04f8ab788026715fa63b31960869617cba39117e520eb415b0139543e325ab59"
 dependencies = [
  "cfg-if 0.1.10",
- "rand 0.7.3",
+ "rand 0.3.23",
  "static_assertions",
 ]
 

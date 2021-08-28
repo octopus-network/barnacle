@@ -594,6 +594,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type Call = Call;
 	type PalletId = OctopusAppchainPalletId;
 	type SessionInterface = Self;
+	type LposInterface = OctopusLpos;
 	type Currency = Balances;
 	type Assets = Assets;
 	type GracePeriod = GracePeriod;
