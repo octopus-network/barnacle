@@ -258,7 +258,7 @@ fn testnet_genesis(
 		beefy: BeefyConfig { authorities: vec![] },
 		octopus_appchain: OctopusAppchainConfig {
 			appchain_id: "".to_string(),
-			relay_contract: "dev-oct-relay.testnet".to_string(),
+			relay_contract: "oct-relay.testnet".to_string(),
 			validators: initial_authorities.iter().map(|x| (x.0.clone(), x.6)).collect(),
 			asset_id_by_name: vec![("usdc.testnet".to_string(), 0)],
 		},
