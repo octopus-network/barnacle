@@ -48,8 +48,8 @@ beefy-primitives = { version = "0.1.0", git = "https://github.com/octopus-networ
 beefy-gadget = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev" }
 beefy-gadget-rpc = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev" }
 
-pallet-octopus-appchain = { git = "https://github.com/octopus-network/pallet-octopus-appchain", branch = "dev" }
-pallet-octopus-lpos = { git = "https://github.com/octopus-network/pallet-octopus-lpos", branch = "main" }
+pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets", branch = "dev" }
+pallet-octopus-lpos = { git = "https://github.com/octopus-network/octopus-pallets", branch = "dev" }
 
 [dependencies.frame-benchmarking]
 git = 'https://github.com/paritytech/substrate.git'

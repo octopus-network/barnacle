@@ -25,9 +25,9 @@ sp-staking = { version = "3.0.0", default-features = false, git = "https://githu
 
 beefy-primitives = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev", default-features = false }
 pallet-beefy = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev", default-features = false }
-pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/pallet-octopus-appchain", branch = "dev" }
-pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/pallet-octopus-lpos", branch = "main" }
-pallet-octopus-lpos-reward-curve = { default-features = false, git = "https://github.com/octopus-network/pallet-octopus-lpos", branch = "main" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "dev" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "dev" }
+pallet-octopus-lpos-reward-curve = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "dev" }
 
 [dependencies.pallet-template]
 default-features = false
