@@ -21,13 +21,13 @@ pallet-authorship = { version = "3.0.0", default-features = false, git = "https:
 pallet-im-online = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
 pallet-mmr = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
 pallet-session = { version = "3.0.0", features = ["historical"], git = "https://github.com/paritytech/substrate.git", default-features = false }
-pallet-staking = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
-pallet-staking-reward-curve = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
 sp-staking = { version = "3.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git" }
 
 beefy-primitives = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev", default-features = false }
 pallet-beefy = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev", default-features = false }
-pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/pallet-octopus-appchain", branch = "master" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+pallet-octopus-lpos-reward-curve = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
 
 [dependencies.pallet-template]
 default-features = false
@@ -247,9 +247,9 @@ std = [
     'pallet-im-online/std',
     'pallet-mmr/std',
     'pallet-session/std',
-    'pallet-staking/std',
     'sp-staking/std',
     'beefy-primitives/std',
     'pallet-beefy/std',
     'pallet-octopus-appchain/std',
+    'pallet-octopus-lpos/std',
 ]
