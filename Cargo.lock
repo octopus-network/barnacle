@@ -4230,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=dev#ecd360699908578381fe100a4493e0fcb86febac"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#81e53d1accb57c52c53a7f4d5584c3a2e90f7610"
 dependencies = [
  "base64 0.13.0",
  "borsh",
@@ -4256,7 +4256,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=dev#ecd360699908578381fe100a4493e0fcb86febac"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#81e53d1accb57c52c53a7f4d5584c3a2e90f7610"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4279,7 +4279,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos-reward-curve"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=dev#ecd360699908578381fe100a4493e0fcb86febac"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#81e53d1accb57c52c53a7f4d5584c3a2e90f7610"
 dependencies = [
  "proc-macro-crate 1.0.0",
  "proc-macro2",
