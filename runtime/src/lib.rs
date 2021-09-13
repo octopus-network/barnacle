@@ -423,31 +423,25 @@ pallet_octopus_lpos_reward_curve::build! {
 parameter_types! {
 	pub const SessionsPerEra: sp_staking::SessionIndex = 6;
 	pub const BondingDuration: pallet_octopus_lpos::EraIndex = 24 * 28;
-	pub const SlashDeferDuration: pallet_octopus_lpos::EraIndex = 24 * 7; // 1/4 the bonding duration.
 	pub const RewardCurve: &'static PiecewiseLinear<'static> = &REWARD_CURVE;
 	pub const MaxNominatorRewardedPerValidator: u32 = 256;
 	pub OffchainRepeat: BlockNumber = 5;
 }
 
 impl pallet_octopus_lpos::Config for Runtime {
-	const MAX_NOMINATIONS: u32 = 16;
 	type Currency = Balances;
 	type UnixTime = Timestamp;
 	type RewardRemainder = ();
 	type Event = Event;
-	type Slash = ();
 	type Reward = (); // rewards are minted from the void
 	type SessionsPerEra = SessionsPerEra;
 	type BondingDuration = BondingDuration;
-	type SlashDeferDuration = SlashDeferDuration;
-	/// A super-majority of the council can cancel the slash.
-	type SlashCancelOrigin = frame_system::EnsureRoot<Self::AccountId>;
 	type SessionInterface = Self;
 	type EraPayout = pallet_octopus_lpos::ConvertCurve<RewardCurve>;
 	type NextNewSession = Session;
 	type MaxNominatorRewardedPerValidator = MaxNominatorRewardedPerValidator;
-	type ElectionProvider = OctopusAppchain;
-	type GenesisElectionProvider = Self::ElectionProvider;
+	type StakersProvider = OctopusAppchain;
+	type GenesisStakersProvider = Self::StakersProvider;
 	type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
 }
 
@@ -593,7 +587,6 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
 	type PalletId = OctopusAppchainPalletId;
-	type SessionInterface = Self;
 	type LposInterface = OctopusLpos;
 	type Currency = Balances;
 	type Assets = Assets;

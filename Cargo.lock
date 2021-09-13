@@ -1827,7 +1827,7 @@ dependencies = [
  "frame-system",
  "parity-scale-codec",
  "sp-arithmetic",
- "sp-npos-elections 3.0.0 (git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8)",
+ "sp-npos-elections",
  "sp-std",
 ]
 
@@ -4230,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#81e53d1accb57c52c53a7f4d5584c3a2e90f7610"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#5bd9280c38b8e7f6a2da3c28a79820eaca041cd9"
 dependencies = [
  "base64 0.13.0",
  "borsh",
@@ -4248,7 +4248,6 @@ dependencies = [
  "serde_json",
  "sp-core",
  "sp-io",
- "sp-npos-elections 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "sp-runtime",
  "sp-std",
 ]
@@ -4256,7 +4255,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#81e53d1accb57c52c53a7f4d5584c3a2e90f7610"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#5bd9280c38b8e7f6a2da3c28a79820eaca041cd9"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4269,7 +4268,6 @@ dependencies = [
  "serde",
  "sp-application-crypto",
  "sp-io",
- "sp-npos-elections 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "sp-runtime",
  "sp-staking",
  "sp-std",
@@ -4279,7 +4277,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos-reward-curve"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#81e53d1accb57c52c53a7f4d5584c3a2e90f7610"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#5bd9280c38b8e7f6a2da3c28a79820eaca041cd9"
 dependencies = [
  "proc-macro-crate 1.0.0",
  "proc-macro2",
@@ -7199,40 +7197,14 @@ dependencies = [
 [[package]]
 name = "sp-npos-elections"
 version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54e6e8b84ee0dc7bb65b55beba55ffbc17803222ab7c746a74f72fc5869c7320"
-dependencies = [
- "parity-scale-codec",
- "serde",
- "sp-arithmetic",
- "sp-core",
- "sp-npos-elections-compact 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "sp-std",
-]
-
-[[package]]
-name = "sp-npos-elections"
-version = "3.0.0"
 source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
 dependencies = [
  "parity-scale-codec",
  "serde",
  "sp-arithmetic",
  "sp-core",
- "sp-npos-elections-compact 3.0.0 (git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8)",
+ "sp-npos-elections-compact",
  "sp-std",
-]
-
-[[package]]
-name = "sp-npos-elections-compact"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "085fbb1aa72d85a17524047fc1e708bc3bd038b02b46dc7ac601fa39c8af93d3"
-dependencies = [
- "proc-macro-crate 0.1.5",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]

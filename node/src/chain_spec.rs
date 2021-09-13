@@ -17,7 +17,6 @@ use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use pallet_octopus_appchain::AuthorityId as OctopusId;
 use pallet_octopus_lpos::StakerStatus;
 use sp_consensus_babe::AuthorityId as BabeId;
-use sp_runtime::Perbill;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -55,7 +54,7 @@ where
 /// Helper function to generate stash, controller and session key from seed
 pub fn authority_keys_from_seed(
 	s: &str,
-) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId, u128) {
+) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId) {
 	(
 		get_account_id_from_seed::<sr25519::Public>(s),
 		get_from_seed::<BabeId>(s),
@@ -63,7 +62,6 @@ pub fn authority_keys_from_seed(
 		get_from_seed::<ImOnlineId>(s),
 		get_from_seed::<BeefyId>(s),
 		get_from_seed::<OctopusId>(s),
-		10000000000000000,
 	)
 }
 
@@ -150,7 +148,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 /// Configure initial storage state for FRAME modules.
 fn testnet_genesis(
 	wasm_binary: &[u8],
-	initial_authorities: Vec<(AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId, u128)>,
+	initial_authorities: Vec<(AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId)>,
 	initial_nominators: Vec<AccountId>,
 	root_key: AccountId,
 	endowed_accounts: Option<Vec<AccountId>>,
@@ -197,7 +195,7 @@ fn testnet_genesis(
 		.collect::<Vec<_>>();
 
 	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = ENDOWMENT / 1000;
+	const STASH: Balance = 100 * DOLLARS;
 
 	GenesisConfig {
 		system: SystemConfig {
@@ -227,10 +225,6 @@ fn testnet_genesis(
 				.collect::<Vec<_>>(),
 		},
 		octopus_lpos: OctopusLposConfig {
-			validator_count: initial_authorities.len() as u32,
-			minimum_validator_count: initial_authorities.len() as u32,
-			invulnerables: initial_authorities.iter().map(|x| x.0.clone()).collect(),
-			slash_reward_fraction: Perbill::from_percent(10),
 			stakers,
 			..Default::default()
 		},
@@ -245,7 +239,6 @@ fn testnet_genesis(
 		octopus_appchain: OctopusAppchainConfig {
 			appchain_id: "".to_string(),
 			relay_contract: "oct-relay.testnet".to_string(),
-			validators: initial_authorities.iter().map(|x| (x.0.clone(), x.6)).collect(),
 			asset_id_by_name: vec![("usdc.testnet".to_string(), 0)],
 		},
 	}
