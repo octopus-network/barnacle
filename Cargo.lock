@@ -220,7 +220,7 @@ dependencies = [
  "pallet-mmr",
  "pallet-octopus-appchain",
  "pallet-octopus-lpos",
- "pallet-octopus-lpos-reward-curve",
+ "pallet-octopus-upward-messages",
  "pallet-randomness-collective-flip",
  "pallet-session",
  "pallet-sudo",
@@ -4230,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#5bd9280c38b8e7f6a2da3c28a79820eaca041cd9"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
 dependencies = [
  "base64 0.13.0",
  "borsh",
@@ -4241,6 +4241,8 @@ dependencies = [
  "log",
  "pallet-assets",
  "pallet-balances",
+ "pallet-octopus-support",
+ "pallet-octopus-upward-messages",
  "pallet-session",
  "parity-scale-codec",
  "serde",
@@ -4255,13 +4257,15 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#5bd9280c38b8e7f6a2da3c28a79820eaca041cd9"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
 dependencies = [
+ "borsh",
  "frame-support",
  "frame-system",
+ "hex",
  "log",
  "pallet-authorship",
- "pallet-octopus-appchain",
+ "pallet-octopus-support",
  "pallet-session",
  "parity-scale-codec",
  "paste",
@@ -4275,14 +4279,31 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-octopus-lpos-reward-curve"
+name = "pallet-octopus-support"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#5bd9280c38b8e7f6a2da3c28a79820eaca041cd9"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
 dependencies = [
- "proc-macro-crate 1.0.0",
- "proc-macro2",
- "quote",
- "syn",
+ "borsh",
+ "frame-support",
+ "parity-scale-codec",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-octopus-upward-messages"
+version = "3.0.0-pre.0"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "log",
+ "pallet-octopus-support",
+ "parity-scale-codec",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
 ]
 
 [[package]]

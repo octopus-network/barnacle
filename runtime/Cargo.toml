@@ -27,7 +27,7 @@ beefy-primitives = { version = "0.1.0", git = "https://github.com/octopus-networ
 pallet-beefy = { version = "0.1.0", git = "https://github.com/octopus-network/grandpa-bridge-gadget", branch = "dev", default-features = false }
 pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
 pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
-pallet-octopus-lpos-reward-curve = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
 
 [dependencies.pallet-template]
 default-features = false
@@ -252,4 +252,5 @@ std = [
     'pallet-beefy/std',
     'pallet-octopus-appchain/std',
     'pallet-octopus-lpos/std',
+    'pallet-octopus-upward-messages/std',
 ]
