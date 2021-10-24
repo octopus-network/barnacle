@@ -212,6 +212,7 @@ fn testnet_genesis(
 			anchor_contract: "octopus-anchor.testnet".to_string(),
 			asset_id_by_name: vec![("usdc.testnet".to_string(), 0)],
 			validators,
+			premined_amount: 1024,
 		},
 	}
 }

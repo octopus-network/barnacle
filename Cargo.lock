@@ -4230,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=release-v0.9.8#f515ba5b6fc88d91eb3a0678c0615daf1be05ceb"
 dependencies = [
  "base64 0.13.0",
  "borsh",
@@ -4257,7 +4257,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=release-v0.9.8#f515ba5b6fc88d91eb3a0678c0615daf1be05ceb"
 dependencies = [
  "borsh",
  "frame-support",
@@ -4281,7 +4281,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-support"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=release-v0.9.8#f515ba5b6fc88d91eb3a0678c0615daf1be05ceb"
 dependencies = [
  "borsh",
  "frame-support",
@@ -4293,7 +4293,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-upward-messages"
 version = "3.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets?branch=main#17d2df3a0acbcaf79914d213272a1214a01119df"
+source = "git+https://github.com/octopus-network/octopus-pallets?branch=release-v0.9.8#f515ba5b6fc88d91eb3a0678c0615daf1be05ceb"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -8326,7 +8326,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04f8ab788026715fa63b31960869617cba39117e520eb415b0139543e325ab59"
 dependencies = [
  "cfg-if 0.1.10",
- "rand 0.3.23",
+ "rand 0.7.3",
  "static_assertions",
 ]
 
@@ -9095,23 +9095,3 @@ dependencies = [
  "cc",
  "libc",
 ]
-
-[[patch.unused]]
-name = "pallet-staking"
-version = "3.0.0"
-source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
-
-[[patch.unused]]
-name = "pallet-staking-reward-curve"
-version = "3.0.0"
-source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
-
-[[patch.unused]]
-name = "pallet-staking"
-version = "3.0.0"
-source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"
-
-[[patch.unused]]
-name = "pallet-staking-reward-curve"
-version = "3.0.0"
-source = "git+https://github.com/octopus-network/substrate?branch=polkadot-v0.9.8#74101dc21cfffb4c2d014fcc28edc166d5ca1b16"

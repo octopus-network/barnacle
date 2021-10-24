@@ -34,7 +34,6 @@ frame-benchmarking = { git = "https://github.com/octopus-network/substrate", bra
 frame-benchmarking-cli = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-assets = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-balances = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
-pallet-staking = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-im-online = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-transaction-payment-rpc = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 sc-basic-authorship = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
@@ -72,7 +71,6 @@ pallet-babe = { git = "https://github.com/octopus-network/substrate", branch = "
 pallet-grandpa = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-mmr = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-randomness-collective-flip = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
-pallet-staking-reward-curve = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-sudo = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-timestamp = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-transaction-payment = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
@@ -111,7 +109,6 @@ frame-benchmarking = { git = "https://github.com/octopus-network/substrate", bra
 frame-benchmarking-cli = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-assets = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-balances = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
-pallet-staking = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-im-online = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-transaction-payment-rpc = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 sc-basic-authorship = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
@@ -149,7 +146,6 @@ pallet-babe = { git = "https://github.com/octopus-network/substrate", branch = "
 pallet-grandpa = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-mmr = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-randomness-collective-flip = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
-pallet-staking-reward-curve = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-sudo = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-timestamp = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
 pallet-transaction-payment = { git = "https://github.com/octopus-network/substrate", branch = "polkadot-v0.9.8" }
