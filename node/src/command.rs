@@ -3,7 +3,7 @@ use crate::{
 	cli::{Cli, Subcommand},
 	service,
 };
-use node_template_runtime::Block;
+use appchain_barnacle_runtime::Block;
 use sc_cli::{ChainSpec, Role, RuntimeVersion, SubstrateCli};
 use sc_service::PartialComponents;
 
@@ -36,13 +36,14 @@ impl SubstrateCli for Cli {
 		Ok(match id {
 			"dev" => Box::new(chain_spec::development_config()?),
 			"" | "local" => Box::new(chain_spec::local_testnet_config()?),
+			"barnacle" => Box::new(chain_spec::barnacle_config()?),
 			path =>
 				Box::new(chain_spec::ChainSpec::from_json_file(std::path::PathBuf::from(path))?),
 		})
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&node_template_runtime::VERSION
+		&appchain_barnacle_runtime::VERSION
 	}
 }
 
