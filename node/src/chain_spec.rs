@@ -1,9 +1,9 @@
-use beefy_primitives::crypto::AuthorityId as BeefyId;
 use appchain_barnacle_runtime::{
 	opaque::Block, opaque::SessionKeys, AccountId, BabeConfig, Balance, BalancesConfig,
 	GenesisConfig, GrandpaConfig, ImOnlineConfig, OctopusAppchainConfig, OctopusLposConfig,
 	SessionConfig, Signature, SudoConfig, SystemConfig, DOLLARS, WASM_BINARY,
 };
+use beefy_primitives::crypto::AuthorityId as BeefyId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use pallet_octopus_appchain::AuthorityId as OctopusId;
 use sc_chain_spec::ChainSpecExtension;
@@ -186,7 +186,7 @@ fn testnet_genesis(
 	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = 100 * DOLLARS;
+	const STASH: Balance = 100 * 1_000_000_000_000_000_000; // 100 OCT with 18 decimals
 
 	GenesisConfig {
 		system: SystemConfig {
@@ -225,8 +225,7 @@ fn testnet_genesis(
 		assets: Default::default(),
 		beefy: Default::default(),
 		octopus_appchain: OctopusAppchainConfig {
-			appchain_id: "".to_string(),
-			anchor_contract: "octopus-anchor.testnet".to_string(),
+			anchor_contract: "".to_string(),
 			asset_id_by_name: vec![("usdc.testnet".to_string(), 0)],
 			validators,
 			premined_amount: 0,
