@@ -228,8 +228,8 @@ fn testnet_genesis(
 			anchor_contract: "".to_string(),
 			asset_id_by_name: vec![("usdc.testnet".to_string(), 0)],
 			validators,
-			premined_amount: 0,
+			premined_amount: 1024 * DOLLARS,
 		},
-		octopus_lpos: OctopusLposConfig { era_payout: 1024, ..Default::default() },
+		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
 	}
 }

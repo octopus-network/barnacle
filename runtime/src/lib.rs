@@ -126,7 +126,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	transaction_version: 1,
 };
 
-pub const MILLICENTS: Balance = 1_000_000_000;
+pub const MILLICENTS: Balance = 10_000_000_000;
 pub const CENTS: Balance = 1_000 * MILLICENTS; // assume this is worth about a cent.
 pub const DOLLARS: Balance = 100 * CENTS;
 
@@ -534,6 +534,7 @@ parameter_types! {
 	   pub const OctopusAppchainPalletId: PalletId = PalletId(*b"py/octps");
 	   pub const GracePeriod: u32 = 5;
 	   pub const UnsignedPriority: u64 = 1 << 20;
+	   pub const RequestEventLimit: u32 = 10;
 }
 
 impl pallet_octopus_appchain::Config for Runtime {
@@ -547,6 +548,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type Assets = Assets;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
+	type RequestEventLimit = RequestEventLimit;
 }
 
 parameter_types! {
