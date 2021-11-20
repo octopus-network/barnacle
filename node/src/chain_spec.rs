@@ -35,8 +35,8 @@ pub struct Extensions {
 /// Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type.
 pub type ChainSpec = sc_service::GenericChainSpec<GenesisConfig, Extensions>;
 
-pub fn barnacle_config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../../resources/barnacle.json")[..])
+pub fn octopus_testnet_config() -> Result<ChainSpec, String> {
+	ChainSpec::from_json_bytes(&include_bytes!("../../resources/testnet.json")[..])
 }
 
 fn session_keys(
