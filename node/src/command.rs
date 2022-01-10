@@ -3,8 +3,8 @@ use crate::{
 	cli::{Cli, Subcommand},
 	service,
 };
-use appchain_barnacle_runtime::Block;
-use sc_cli::{ChainSpec, Role, RuntimeVersion, SubstrateCli};
+use node_template_runtime::Block;
+use sc_cli::{ChainSpec, RuntimeVersion, SubstrateCli};
 use sc_service::PartialComponents;
 
 impl SubstrateCli for Cli {
@@ -36,14 +36,13 @@ impl SubstrateCli for Cli {
 		Ok(match id {
 			"dev" => Box::new(chain_spec::development_config()?),
 			"" | "local" => Box::new(chain_spec::local_testnet_config()?),
-			"octopus-testnet" => Box::new(chain_spec::octopus_testnet_config()?),
 			path =>
 				Box::new(chain_spec::ChainSpec::from_json_file(std::path::PathBuf::from(path))?),
 		})
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&appchain_barnacle_runtime::VERSION
+		&node_template_runtime::VERSION
 	}
 }
 
@@ -112,11 +111,7 @@ pub fn run() -> sc_cli::Result<()> {
 		None => {
 			let runner = cli.create_runner(&cli.run)?;
 			runner.run_node_until_exit(|config| async move {
-				match config.role {
-					Role::Light => service::new_light(config),
-					_ => service::new_full(config),
-				}
-				.map_err(sc_cli::Error::Service)
+				service::new_full(config).map_err(sc_cli::Error::Service)
 			})
 		},
 	}

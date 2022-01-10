@@ -1,32 +1,6 @@
-[package]
-name = 'pallet-template'
-version = '3.0.0-monthly-2021-10'
-description = 'FRAME pallet template for defining custom runtime logic.'
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
-homepage = 'https://substrate.io/'
-edition = '2018'
-license = 'Unlicense'
-publish = false
-repository = 'https://github.com/substrate-developer-hub/substrate-appchain-barnacle/'
-
-[package.metadata.docs.rs]
-targets = ['x86_64-unknown-linux-gnu']
-
-[dependencies]
-codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-scale-info = { version = "1.0", default-features = false, features = ["derive"] }
-
-frame-benchmarking = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.12", default-features = false, optional = true }
-
-frame-support = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.12", default-features = false }
-frame-system = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.12", default-features = false }
-sp-core = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.12", default-features = false }
-sp-io = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.12", default-features = false }
-sp-runtime = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.12", default-features = false }
-
 [features]
 default = ['std']
-runtime-benchmarks = ['frame-benchmarking']
+runtime-benchmarks = ['frame-benchmarking/runtime-benchmarks']
 std = [
     'codec/std',
     'scale-info/std',
@@ -35,3 +9,62 @@ std = [
     'frame-benchmarking/std',
 ]
 try-runtime = ['frame-support/try-runtime']
+[dependencies.codec]
+default-features = false
+features = ['derive']
+package = 'parity-scale-codec'
+version = '2.0.0'
+
+[dependencies.frame-benchmarking]
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+rev = '7409589ab78e7cb508db873dd6384634d667b8f5'
+version = '4.0.0-dev'
+
+[dependencies.frame-support]
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+rev = '7409589ab78e7cb508db873dd6384634d667b8f5'
+version = '4.0.0-dev'
+
+[dependencies.frame-system]
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+rev = '7409589ab78e7cb508db873dd6384634d667b8f5'
+version = '4.0.0-dev'
+
+[dependencies.scale-info]
+default-features = false
+features = ['derive']
+version = '1.0'
+
+[package]
+authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
+description = 'FRAME pallet template for defining custom runtime logic.'
+edition = '2021'
+homepage = 'https://substrate.io/'
+license = 'Unlicense'
+name = 'pallet-template'
+publish = false
+repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
+version = '3.0.0'
+[package.metadata.docs.rs]
+targets = ['x86_64-unknown-linux-gnu']
+[dev-dependencies.sp-core]
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+rev = '7409589ab78e7cb508db873dd6384634d667b8f5'
+version = '4.1.0-dev'
+
+[dev-dependencies.sp-io]
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+rev = '7409589ab78e7cb508db873dd6384634d667b8f5'
+version = '4.0.0-dev'
+
+[dev-dependencies.sp-runtime]
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+rev = '7409589ab78e7cb508db873dd6384634d667b8f5'
+version = '4.0.0'
