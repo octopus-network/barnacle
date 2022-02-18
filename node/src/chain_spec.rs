@@ -222,7 +222,6 @@ fn testnet_genesis(
 		},
 		im_online: ImOnlineConfig { keys: vec![] },
 		grandpa: GrandpaConfig { authorities: vec![] },
-		assets: Default::default(),
 		beefy: Default::default(),
 		octopus_appchain: OctopusAppchainConfig {
 			anchor_contract: "".to_string(),
@@ -231,5 +230,6 @@ fn testnet_genesis(
 			premined_amount: 1024 * DOLLARS,
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_assets: Default::default(),
 	}
 }
