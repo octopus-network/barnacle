@@ -76,3 +76,19 @@ beefy-gadget-rpc = { git = 'https://github.com/paritytech/substrate.git', branch
 sp-authorship = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13' }
 
 pallet-octopus-appchain = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'release-v0.9.13' }
+
+jsonrpc-pubsub = '18.0.0'
+futures = '0.3'
+fc-consensus = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+fp-consensus = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+fc-rpc = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+fp-rpc = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+fc-rpc-core = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+fc-db = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+fc-mapping-sync = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+pallet-evm = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+pallet-ethereum = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+pallet-dynamic-fee = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+pallet-base-fee = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13' }
+
+sp-inherents = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13' }

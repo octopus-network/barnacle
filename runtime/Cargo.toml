@@ -49,6 +49,19 @@ std = [
     'pallet-session/std',
     'pallet-uniques/std',
     'sp-staking/std',
+    'fp-evm/std',
+    'fp-rpc/std',
+    'fp-self-contained/std',
+    'pallet-ethereum/std',
+    'pallet-evm/std',
+    'pallet-dynamic-fee/std',
+    'pallet-evm-precompile-simple/std',
+    'pallet-evm-precompile-sha3fips/std',
+    'pallet-evm-precompile-modexp/std',
+    'pallet-evm-precompile-blake2/std',
+    'pallet-evm-precompile-bn128/std',
+    'pallet-evm-precompile-dispatch/std',
+    'pallet-base-fee/std',
     'pallet-octopus-appchain/std',
     'pallet-octopus-lpos/std',
     'pallet-octopus-upward-messages/std',
@@ -117,6 +130,20 @@ pallet-mmr-primitives = { git = 'https://github.com/paritytech/substrate.git', b
 pallet-session = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13', default-features = false }
 pallet-uniques = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13', default-features = false }
 sp-staking = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13', default-features = false }
+
+fp-evm = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+fp-rpc = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+fp-self-contained = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-ethereum = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-dynamic-fee = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm-precompile-simple = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm-precompile-sha3fips = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm-precompile-modexp = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm-precompile-blake2 = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm-precompile-bn128 = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-evm-precompile-dispatch = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
+pallet-base-fee = { git = 'https://github.com/PureStake/frontier.git', branch = 'moonbeam-polkadot-v0.9.13', default-features = false }
 
 pallet-octopus-appchain = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'release-v0.9.13', default-features = false }
 pallet-octopus-lpos = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'release-v0.9.13', default-features = false }
