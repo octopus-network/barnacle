@@ -96,12 +96,7 @@ pub fn new_partial(
 			Option<Telemetry>,
 			FrontierBlockImport<
 				Block,
-				sc_finality_grandpa::GrandpaBlockImport<
-					FullBackend,
-					Block,
-					FullClient,
-					FullSelectChain,
-				>,
+				sc_consensus_babe::BabeBlockImport<Block, FullClient, FullGrandpaBlockImport>,
 				FullClient,
 			>,
 			Option<FilterPool>,
@@ -175,7 +170,7 @@ pub fn new_partial(
 	)?;
 
 	let frontier_block_import =
-		FrontierBlockImport::new(grandpa_block_import, client.clone(), frontier_backend.clone());
+		FrontierBlockImport::new(block_import.clone(), client.clone(), frontier_backend.clone());
 
 	let slot_duration = babe_link.config().slot_duration();
 	let target_gas_price = cli.run.target_gas_price;
