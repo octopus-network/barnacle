@@ -1,0 +1,29 @@
+{
+  "name": "hardhat-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "deploy:barnacle": "npx hardhat run --network barnacle .maintain/deployment.js"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "smart-contract",
+    "hardhat",
+    "web3"
+  ],
+  "author": "Agustinus Theodors <<",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@openzeppelin/contracts": "^4.5.0",
+    "chai": "^4.3.6",
+    "ethers": "^5.5.4",
+    "hardhat": "^2.8.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  }
+}
