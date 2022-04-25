@@ -4,7 +4,7 @@ Minimalistic template for EVM-compatible Appchains. The Barnacle EVM is a Substr
 
 Barnacle EVM is similar to the Moonbeam Network in Polkadot. You can run any Solidity smart contract in Barnacle EVM, and use any Ethereum development environments including Hardhat, Truffle, Remix, and many more.
 
-# Running the Barnacle EVM
+## Running the Barnacle EVM
 
 The Barnacle EVM template is a ready-to-use Appchain. To run the Appchain you can execute
 
@@ -20,7 +20,7 @@ $ cargo run --release
 
 Which would run the Appchain in release mode.
 
-# How Barnacle EVM Works
+## How Barnacle EVM Works
 
 Barnacle EVM doesn't have any custom Substrate pallets. The key to this template is in the `node/Cargo.toml` where you have the `pallet-evm` and `pallet-ethereum` dependencies. You can configure the dependencies within the `node/src/chain_spec.rs` file, more specifically within the `GenesisConfig`.
 
@@ -71,13 +71,13 @@ Substrate will run an EVM smart contract platform making it inherently interoper
 
 Barnacle EVM is similar to the Moonbeam Network and the documentation for it is interchangeable. If you would like to take a deep dive into Substrate EVM, you can read the in-depth guide provided by [Moonbeam Network](https://docs.moonbeam.network/).
 
-# Connecting to the Barnacle EVM
+## Connecting to the Barnacle EVM
 
 Unlike the default Substrate Websocket, to connect to the Barnacle EVM you will connect to the `9933` port. If you run the Barnacle EVM locally you can expect your RPC connection to be `http://127.0.0.1:9933`.
 
-# Parity Frontier [Releases](https://github.com/paritytech/frontier#releases)
+## Parity Frontier [Releases](https://github.com/paritytech/frontier#releases)
 
-## Primitives
+### Primitives
 
 Those are suitable to be included in a runtime. Primitives are structures shared
 by higher-level code.
@@ -89,7 +89,7 @@ by higher-level code.
 * `fp-storage`: Well-known storage information.
   ![Crates.io](https://img.shields.io/crates/v/fp-storage)
 
-## Pallets
+### Pallets
 
 Those pallets serve as runtime components for projects using Frontier.
 
@@ -101,7 +101,7 @@ Those pallets serve as runtime components for projects using Frontier.
   within the runtime.
   ![Crates.io](https://img.shields.io/crates/v/pallet-dynamic-fee)
 
-## EVM Pallet precompiles
+### EVM Pallet precompiles
 
 Those precompiles can be used together with `pallet-evm` for additional
 functionalities of the EVM executor.
@@ -122,7 +122,7 @@ functionalities of the EVM executor.
   contracts and other Substrate runtime components.
   ![Crates.io](https://img.shields.io/crates/v/pallet-evm-precompile-dispatch)
 
-## Client-side libraries
+### Client-side libraries
 
 Those are libraries that should be used on client-side to enable RPC, block hash
 mapping, and other features.
@@ -137,3 +137,10 @@ mapping, and other features.
   ![Crates.io](https://img.shields.io/crates/v/fc-rpc-core)
 * `fc-rpc`: RPC implementation.
   ![Crates.io](https://img.shields.io/crates/v/fc-rpc)
+
+## References
+
+This template was originally forked from the
+[Substrate Node Template](https://github.com/substrate-developer-hub/substrate-node-template). You
+can find more information on features on this template there, and more detailed usage on the
+[Substrate Developer Hub Tutorials](https://docs.substrate.io/tutorials/v3/) that use this heavily.
