@@ -26,9 +26,48 @@ npx hardhat run .maintain/print-address.js --network barnacle
 
 Don't forget to add the `--network barnacle` flag as it is important to print the public address in the Barnacle EVM.
 
-## Example 1: ERC20 Contract and Escrow Deployment Using Hardhat
+## Example 1: "Hello World" Contract Deployment Using Hardhat
 
 Deploying smart contracts in the Barnacle EVM is the same as deploying it in any other EVM Testnet or Mainnet. In this project, you will use Hardhat and Ethers.js to deploy the contracts.
+
+### Step 1: Deploy the StringStore Smart Contract
+
+> All the contracts are located within the `contracts` directory. The specific contract deployment uses the [`contracts/StringStore.sol`](contracts/StringStore.sol) smart contract.
+
+> The full deployment script can be accessed in [`.maintain/store-deployment.js`](.maintain/store-deployment.js)
+
+Deploying the escrow smart contract will be quite simple. You need to retrieve the contract's contents using Ethers' `getContractFactory` function:
+
+```javascript
+const StringStoreContract = await hre.ethers.getContractFactory("StringStore");
+const contract = await StringStoreContract.deploy();
+await contract.deployed();
+```
+
+To wait for the contract to be successfully deployed, end by calling the `deployed` function.
+
+
+### Step 2: Test Smart Contract
+
+Inside the [`.maintain/store-deployment.js`](.maintain/store-deployment.js) script there is a function used to test the smart contracts functionality, the `testContract` function.
+
+Execute the script by running:
+
+```
+npx hardhat run .maintain/store-deployment.js --network barnacle
+```
+
+After executing the script, the tests should end with something similar to this:
+
+```text
+Retrieve String Store:  Hello World!
+```
+
+The `Executor Account Balance` would obviously be different on your side, but the ERC20 account balance is expected to follow that pattern.
+
+## Example 2: ERC20 Contract and Escrow Deployment Using Hardhat
+
+To simulate a more complicated deployment, the second example will deploy two smart contracts. An ERC20 smart contract for simulating token deployments and an Escrow smart contract that will use the token as currency.
 
 ### Step 1: Deploy the ERC20 Contract
 
@@ -43,8 +82,6 @@ const ERC20Contract = await hre.ethers.getContractFactory("MockErc20Token");
 const erc20 = await ERC20Contract.deploy();
 await erc20.deployed();
 ```
-
-To wait for the contract to be successfully deployed, end by calling the `deployed` function.
 
 Next, you want to send some of the tokens from the smart contract address to an EVM account for testing purposes. Assuming you have a signed EVM account in the variable `accountA` you can do:
 
@@ -83,7 +120,13 @@ The escrow smart contract requires a ERC20 token address for deployment. You can
 
 Inside the [`.maintain/deployment.js`](.maintain/deployment.js) script there is a function used to test the smart contracts functionality, the `testContract` function. 
 
-After executing the script, the tests should log something similar to this:
+Execute the script by running:
+
+```
+npx hardhat run .maintain/deployment.js --network barnacle
+```
+
+After executing the script, the tests should end with something similar to this:
 
 ```text
 Executor Account Balance:  9999999925132681078258
