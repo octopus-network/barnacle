@@ -1,6 +1,6 @@
 # Octopus Appchain Template
 
-Minimalistic template for EVM-compatible Appchains. The Barnacle EVM is a Substrate-based network that is EVM compatible, based on [Parity's Frontier pallet](https://github.com/paritytech/frontier).
+Minimalistic template for EVM-compatible Appchains. The Barnacle EVM is a Substrate-based EVM compatible network based on [Parity's Frontier pallet](https://github.com/paritytech/frontier).
 
 Barnacle EVM is similar to the Moonbeam Network in Polkadot. You can run any Solidity smart contract in Barnacle EVM, and use any Ethereum development environments including Hardhat, Truffle, Remix, and many more.
 
