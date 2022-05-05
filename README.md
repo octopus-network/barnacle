@@ -2,7 +2,7 @@
 
 Minimalistic template for EVM-compatible Appchains. The Barnacle EVM is a Substrate-based network that is EVM compatible, based on [Parity's Frontier pallet](https://github.com/paritytech/frontier).
 
-Barnacle EVM is similar to the Moonbeam Network in Polkadot. You can run any Solidity smart contract in Barnacle EVM, and use any Ethereum development environments including Hardhat, Truffle, Remix, and many more.
+You can run any Solidity smart contract in Barnacle EVM, and use any Ethereum development environments including Hardhat, Truffle, Remix, and many more.
 
 ## Running the Barnacle EVM
 
@@ -69,7 +69,7 @@ Each `H160` address is the equivalent of the public address of an Ethereum walle
 
 Substrate will run an EVM smart contract platform making it inherently interoperable with the Ethereum network. You can run any EVM-based smart contract within the EVM platform, just like if you are running it on an Ethereum Testnet or Mainnet.
 
-Barnacle EVM is similar to the Moonbeam Network and the documentation for it is interchangeable. If you would like to take a deep dive into Substrate EVM, you can read the in-depth guide provided by [Moonbeam Network](https://docs.moonbeam.network/).
+The Octopus Network team provides you with the basic documentation for the Barnacle EVM. You can visit our [examples to learn more](docs/example/README.md#barnacle-hardhat-project-template). Otherwise, if you would like to take a deeper dive into Substrate EVMs, you can read the in-depth guide provided by [Moonbeam Network](https://docs.moonbeam.network/).
 
 ## Connecting to the Barnacle EVM
 
