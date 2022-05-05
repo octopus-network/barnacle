@@ -1,28 +1,26 @@
 # Octopus Appchain Template
 
-Minimalistic template for EVM-compatible Appchains. The Barnacle EVM is a Substrate-based network that is EVM compatible, based on [Parity's Frontier pallet](https://github.com/paritytech/frontier).
+Minimalistic template for EVM-compatible Appchains. The Barnacle EVM is a Substrate-based EVM compatible network based on [Parity's Frontier pallet](https://github.com/paritytech/frontier).
 
 You can run any Solidity smart contract in Barnacle EVM, and use any Ethereum development environments including Hardhat, Truffle, Remix, and many more.
 
 ## Running the Barnacle EVM
 
-The Barnacle EVM template is a ready-to-use Appchain. To run the Appchain you can execute
+The Barnacle EVM template is a ready-to-use Appchain. To run the Appchain, you can execute
 
 ```
 $ cargo run -- --dev --tmp
 ```
 
-You need the `--dev` and `--tmp` flags when you want to run the Appchain in your local development environment, otherwise you can do:
+You need the `--dev` and `--tmp` flags when you want to run the Appchain in your local development environment; otherwise, you can do the following:
 
 ```
 $ cargo run --release
 ```
 
-Which would run the Appchain in release mode.
-
 ## How Barnacle EVM Works
 
-Barnacle EVM doesn't have any custom Substrate pallets. The key to this template is in the `node/Cargo.toml` where you have the `pallet-evm` and `pallet-ethereum` dependencies. You can configure the dependencies within the `node/src/chain_spec.rs` file, more specifically within the `GenesisConfig`.
+Barnacle EVM doesn't have any custom Substrate pallets. The key to this template is in the `node/Cargo.toml`, where you have the `pallet-evm` and `pallet-ethereum` dependencies. You can configure the dependencies within the `node/src/chain_spec.rs` file, specifically within the `GenesisConfig`.
 
 The main things you have to notice in the `GenesisConfig` is the `evm` configurations:
 
@@ -65,15 +63,15 @@ evm: EVMConfig {
 
 It contains the accounts that will receive a starting balance for you to test your smart contracts. You insert a new `H160` account within the `EVMConfig` and you can set the account's status/balance using the `pallet_evm::GenesisAccount` configuration.
 
-Each `H160` address is the equivalent of the public address of an Ethereum wallet. For example, the address `0x676873D38A2C5d41bb22BCe86e9F6cAFAee16176` is an Ethereum address inserted as the second account. To create a `H160` address you only need to omit the first two characters to the public Ethereum wallet. So instead of `0x676873D38A2C5d41bb22BCe86e9F6cAFAee16176` you get `676873D38A2C5d41bb22BCe86e9F6cAFAee16176`.
+Each `H160` address is the equivalent of the public address of an Ethereum wallet. For example, the address `0x676873D38A2C5d41bb22BCe86e9F6cAFAee16176` is an Ethereum address inserted as the second account. To create a `H160` address, you only need to omit the first two characters to the public Ethereum wallet. So instead of `0x676873D38A2C5d41bb22BCe86e9F6cAFAee16176` you get `676873D38A2C5d41bb22BCe86e9F6cAFAee16176`.
 
-Substrate will run an EVM smart contract platform making it inherently interoperable with the Ethereum network. You can run any EVM-based smart contract within the EVM platform, just like if you are running it on an Ethereum Testnet or Mainnet.
+Substrate will run an EVM smart contract platform, making it inherently interoperable with the Ethereum network. You can run any EVM-based smart contract within the EVM platform, like running it on an Ethereum Testnet or Mainnet.
 
 The Octopus Network team provides you with the basic documentation for the Barnacle EVM. You can visit our [examples to learn more](docs/example/README.md#barnacle-hardhat-project-template). Otherwise, if you would like to take a deeper dive into Substrate EVMs, you can read the in-depth guide provided by [Moonbeam Network](https://docs.moonbeam.network/).
 
 ## Connecting to the Barnacle EVM
 
-Unlike the default Substrate Websocket, to connect to the Barnacle EVM you will connect to the `9933` port. If you run the Barnacle EVM locally you can expect your RPC connection to be `http://127.0.0.1:9933`.
+Unlike the default Substrate Websocket, to connect to the Barnacle EVM, you will connect to the `9933` port. If you run the Barnacle EVM locally, you can expect your RPC connection to be `http://127.0.0.1:9933`.
 
 ## Parity Frontier [Releases](https://github.com/paritytech/frontier#releases)
 
@@ -97,7 +95,7 @@ Those pallets serve as runtime components for projects using Frontier.
   ![Crates.io](https://img.shields.io/crates/v/pallet-evm)
 * `pallet-ethereum`: Ethereum block handling.
   ![Crates.io](https://img.shields.io/crates/v/pallet-ethereum)
-* `pallet-dynamic-fee`: Extends the fee handling logic so that it can be changed
+* `pallet-dynamic-fee`: Extends the fee handling logic to be changed
   within the runtime.
   ![Crates.io](https://img.shields.io/crates/v/pallet-dynamic-fee)
 
@@ -124,7 +122,7 @@ functionalities of the EVM executor.
 
 ### Client-side libraries
 
-Those are libraries that should be used on client-side to enable RPC, block hash
+Those are libraries that you should use on the client-side to enable RPC, block hash
 mapping, and other features.
 
 * `fc-consensus`: Consensus block import.
@@ -140,7 +138,7 @@ mapping, and other features.
 
 ## References
 
-This template was originally forked from the
+We originally forked this template from the
 [Substrate Node Template](https://github.com/substrate-developer-hub/substrate-node-template). You
 can find more information on features on this template there, and more detailed usage on the
 [Substrate Developer Hub Tutorials](https://docs.substrate.io/tutorials/v3/) that use this heavily.
