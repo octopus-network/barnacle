@@ -67,7 +67,7 @@ Each `H160` address is the equivalent of the public address of an Ethereum walle
 
 Substrate will run an EVM smart contract platform, making it inherently interoperable with the Ethereum network. You can run any EVM-based smart contract within the EVM platform, like running it on an Ethereum Testnet or Mainnet.
 
-The Octopus Network team provides you with the basic documentation for the Barnacle EVM. You can visit our [examples to learn more](docs/example/README.md#barnacle-hardhat-project-template). Otherwise, if you would like to take a deeper dive into Substrate EVMs, you can read the in-depth guide provided by [Moonbeam Network](https://docs.moonbeam.network/).
+The Octopus Network team provides you with the basic documentation for the [Barnacle EVM](https://docs.oct.network/guides/appchain-evm.html#evm-compatible-appchain). You can visit our [examples to learn more](docs/example/README.md#barnacle-hardhat-project-template).
 
 ## Connecting to the Barnacle EVM
 
