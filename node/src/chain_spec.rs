@@ -232,7 +232,7 @@ fn testnet_genesis(
 					// SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
 					// hex: 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d
 					// Using the full hex key, truncating to the first 20 bytes (the first 40 hex chars)
-					H160::from_str("d43593c715fdd31c61141abd04a99fd6822c8558")
+					H160::from_str("8097c3C354652CB1EEed3E5B65fBa2576470678A")
 						.expect("internal H160 is valid; qed"),
 					pallet_evm::GenesisAccount {
 						balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
@@ -244,7 +244,7 @@ fn testnet_genesis(
 				);
 				map.insert(
 					// H160 address of CI test runner account
-					H160::from_str("6be02d1d3665660d22ff9624b7be0551ee1ac91b")
+					H160::from_str("676873D38A2C5d41bb22BCe86e9F6cAFAee16176")
 						.expect("internal H160 is valid; qed"),
 					pallet_evm::GenesisAccount {
 						balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
