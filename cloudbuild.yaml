@@ -1,0 +1,8 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/octopus-appchains/$REPO_NAME', '.' ]
+images:
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/octopus-appchains/$REPO_NAME'
+timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_32'
