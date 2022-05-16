@@ -179,6 +179,7 @@ dependencies = [
  "pallet-octopus-appchain",
  "pallet-octopus-lpos",
  "pallet-octopus-upward-messages",
+ "pallet-portalverse-nexus",
  "pallet-randomness-collective-flip",
  "pallet-session",
  "pallet-sudo",
@@ -4391,6 +4392,20 @@ dependencies = [
  "sp-io",
  "sp-runtime",
  "sp-std",
+]
+
+[[package]]
+name = "pallet-portalverse-nexus"
+version = "4.0.0-dev"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
 ]
 
 [[package]]
