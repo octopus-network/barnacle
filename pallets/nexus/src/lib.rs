@@ -1,18 +1,15 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-/// Edit this file to define custom logic or remove it if it is not needed.
-/// Learn more about FRAME and the core library of Substrate FRAME pallets:
-/// <https://docs.substrate.io/v3/runtime/frame>
 pub use pallet::*;
 
-#[cfg(test)]
-mod mock;
+// #[cfg(test)]
+// mod mock;
 
-#[cfg(test)]
-mod tests;
+// #[cfg(test)]
+// mod tests;
 
-#[cfg(feature = "runtime-benchmarks")]
-mod benchmarking;
+// #[cfg(feature = "runtime-benchmarks")]
+// mod benchmarking;
 
 pub type Score = u32;
 
@@ -24,8 +21,15 @@ pub struct RenderingInstance<BlockNumber> {
 	status: u32,
 	// when
 	register_at: BlockNumber,
-	// self-claim score, will update to challenging result
+	// self-claim score, will update to challenge result
 	score: Score,
+}
+
+// TODO add Balance(Stablecoin)
+#[derive(Clone, Encode, Decode, Eq, PartialEq, RuntimeDebug)]
+pub struct Receipt<BlockNumber, Balance> {
+	init_payment: Balance,
+	end_at: BlockNumber,
 }
 
 #[frame_support::pallet]
@@ -47,6 +51,16 @@ pub mod pallet {
 	#[pallet::pallet]
 	#[pallet::generate_store(pub(super) trait Store)]
 	pub struct Pallet<T>(_);
+
+	#[pallet::storage]
+	#[pallet::getter(fn rendering_instances)]
+	pub type RenderingInstances<T> = StorageMap<
+		_,
+		Blake2_128Concat,
+		T::AccountId,
+		RenderingInstance<T::BlockNumber>,
+		ValueQuery,
+	>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn rendering_instances)]
@@ -80,8 +94,15 @@ pub mod pallet {
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
 		pub fn play(
 			origin: OriginFor<T>,
-			instance: T::AccountId, /* TODO add stablecoin payment */
+			instance: T::AccountId,
+			// TODO add stablecoin payment
 		) -> DispatchResult {
+			let player = ensure_signed(origin)?;
+			Ok(())
+		}
+
+		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
+		pub fn quit(origin: OriginFor<T>, instance: T::AccountId) -> DispatchResult {
 			let player = ensure_signed(origin)?;
 			Ok(())
 		}
