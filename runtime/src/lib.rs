@@ -522,7 +522,7 @@ parameter_types! {
 type ClassId = u128;
 type InstanceId = u128;
 
-impl pallet_uniques::Config<pallet_assets::Instance1> for Runtime {
+impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type Event = Event;
 	type ClassId = ClassId;
 	type InstanceId = InstanceId;
