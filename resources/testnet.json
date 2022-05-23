@@ -1,6 +1,6 @@
 {
-  "name": "Barnacle",
-  "id": "barnacle",
+  "name": "Trustrecruit Testnet",
+  "id": "testtrustrecruit",
   "chainType": "Live",
   "bootNodes": [
     "/dns/bootnode-v1-0.barnacle-evm.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWLsbs3TJtzwmyfk1U2Ss8QugRUU7ZbMwau55j5GoixMz7",
