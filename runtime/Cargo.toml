@@ -70,6 +70,11 @@ hex-literal = { version = "0.3.4", optional = true }
 # Local Dependencies
 pallet-template = { version = "4.0.0-dev", default-features = false, path = "../pallets/template" }
 
+# palle ibc
+# pallet-ibc = { git = "https://github.com/octopus-network/substrate-ibc", branch = "feature/ics20", default-features = false}
+pallet-ibc = { path = "../../substrate-ibc", default-features = false }
+
+
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 
@@ -118,6 +123,7 @@ std = [
 	"pallet-octopus-appchain/std",
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
+	"pallet-ibc/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",

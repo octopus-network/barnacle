@@ -2,7 +2,7 @@ use appchain_barnacle_runtime::{
 	opaque::{Block, SessionKeys},
 	AccountId, BabeConfig, Balance, BalancesConfig, GenesisConfig, GrandpaConfig, ImOnlineConfig,
 	OctopusAppchainConfig, OctopusLposConfig, SessionConfig, Signature, SudoConfig, SystemConfig,
-	DOLLARS, WASM_BINARY,
+	IbcConfig, DOLLARS, WASM_BINARY,
 };
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -14,6 +14,7 @@ use sp_consensus_babe::AuthorityId as BabeId;
 use sp_core::{sr25519, Pair, Public};
 use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{IdentifyAccount, Verify};
+use serde_json::json;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -88,6 +89,16 @@ pub fn authority_keys_from_seed(
 pub fn development_config() -> Result<ChainSpec, String> {
 	let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
+	let properties = Some(
+		json!({
+			"tokenDecimals": 9,
+			"tokenSymbol": "OCT"
+		})
+			.as_object()
+			.expect("Map error")
+			.clone(),
+	);
+
 	Ok(ChainSpec::from_genesis(
 		// Name
 		"Development",
@@ -117,7 +128,7 @@ pub fn development_config() -> Result<ChainSpec, String> {
 		None,
 		None,
 		// Properties
-		None,
+		properties,
 		// Extensions
 		Default::default(),
 	))
@@ -238,5 +249,8 @@ fn testnet_genesis(
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
 		octopus_assets: Default::default(),
+		ibc: IbcConfig {
+			asset_id_by_name: vec![("ATOM".to_string(), 1)],
+		},
 	}
 }

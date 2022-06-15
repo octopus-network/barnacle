@@ -649,6 +649,16 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
+impl pallet_ibc::Config for Runtime {
+	type Event = Event;
+	type TimeProvider = pallet_timestamp::Pallet<Runtime>;
+	type Currency = Balances;
+	type AssetId = AssetId;
+	type AssetBalance = AssetBalance;
+	type Assets = OctopusAssets;
+	type AssetIdByName = Ibc;
+}
+
 /// Configure the pallet-template in pallets/template.
 impl pallet_template::Config for Runtime {
 	type Event = Event;
@@ -685,6 +695,7 @@ construct_runtime!(
 		Sudo: pallet_sudo,
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template,
+		Ibc: pallet_ibc,
 	}
 );
 
