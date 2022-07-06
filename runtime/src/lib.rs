@@ -56,14 +56,18 @@ pub use sp_runtime::BuildStorage;
 use static_assertions::const_assert;
 
 mod precompiles;
+use account::EthereumSignature;
 use codec::Decode;
 use fp_rpc::TransactionStatus;
 pub use frame_support::{traits::FindAuthor, ConsensusEngineId};
 use pallet_ethereum::{Call::transact, Transaction as EthereumTransaction};
 use pallet_evm::FeeCalculator;
-use pallet_evm::{Account as EVMAccount, EnsureAddressTruncated, HashedAddressMapping, Runner};
+use pallet_evm::{
+	Account as EVMAccount, EnsureAddressNever, EnsureAddressRoot, EnsureAddressTruncated,
+	HashedAddressMapping, Runner,
+};
 use precompiles::FrontierPrecompiles;
-use sp_core::{H160, H256, U256};
+use sp_core::{ecdsa, H160, H256, U256};
 use sp_runtime::{
 	traits::{Dispatchable, PostDispatchInfoOf},
 	transaction_validity::TransactionValidityError,
@@ -78,7 +82,7 @@ pub use pallet_template;
 pub type BlockNumber = u32;
 
 /// Alias to 512-bit hash when used in the context of a transaction signature on the chain.
-pub type Signature = MultiSignature;
+pub type Signature = EthereumSignature;
 
 /// Some way of identifying an account on the chain. We intentionally make it equivalent
 /// to the public key of our transaction signing scheme.
@@ -591,14 +595,22 @@ impl pallet_beefy_mmr::Config for Runtime {
 	type ParachainHeads = ();
 }
 
+pub const KEY_TYPE: KeyTypeId = KeyTypeId(*b"eoct");
+
+mod crypto {
+	use super::KEY_TYPE;
+	use sp_runtime::app_crypto::{app_crypto, ecdsa};
+	app_crypto!(ecdsa, KEY_TYPE);
+}
+
 pub struct OctopusAppCrypto;
 
 impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature>
 	for OctopusAppCrypto
 {
-	type RuntimeAppPublic = pallet_octopus_appchain::AuthorityId;
-	type GenericSignature = sp_core::sr25519::Signature;
-	type GenericPublic = sp_core::sr25519::Public;
+	type RuntimeAppPublic = crypto::Public;
+	type GenericSignature = ecdsa::Signature;
+	type GenericPublic = ecdsa::Public;
 }
 
 parameter_types! {
@@ -674,6 +686,17 @@ impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncated<F> {
 	}
 }
 
+/// And ipmlementation of Frontier's AddressMapping trait for Moonbeam Accounts.
+/// This is basically identical to Frontier's own IdentityAddressMapping, but it works for any type
+/// that is Into<H160> like AccountId20 for example.
+pub struct IntoAddressMapping;
+
+impl<T: From<H160>> pallet_evm::AddressMapping<T> for IntoAddressMapping {
+	fn into_account_id(address: H160) -> T {
+		address.into()
+	}
+}
+
 parameter_types! {
 	pub const ChainId: u64 = 1008;
 	pub BlockGasLimit: U256 = U256::from(u32::max_value());
@@ -684,9 +707,9 @@ impl pallet_evm::Config for Runtime {
 	type FeeCalculator = BaseFee;
 	type GasWeightMapping = ();
 	type BlockHashMapping = pallet_ethereum::EthereumBlockHashMapping<Self>;
-	type CallOrigin = EnsureAddressTruncated;
-	type WithdrawOrigin = EnsureAddressTruncated;
-	type AddressMapping = HashedAddressMapping<BlakeTwo256>;
+	type CallOrigin = EnsureAddressRoot<AccountId>;
+	type WithdrawOrigin = EnsureAddressNever<AccountId>;
+	type AddressMapping = IntoAddressMapping;
 	type Currency = Balances;
 	type Event = Event;
 	type Runner = pallet_evm::runner::stack::Runner<Self>;

@@ -58,6 +58,7 @@ pallet-octopus-appchain = { default-features = false, git = "https://github.com/
 pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
 pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
 
+account = { path = "../primitives/account/", default-features = false }
 fp-rpc = { git = "https://github.com/PureStake/frontier.git", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
 fp-self-contained = { git = "https://github.com/PureStake/frontier.git", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
 pallet-base-fee = { git = "https://github.com/PureStake/frontier.git", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
@@ -129,6 +130,7 @@ std = [
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
 
+	"account/std",
 	"fp-rpc/std",
 	"fp-self-contained/std",
 	"pallet-base-fee/std",
