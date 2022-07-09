@@ -17,9 +17,12 @@ use sp_runtime::{
 	impl_opaque_keys,
 	traits::{
 		self, AccountIdLookup, BlakeTwo256, Block as BlockT, ConvertInto, IdentifyAccount,
-		Keccak256, NumberFor, OpaqueKeys, SaturatedConversion, StaticLookup, Verify,
+		IdentityLookup, Keccak256, NumberFor, OpaqueKeys, SaturatedConversion, StaticLookup,
+		Verify,
 	},
-	transaction_validity::{TransactionPriority, TransactionSource, TransactionValidity},
+	transaction_validity::{
+		InvalidTransaction, TransactionPriority, TransactionSource, TransactionValidity,
+	},
 	ApplyExtrinsicResult, MultiSignature, Perbill,
 };
 use sp_std::prelude::*;
@@ -33,11 +36,12 @@ use frame_support::PalletId;
 pub use frame_support::{
 	construct_runtime, parameter_types,
 	traits::{
-		ConstU128, ConstU16, ConstU32, ConstU8, KeyOwnerProofSystem, Randomness, StorageInfo,
+		ConstBool, ConstU128, ConstU16, ConstU32, ConstU8, Contains, KeyOwnerProofSystem,
+		Randomness, StorageInfo,
 	},
 	weights::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
-		DispatchClass, IdentityFee, Weight,
+		DispatchClass, GetDispatchInfo, IdentityFee, Weight,
 	},
 	StorageValue,
 };
@@ -61,10 +65,9 @@ use codec::Decode;
 use fp_rpc::TransactionStatus;
 pub use frame_support::{traits::FindAuthor, ConsensusEngineId};
 use pallet_ethereum::{Call::transact, Transaction as EthereumTransaction};
-use pallet_evm::FeeCalculator;
 use pallet_evm::{
 	Account as EVMAccount, EnsureAddressNever, EnsureAddressRoot, EnsureAddressTruncated,
-	HashedAddressMapping, Runner,
+	FeeCalculator, GasWeightMapping, HashedAddressMapping, Runner,
 };
 use precompiles::FrontierPrecompiles;
 use sp_core::{ecdsa, H160, H256, U256};
@@ -146,9 +149,30 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	state_version: 1,
 };
 
-pub const MILLICENTS: Balance = 10_000_000_000_000;
-pub const CENTS: Balance = 1_000 * MILLICENTS; // assume this is worth about a cent.
-pub const DOLLARS: Balance = 100 * CENTS;
+/// EBAR, the native token, uses 18 decimals of precision.
+pub mod currency {
+	use super::Balance;
+
+	// Provide a common factor between runtimes based on a supply of 10_000_000 tokens.
+	pub const SUPPLY_FACTOR: Balance = 100;
+
+	pub const WEI: Balance = 1;
+	pub const KILOWEI: Balance = 1_000;
+	pub const MEGAWEI: Balance = 1_000_000;
+	pub const GIGAWEI: Balance = 1_000_000_000;
+	pub const MICROGLMR: Balance = 1_000_000_000_000;
+	pub const MILLIGLMR: Balance = 1_000_000_000_000_000;
+	pub const EBAR: Balance = 1_000_000_000_000_000_000;
+	pub const KILOGLMR: Balance = 1_000_000_000_000_000_000_000;
+
+	pub const TRANSACTION_BYTE_FEE: Balance = 10 * MICROGLMR * SUPPLY_FACTOR;
+	pub const STORAGE_BYTE_FEE: Balance = 100 * MICROGLMR * SUPPLY_FACTOR;
+	pub const WEIGHT_FEE: Balance = 100 * KILOWEI * SUPPLY_FACTOR;
+
+	pub const fn deposit(items: u32, bytes: u32) -> Balance {
+		items as Balance * 100 * MILLIGLMR * SUPPLY_FACTOR + (bytes as Balance) * STORAGE_BYTE_FEE
+	}
+}
 
 /// Since BABE is probabilistic this is the average expected block time that
 /// we are targeting. Blocks will be produced at a minimum duration defined
@@ -254,7 +278,7 @@ impl frame_system::Config for Runtime {
 	/// The aggregated dispatch type that is available for extrinsics.
 	type Call = Call;
 	/// The lookup mechanism to get account ID from whatever is passed in dispatchers.
-	type Lookup = AccountIdLookup<AccountId, ()>;
+	type Lookup = IdentityLookup<AccountId>;
 	/// The index type for storing how many extrinsics an account has signed.
 	type Index = Index;
 	/// The index type for blocks.
@@ -288,7 +312,7 @@ impl frame_system::Config for Runtime {
 	/// Weight information for the extrinsics of this pallet.
 	type SystemWeightInfo = ();
 	/// This is used as an identifier of the chain. 42 is the generic substrate prefix.
-	type SS58Prefix = ConstU16<42>;
+	type SS58Prefix = ConstU16<1284>;
 	/// The set code logic, just the default since we're not a parachain.
 	type OnSetCode = ();
 	type MaxConsumers = frame_support::traits::ConstU32<16>;
@@ -364,7 +388,6 @@ impl pallet_timestamp::Config for Runtime {
 }
 
 parameter_types! {
-	pub const ExistentialDeposit: Balance = 1 * DOLLARS;
 	// For weight estimation, we assume that the most locks on an individual account will be 50.
 	// This number may need to be adjusted in the future if this assumption no longer holds true.
 	pub const MaxLocks: u32 = 50;
@@ -374,25 +397,24 @@ parameter_types! {
 impl pallet_balances::Config for Runtime {
 	type MaxLocks = MaxLocks;
 	type MaxReserves = MaxReserves;
-	type ReserveIdentifier = [u8; 8];
+	type ReserveIdentifier = [u8; 4];
 	/// The type for recording an account's balance.
 	type Balance = Balance;
 	/// The ubiquitous event type.
 	type Event = Event;
 	type DustRemoval = ();
-	type ExistentialDeposit = ExistentialDeposit;
+	type ExistentialDeposit = ConstU128<0>;
 	type AccountStore = frame_system::Pallet<Runtime>;
 	type WeightInfo = pallet_balances::weights::SubstrateWeight<Runtime>;
 }
 
 parameter_types! {
-	pub const TransactionByteFee: Balance = 10 * MILLICENTS;
 	pub const OperationalFeeMultiplier: u8 = 5;
 }
 
 impl pallet_transaction_payment::Config for Runtime {
 	type OnChargeTransaction = CurrencyAdapter<Balances, ()>;
-	type TransactionByteFee = TransactionByteFee;
+	type TransactionByteFee = ConstU128<{ currency::TRANSACTION_BYTE_FEE }>;
 	type OperationalFeeMultiplier = OperationalFeeMultiplier;
 	type WeightToFee = IdentityFee<Balance>;
 	type FeeMultiplierUpdate = ();
@@ -505,15 +527,15 @@ impl pallet_im_online::Config for Runtime {
 }
 
 parameter_types! {
-	pub const AssetDeposit: Balance = 100 * DOLLARS;
-	pub const ApprovalDeposit: Balance = 1 * DOLLARS;
-	pub const StringLimit: u32 = 50;
-	pub const MetadataDepositBase: Balance = 10 * DOLLARS;
-	pub const MetadataDepositPerByte: Balance = 1 * DOLLARS;
+	pub const AssetDeposit: Balance = 100 * currency::EBAR * currency::SUPPLY_FACTOR;
+	pub const ApprovalDeposit: Balance = 0;
+	pub const AssetsStringLimit: u32 = 50;
+	pub const MetadataDepositBase: Balance = currency::deposit(1,68);
+	pub const MetadataDepositPerByte: Balance = currency::deposit(0, 1);
 }
 
 pub type AssetBalance = u128;
-pub type AssetId = u32;
+pub type AssetId = u32; // TODO: julian, change to u128?
 
 impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type Event = Event;
@@ -522,19 +544,19 @@ impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type Currency = Balances;
 	type ForceOrigin = EnsureRoot<AccountId>;
 	type AssetDeposit = AssetDeposit;
-	type AssetAccountDeposit = ConstU128<DOLLARS>;
+	type AssetAccountDeposit = ConstU128<{ currency::deposit(1, 18) }>;
 	type MetadataDepositBase = MetadataDepositBase;
 	type MetadataDepositPerByte = MetadataDepositPerByte;
 	type ApprovalDeposit = ApprovalDeposit;
-	type StringLimit = StringLimit;
+	type StringLimit = AssetsStringLimit;
 	type Freezer = ();
 	type Extra = ();
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
 }
 
 parameter_types! {
-	pub const ClassDeposit: Balance = 100 * DOLLARS;
-	pub const InstanceDeposit: Balance = 1 * DOLLARS;
+	pub const ClassDeposit: Balance = 100 * currency::EBAR * currency::SUPPLY_FACTOR;
+	pub const InstanceDeposit: Balance = 1 * currency::EBAR * currency::SUPPLY_FACTOR;
 	pub const KeyLimit: u32 = 32;
 	pub const ValueLimit: u32 = 256;
 }
@@ -553,7 +575,7 @@ impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type MetadataDepositBase = MetadataDepositBase;
 	type AttributeDepositBase = MetadataDepositBase;
 	type DepositPerByte = MetadataDepositPerByte;
-	type StringLimit = StringLimit;
+	type StringLimit = AssetsStringLimit;
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type WeightInfo = pallet_uniques::weights::SubstrateWeight<Runtime>;
@@ -697,15 +719,44 @@ impl<T: From<H160>> pallet_evm::AddressMapping<T> for IntoAddressMapping {
 	}
 }
 
+/// Current approximation of the gas/s consumption considering
+/// EVM execution over compiled WASM (on 4.4Ghz CPU).
+/// Given the 500ms Weight, from which 75% only are used for transactions,
+/// the total EVM execution gas limit is: GAS_PER_SECOND * 0.500 * 0.75 ~= 15_000_000.
+pub const GAS_PER_SECOND: u64 = 40_000_000;
+
+/// Approximate ratio of the amount of Weight per Gas.
+/// u64 works for approximations because Weight is a very small unit compared to gas.
+pub const WEIGHT_PER_GAS: u64 = WEIGHT_PER_SECOND / GAS_PER_SECOND;
+
+pub struct MoonbeamGasWeightMapping;
+
+impl pallet_evm::GasWeightMapping for MoonbeamGasWeightMapping {
+	fn gas_to_weight(gas: u64) -> Weight {
+		gas.saturating_mul(WEIGHT_PER_GAS)
+	}
+	fn weight_to_gas(weight: Weight) -> u64 {
+		u64::try_from(weight.wrapping_div(WEIGHT_PER_GAS)).unwrap_or(u32::MAX as u64)
+	}
+}
+
+pub struct FixedGasPrice;
+impl FeeCalculator for FixedGasPrice {
+	fn min_gas_price() -> U256 {
+		(1 * currency::GIGAWEI * currency::SUPPLY_FACTOR).into()
+	}
+}
+
 parameter_types! {
-	pub const ChainId: u64 = 1008;
-	pub BlockGasLimit: U256 = U256::from(u32::max_value());
+	pub const ChainId: u64 = 1281;
+	pub BlockGasLimit: U256
+		= U256::from(NORMAL_DISPATCH_RATIO * MAXIMUM_BLOCK_WEIGHT / WEIGHT_PER_GAS);
 	pub PrecompilesValue: FrontierPrecompiles<Runtime> = FrontierPrecompiles::<_>::new();
 }
 
 impl pallet_evm::Config for Runtime {
-	type FeeCalculator = BaseFee;
-	type GasWeightMapping = ();
+	type FeeCalculator = FixedGasPrice;
+	type GasWeightMapping = MoonbeamGasWeightMapping;
 	type BlockHashMapping = pallet_ethereum::EthereumBlockHashMapping<Self>;
 	type CallOrigin = EnsureAddressRoot<AccountId>;
 	type WithdrawOrigin = EnsureAddressNever<AccountId>;
@@ -717,8 +768,8 @@ impl pallet_evm::Config for Runtime {
 	type PrecompilesValue = PrecompilesValue;
 	type ChainId = ChainId;
 	type BlockGasLimit = BlockGasLimit;
-	type OnChargeTransaction = ();
-	type FindAuthor = FindAuthorTruncated<Babe>;
+	type OnChargeTransaction = pallet_evm::EVMCurrencyAdapter<Balances, ()>;
+	type FindAuthor = FindAuthorTruncated<Babe>; // TODO: julian
 	type WeightInfo = pallet_evm::weights::SubstrateWeight<Self>;
 }
 
@@ -736,8 +787,7 @@ impl pallet_dynamic_fee::Config for Runtime {
 }
 
 frame_support::parameter_types! {
-	pub IsActive: bool = true;
-	pub DefaultBaseFeePerGas: U256 = U256::from(1_000_000_000);
+	pub DefaultBaseFeePerGas: U256 = (1 * currency::GIGAWEI * currency::SUPPLY_FACTOR).into();
 }
 
 pub struct BaseFeeThreshold;
@@ -756,7 +806,8 @@ impl pallet_base_fee::BaseFeeThreshold for BaseFeeThreshold {
 impl pallet_base_fee::Config for Runtime {
 	type Event = Event;
 	type Threshold = BaseFeeThreshold;
-	type IsActive = IsActive;
+	// Tells `pallet_base_fee` whether to calculate a new BaseFee `on_finalize` or not.
+	type IsActive = ConstBool<false>;
 	type DefaultBaseFeePerGas = DefaultBaseFeePerGas;
 }
 
@@ -833,7 +884,7 @@ impl fp_rpc::ConvertTransaction<opaque::UncheckedExtrinsic> for TransactionConve
 }
 
 /// The address format for describing accounts.
-pub type Address = sp_runtime::MultiAddress<AccountId, ()>;
+pub type Address = AccountId;
 /// Block header type as expected by this runtime.
 pub type Header = generic::Header<BlockNumber, BlakeTwo256>;
 /// Block type as expected by this runtime.
@@ -882,9 +933,14 @@ impl fp_self_contained::SelfContainedCall for Call {
 		}
 	}
 
-	fn validate_self_contained(&self, info: &Self::SignedInfo) -> Option<TransactionValidity> {
+	fn validate_self_contained(
+		&self,
+		signed_info: &Self::SignedInfo,
+	) -> Option<TransactionValidity> {
 		match self {
-			Call::Ethereum(call) => call.validate_self_contained(info),
+			Call::Ethereum(ref call) => {
+				Some(validate_self_contained_inner(&self, &call, signed_info))
+			},
 			_ => None,
 		}
 	}
@@ -909,6 +965,38 @@ impl fp_self_contained::SelfContainedCall for Call {
 			),
 			_ => None,
 		}
+	}
+}
+
+fn validate_self_contained_inner(
+	call: &Call,
+	eth_call: &pallet_ethereum::Call<Runtime>,
+	signed_info: &<Call as fp_self_contained::SelfContainedCall>::SignedInfo,
+) -> TransactionValidity {
+	if let pallet_ethereum::Call::transact { ref transaction } = eth_call {
+		// Previously, ethereum transactions were contained in an unsigned
+		// extrinsic, we now use a new form of dedicated extrinsic defined by
+		// frontier, but to keep the same behavior as before, we must perform
+		// the controls that were performed on the unsigned extrinsic.
+		use sp_runtime::traits::SignedExtension as _;
+		let input_len = match transaction {
+			pallet_ethereum::Transaction::Legacy(t) => t.input.len(),
+			pallet_ethereum::Transaction::EIP2930(t) => t.input.len(),
+			pallet_ethereum::Transaction::EIP1559(t) => t.input.len(),
+		};
+		let extra_validation =
+			SignedExtra::validate_unsigned(call, &call.get_dispatch_info(), input_len)?;
+		// Then, do the controls defined by the ethereum pallet.
+		use fp_self_contained::SelfContainedCall as _;
+		let self_contained_validation = eth_call
+			.validate_self_contained(signed_info)
+			.ok_or(TransactionValidityError::Invalid(InvalidTransaction::BadProof))??;
+
+		Ok(extra_validation.combine_with(self_contained_validation))
+	} else {
+		Err(TransactionValidityError::Unknown(
+			sp_runtime::transaction_validity::UnknownTransaction::CannotLookup,
+		))
 	}
 }
 
@@ -972,10 +1060,77 @@ impl_runtime_apis! {
 	impl sp_transaction_pool::runtime_api::TaggedTransactionQueue<Block> for Runtime {
 		fn validate_transaction(
 			source: TransactionSource,
-			tx: <Block as BlockT>::Extrinsic,
+			xt: <Block as BlockT>::Extrinsic,
 			block_hash: <Block as BlockT>::Hash,
 		) -> TransactionValidity {
-			Executive::validate_transaction(source, tx, block_hash)
+			// Filtered calls should not enter the tx pool as they'll fail if inserted.
+			// If this call is not allowed, we return early.
+			if !<Runtime as frame_system::Config>::BaseCallFilter::contains(&xt.0.function) {
+				return InvalidTransaction::Call.into();
+			}
+
+			// This runtime uses Substrate's pallet transaction payment. This
+			// makes the chain feel like a standard Substrate chain when submitting
+			// frame transactions and using Substrate ecosystem tools. It has the downside that
+			// transaction are not prioritized by gas_price. The following code reprioritizes
+			// transactions to overcome this.
+			//
+			// A more elegant, ethereum-first solution is
+			// a pallet that replaces pallet transaction payment, and allows users
+			// to directly specify a gas price rather than computing an effective one.
+			// #HopefullySomeday
+
+			// First we pass the transactions to the standard FRAME executive. This calculates all the
+			// necessary tags, longevity and other properties that we will leave unchanged.
+			// This also assigns some priority that we don't care about and will overwrite next.
+			let mut intermediate_valid = Executive::validate_transaction(source, xt.clone(), block_hash)?;
+
+			let dispatch_info = xt.get_dispatch_info();
+
+			// If this is a pallet ethereum transaction, then its priority is already set
+			// according to gas price from pallet ethereum. If it is any other kind of transaction,
+			// we modify its priority.
+			Ok(match &xt.0.function {
+				Call::Ethereum(transact { .. }) => intermediate_valid,
+				_ if dispatch_info.class != DispatchClass::Normal => intermediate_valid,
+				_ => {
+					let tip = match xt.0.signature {
+						None => 0,
+						Some((_, _, ref signed_extra)) => {
+							// Yuck, this depends on the index of charge transaction in Signed Extra
+							let charge_transaction = &signed_extra.7;
+							charge_transaction.tip()
+						}
+					};
+
+					// Calculate the fee that will be taken by pallet transaction payment
+					let fee: u64 = TransactionPayment::compute_fee(
+						xt.encode().len() as u32,
+						&dispatch_info,
+						tip,
+					).saturated_into();
+
+					// Calculate how much gas this effectively uses according to the existing mapping
+					let effective_gas =
+						<Runtime as pallet_evm::Config>::GasWeightMapping::weight_to_gas(
+							dispatch_info.weight
+						);
+
+					// Here we calculate an ethereum-style effective gas price using the
+					// current fee of the transaction. Because the weight -> gas conversion is
+					// lossy, we have to handle the case where a very low weight maps to zero gas.
+					let effective_gas_price = if effective_gas > 0 {
+						fee / effective_gas
+					} else {
+						// If the effective gas was zero, we just act like it was 1.
+						fee
+					};
+
+					// Overwrite the original prioritization with this ethereum one
+					intermediate_valid.priority = effective_gas_price;
+					intermediate_valid
+				}
+			})
 		}
 	}
 
@@ -1192,7 +1347,6 @@ impl_runtime_apis! {
 			} else {
 				None
 			};
-
 			let is_transactional = false;
 			<Runtime as pallet_evm::Config>::Runner::call(
 				from,
@@ -1203,7 +1357,7 @@ impl_runtime_apis! {
 				max_fee_per_gas,
 				max_priority_fee_per_gas,
 				nonce,
-				access_list.unwrap_or_default(),
+				Vec::new(),
 				is_transactional,
 				config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config()),
 			).map_err(|err| err.into())
@@ -1227,8 +1381,8 @@ impl_runtime_apis! {
 			} else {
 				None
 			};
-
 			let is_transactional = false;
+			#[allow(clippy::or_fun_call)] // suggestion not helpful here
 			<Runtime as pallet_evm::Config>::Runner::create(
 				from,
 				data,
@@ -1237,7 +1391,7 @@ impl_runtime_apis! {
 				max_fee_per_gas,
 				max_priority_fee_per_gas,
 				nonce,
-				access_list.unwrap_or_default(),
+				Vec::new(),
 				is_transactional,
 				config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config()),
 			).map_err(|err| err.into())
@@ -1258,12 +1412,12 @@ impl_runtime_apis! {
 		fn current_all() -> (
 			Option<pallet_ethereum::Block>,
 			Option<Vec<pallet_ethereum::Receipt>>,
-			Option<Vec<TransactionStatus>>
+			Option<Vec<TransactionStatus>>,
 		) {
 			(
 				Ethereum::current_block(),
 				Ethereum::current_receipts(),
-				Ethereum::current_transaction_statuses()
+				Ethereum::current_transaction_statuses(),
 			)
 		}
 

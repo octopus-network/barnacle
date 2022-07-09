@@ -23,7 +23,8 @@
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use scale_info::TypeInfo;
 use sha3::{Digest, Keccak256};
-use sp_core::{ecdsa, H160, H256, crypto::UncheckedFrom};
+use sp_core::crypto::UncheckedFrom;
+use sp_core::{ecdsa, H160, H256};
 
 #[cfg(feature = "std")]
 pub use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -174,6 +175,7 @@ impl From<ecdsa::Public> for EthereumSigner {
 
 impl From<EthereumSigner> for ecdsa::Public {
 	fn from(x: EthereumSigner) -> ecdsa::Public {
+		panic!();
 		ecdsa::Public::unchecked_from([0; 33]) // TODO
 	}
 }

@@ -1,8 +1,9 @@
 use appchain_barnacle_runtime::{
+	currency::EBAR,
 	opaque::{Block, SessionKeys},
 	AccountId, BabeConfig, Balance, BalancesConfig, GenesisConfig, GrandpaConfig, ImOnlineConfig,
 	OctopusAppchainConfig, OctopusLposConfig, SessionConfig, Signature, SudoConfig, SystemConfig,
-	DOLLARS, WASM_BINARY,
+	WASM_BINARY,
 };
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -96,9 +97,9 @@ pub fn development_config() -> Result<ChainSpec, String> {
 				// Sudo account
 				AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap(),
 				// Pre-funded accounts
-				Some(vec![
-					AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap(),
-				]),
+				Some(
+					vec![AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap()],
+				),
 				true,
 			)
 		},
@@ -133,9 +134,9 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 				// Sudo account
 				AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap(),
 				// Pre-funded accounts
-				Some(vec![
-					AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap(),
-				]),
+				Some(
+					vec![AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap()],
+				),
 				true,
 			)
 		},
@@ -162,9 +163,7 @@ fn testnet_genesis(
 	_enable_println: bool,
 ) -> GenesisConfig {
 	let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
-		vec![
-			AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap(),
-		]
+		vec![AccountId::from_str("6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b").unwrap()]
 	});
 	// endow all authorities.
 	initial_authorities.iter().map(|x| &x.0).for_each(|x| {
@@ -175,7 +174,7 @@ fn testnet_genesis(
 
 	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
-	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
+	const ENDOWMENT: Balance = 10_000_000 * EBAR;
 	const STASH: Balance = 100 * 1_000_000_000_000_000_000; // 100 OCT with 18 decimals
 
 	GenesisConfig {
@@ -217,9 +216,9 @@ fn testnet_genesis(
 			anchor_contract: "octopus-anchor.testnet".to_string(),
 			asset_id_by_name: vec![("usdn.testnet".to_string(), 0)],
 			validators,
-			premined_amount: 1024 * DOLLARS,
+			premined_amount: 1024 * EBAR,
 		},
-		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_lpos: OctopusLposConfig { era_payout: 2 * EBAR, ..Default::default() },
 		octopus_assets: Default::default(),
 		evm: EVMConfig {
 			accounts: {
