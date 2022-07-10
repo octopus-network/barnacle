@@ -37,7 +37,7 @@ pub use frame_support::{
 	construct_runtime, parameter_types,
 	traits::{
 		ConstBool, ConstU128, ConstU16, ConstU32, ConstU8, Contains, KeyOwnerProofSystem,
-		Randomness, StorageInfo,
+		Randomness, StorageInfo, ValidatorSet,
 	},
 	weights::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
@@ -60,16 +60,19 @@ pub use sp_runtime::BuildStorage;
 use static_assertions::const_assert;
 
 mod precompiles;
-use account::EthereumSignature;
+use account::{AccountId20, EthereumSignature};
 use codec::Decode;
 use fp_rpc::TransactionStatus;
 pub use frame_support::{traits::FindAuthor, ConsensusEngineId};
 use pallet_ethereum::{Call::transact, Transaction as EthereumTransaction};
+#[cfg(feature = "std")]
+pub use pallet_evm::GenesisAccount;
 use pallet_evm::{
 	Account as EVMAccount, EnsureAddressNever, EnsureAddressRoot, EnsureAddressTruncated,
 	FeeCalculator, GasWeightMapping, HashedAddressMapping, Runner,
 };
 use precompiles::FrontierPrecompiles;
+pub type Precompiles = FrontierPrecompiles<Runtime>;
 use sp_core::{ecdsa, H160, H256, U256};
 use sp_runtime::{
 	traits::{Dispatchable, PostDispatchInfoOf},
@@ -694,20 +697,23 @@ impl pallet_octopus_upward_messages::Config for Runtime {
 	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
 
-pub struct FindAuthorTruncated<F>(PhantomData<F>);
-impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncated<F> {
+pub struct FindAuthorAdapter<T, Inner>(sp_std::marker::PhantomData<(T, Inner)>);
+
+impl<T: ValidatorSet<AccountId20>, Inner: FindAuthor<u32>> FindAuthor<H160>
+	for FindAuthorAdapter<T, Inner>
+where
+	T::ValidatorId: Into<H160>,
+{
 	fn find_author<'a, I>(digests: I) -> Option<H160>
 	where
 		I: 'a + IntoIterator<Item = (ConsensusEngineId, &'a [u8])>,
 	{
-		if let Some(author_index) = F::find_author(digests) {
-			let authority_id = Babe::authorities()[author_index as usize].0.clone();
-			return Some(H160::from_slice(&authority_id.to_raw_vec()[4..24]));
-		}
-		None
+		let i = Inner::find_author(digests)?;
+
+		let validators = T::validators();
+		validators.get(i as usize).map(|k| k.clone().into())
 	}
 }
-
 /// And ipmlementation of Frontier's AddressMapping trait for Moonbeam Accounts.
 /// This is basically identical to Frontier's own IdentityAddressMapping, but it works for any type
 /// that is Into<H160> like AccountId20 for example.
@@ -769,7 +775,7 @@ impl pallet_evm::Config for Runtime {
 	type ChainId = ChainId;
 	type BlockGasLimit = BlockGasLimit;
 	type OnChargeTransaction = pallet_evm::EVMCurrencyAdapter<Balances, ()>;
-	type FindAuthor = FindAuthorTruncated<Babe>; // TODO: julian
+	type FindAuthor = FindAuthorAdapter<Session, Babe>;
 	type WeightInfo = pallet_evm::weights::SubstrateWeight<Self>;
 }
 
@@ -938,9 +944,8 @@ impl fp_self_contained::SelfContainedCall for Call {
 		signed_info: &Self::SignedInfo,
 	) -> Option<TransactionValidity> {
 		match self {
-			Call::Ethereum(ref call) => {
-				Some(validate_self_contained_inner(&self, &call, signed_info))
-			},
+			Call::Ethereum(ref call) =>
+				Some(validate_self_contained_inner(&self, &call, signed_info)),
 			_ => None,
 		}
 	}

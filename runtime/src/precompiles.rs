@@ -89,20 +89,16 @@ where
 			a if a == hash(8) => Some(Bn128Pairing::execute(input, target_gas, context, is_static)),
 			a if a == hash(9) => Some(Blake2F::execute(input, target_gas, context, is_static)),
 			// Non-Moonbeam specific nor Ethereum precompiles :
-			a if a == hash(1024) => {
-				Some(Sha3FIPS256::execute(input, target_gas, context, is_static))
-			},
-			a if a == hash(1025) => {
-				Some(Dispatch::<R>::execute(input, target_gas, context, is_static))
-			},
-			a if a == hash(1026) => {
-				Some(ECRecoverPublicKey::execute(input, target_gas, context, is_static))
-			},
-			a if a == hash(2050) => {
+			a if a == hash(1024) =>
+				Some(Sha3FIPS256::execute(input, target_gas, context, is_static)),
+			a if a == hash(1025) =>
+				Some(Dispatch::<R>::execute(input, target_gas, context, is_static)),
+			a if a == hash(1026) =>
+				Some(ECRecoverPublicKey::execute(input, target_gas, context, is_static)),
+			a if a == hash(2050) =>
 				Some(Erc20BalancesPrecompile::<R, NativeErc20Metadata>::execute(
 					input, target_gas, context, is_static,
-				))
-			},
+				)),
 			_ => None,
 		}
 	}
