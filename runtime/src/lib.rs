@@ -163,17 +163,17 @@ pub mod currency {
 	pub const KILOWEI: Balance = 1_000;
 	pub const MEGAWEI: Balance = 1_000_000;
 	pub const GIGAWEI: Balance = 1_000_000_000;
-	pub const MICROGLMR: Balance = 1_000_000_000_000;
-	pub const MILLIGLMR: Balance = 1_000_000_000_000_000;
+	pub const MICROEBAR: Balance = 1_000_000_000_000;
+	pub const MILLIEBAR: Balance = 1_000_000_000_000_000;
 	pub const EBAR: Balance = 1_000_000_000_000_000_000;
-	pub const KILOGLMR: Balance = 1_000_000_000_000_000_000_000;
+	pub const KILOEBAR: Balance = 1_000_000_000_000_000_000_000;
 
-	pub const TRANSACTION_BYTE_FEE: Balance = 10 * MICROGLMR * SUPPLY_FACTOR;
-	pub const STORAGE_BYTE_FEE: Balance = 100 * MICROGLMR * SUPPLY_FACTOR;
+	pub const TRANSACTION_BYTE_FEE: Balance = 10 * MICROEBAR * SUPPLY_FACTOR;
+	pub const STORAGE_BYTE_FEE: Balance = 100 * MICROEBAR * SUPPLY_FACTOR;
 	pub const WEIGHT_FEE: Balance = 100 * KILOWEI * SUPPLY_FACTOR;
 
 	pub const fn deposit(items: u32, bytes: u32) -> Balance {
-		items as Balance * 100 * MILLIGLMR * SUPPLY_FACTOR + (bytes as Balance) * STORAGE_BYTE_FEE
+		items as Balance * 100 * MILLIEBAR * SUPPLY_FACTOR + (bytes as Balance) * STORAGE_BYTE_FEE
 	}
 }
 
@@ -749,7 +749,7 @@ impl pallet_evm::GasWeightMapping for MoonbeamGasWeightMapping {
 pub struct FixedGasPrice;
 impl FeeCalculator for FixedGasPrice {
 	fn min_gas_price() -> U256 {
-		(1 * currency::GIGAWEI * currency::SUPPLY_FACTOR).into()
+		(1 * currency::MEGAWEI * currency::SUPPLY_FACTOR).into()
 	}
 }
 
