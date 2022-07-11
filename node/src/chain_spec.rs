@@ -151,6 +151,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 		None,
 		// Protocol ID
 		None,
+		None,
 		// Properties
 		Some(
 			serde_json::from_str(
@@ -158,7 +159,6 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 			)
 			.expect("Provided valid json map"),
 		),
-		None,
 		// Extensions
 		Default::default(),
 	))
