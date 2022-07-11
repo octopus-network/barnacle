@@ -2,6 +2,38 @@
 
 A ready-to-use Hardhat project to help bootstrap your Barnacle EVM/Frontier/Moonbeam learning experience. The project contains two smart contracts: one ERC20 smart contract and a simple Escrow smart contract.
 
+## Create New Testing Accounts
+
+Go to MetaMask and create a new Accounts.
+
+![Create new account](./assets/image-1.png)
+
+Give the Account a name
+
+![Give name](./assets/image-2.png)
+
+Copy the address.
+
+![Copy address](./assets/image-3.png)
+
+Then open the account details.
+
+![Account details](./assets/image-4.png)
+
+Export the private key.
+
+![Get private key](./assets/image-5.png)
+
+Repeat this step one more time. After you retrieved the addresses and the corresponding private key save them for the next step.
+
+## Genesis Configuration
+
+Each EVM account used must be defined within the `GenesisConfig` within the [chain spec](../../node/src/chain_spec.rs) file. The pre-configured account will receive Ethereum to use in gas fees and transactions.
+
+Within the `GenesisConfig` paste in the two account addresses you saved from the previous step.
+
+Further details regarding how `GenesisConfig` works and configurations in Barnacle EVM can be [seen here](../../README.md#how-barnacle-evm-works).
+
 ## Run the EVM Appchain
 
 To execute a development chain, run:
@@ -12,13 +44,17 @@ $ cargo run -- --dev --tmp
 
 You can read a further explanation on how you can [run your Appchain here](../../README.md#running-the-barnacle-evm)
 
-## Genesis Configuration
+## Verify Address on Barnacle EVM
 
-Each EVM account used must be defined within the `GenesisConfig` within the [chain spec](../../node/src/chain_spec.rs) file. The pre-configured account will receive Ethereum to use in gas fees and transactions.
+Create a new `.env` file and insert the Barnacle RPC URL and the two private keys from the previous step:
 
-Further details regarding how `GenesisConfig` works and configurations in Barnacle EVM can be [seen here](../../README.md#how-barnacle-evm-works).
+```
+BARNACLE_RPC_URL=http://127.0.0.1:9933
+BARNACLE_DEPLOYER_PRIVATE_KEY=*private key 1*
+BARNACLE_ACCOUNT_PRIVATE_KEY=*private key 2*
+```
 
-To get the public addresses, you need to execute the [`.maintain/print-address.js`](.maintain/print-address.js) script:
+To verify the public addresses, you need to execute the [`.maintain/print-address.js`](.maintain/print-address.js) script:
 
 ```
 npx hardhat run .maintain/print-address.js --network barnacle
@@ -129,7 +165,7 @@ npx hardhat run .maintain/deployment.js --network barnacle
 After executing the script, the tests should end with something similar to this:
 
 ```text
-Executor Account Balance:  9999999925132681078258
+Executor Account Balance:  340282366920938463462374562926906777218
 Executor ERC20 Account Balance:  80000000000000000000
 Executor ERC20 Account Balance:  50000000000000000000
 Executor ERC20 Account Balance:  80000000000000000000
