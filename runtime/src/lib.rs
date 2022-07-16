@@ -620,20 +620,12 @@ impl pallet_beefy_mmr::Config for Runtime {
 	type ParachainHeads = ();
 }
 
-pub const KEY_TYPE: KeyTypeId = KeyTypeId(*b"eoct");
-
-mod crypto {
-	use super::KEY_TYPE;
-	use sp_runtime::app_crypto::{app_crypto, ecdsa};
-	app_crypto!(ecdsa, KEY_TYPE);
-}
-
 pub struct OctopusAppCrypto;
 
 impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature>
 	for OctopusAppCrypto
 {
-	type RuntimeAppPublic = crypto::Public;
+	type RuntimeAppPublic = pallet_octopus_appchain::ecdsa::AuthorityId;
 	type GenericSignature = ecdsa::Signature;
 	type GenericPublic = ecdsa::Public;
 }
@@ -647,7 +639,8 @@ parameter_types! {
 }
 
 impl pallet_octopus_appchain::Config for Runtime {
-	type AuthorityId = OctopusAppCrypto;
+	type AuthorityId = pallet_octopus_appchain::ecdsa::AuthorityId;
+	type AppCrypto = OctopusAppCrypto;
 	type Event = Event;
 	type Call = Call;
 	type PalletId = OctopusAppchainPalletId;
@@ -661,7 +654,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type Assets = OctopusAssets;
 	type AssetBalance = AssetBalance;
 	type AssetId = AssetId;
-	type AssetIdByName = OctopusAppchain;
+	type AssetIdByTokenId = OctopusAppchain;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
 	type RequestEventLimit = RequestEventLimit;
