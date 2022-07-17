@@ -23,7 +23,6 @@
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use scale_info::TypeInfo;
 use sha3::{Digest, Keccak256};
-use sp_core::crypto::UncheckedFrom;
 use sp_core::{ecdsa, H160, H256};
 
 #[cfg(feature = "std")]
@@ -143,25 +142,13 @@ impl sp_runtime::traits::Verify for EthereumSignature {
 	Eq, PartialEq, Ord, PartialOrd, Clone, Encode, Decode, TypeInfo, sp_core::RuntimeDebug,
 )]
 #[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
-pub struct EthereumSigner([u8; 20]);
+pub struct EthereumSigner(ecdsa::Public);
 
 impl sp_runtime::traits::IdentifyAccount for EthereumSigner {
 	type AccountId = AccountId20;
 	fn into_account(self) -> AccountId20 {
-		AccountId20(self.0)
-	}
-}
-
-impl From<[u8; 20]> for EthereumSigner {
-	fn from(x: [u8; 20]) -> Self {
-		EthereumSigner(x)
-	}
-}
-
-impl From<ecdsa::Public> for EthereumSigner {
-	fn from(x: ecdsa::Public) -> Self {
 		let decompressed = libsecp256k1::PublicKey::parse_slice(
-			&x.0,
+			&self.0.0,
 			Some(libsecp256k1::PublicKeyFormat::Compressed),
 		)
 		.expect("Wrong compressed public key provided")
@@ -169,30 +156,32 @@ impl From<ecdsa::Public> for EthereumSigner {
 		let mut m = [0u8; 64];
 		m.copy_from_slice(&decompressed[1..65]);
 		let account = H160::from(H256::from_slice(Keccak256::digest(&m).as_slice()));
-		EthereumSigner(account.into())
+		AccountId20(account.into())
+	}
+}
+
+impl From<ecdsa::Public> for EthereumSigner {
+	fn from(x: ecdsa::Public) -> Self {
+		EthereumSigner(x)
 	}
 }
 
 impl From<EthereumSigner> for ecdsa::Public {
 	fn from(x: EthereumSigner) -> ecdsa::Public {
-		panic!();
-		ecdsa::Public::unchecked_from([0; 33]) // TODO
+		x.0
 	}
 }
 
 impl From<libsecp256k1::PublicKey> for EthereumSigner {
 	fn from(x: libsecp256k1::PublicKey) -> Self {
-		let mut m = [0u8; 64];
-		m.copy_from_slice(&x.serialize()[1..65]);
-		let account = H160::from(H256::from_slice(Keccak256::digest(&m).as_slice()));
-		EthereumSigner(account.into())
+		EthereumSigner(ecdsa::Public(x.serialize_compressed()))
 	}
 }
 
 #[cfg(feature = "std")]
 impl std::fmt::Display for EthereumSigner {
 	fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-		write!(fmt, "ethereum signature: {:?}", H160::from_slice(&self.0))
+		write!(fmt, "ethereum signature: {:?}", H160::from_slice(&self.0.0))
 	}
 }
 
