@@ -580,7 +580,7 @@ pub struct OctopusAppCrypto;
 impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature>
 	for OctopusAppCrypto
 {
-	type RuntimeAppPublic = pallet_octopus_appchain::AuthorityId;
+	type RuntimeAppPublic = pallet_octopus_appchain::sr25519::AuthorityId;
 	type GenericSignature = sp_core::sr25519::Signature;
 	type GenericPublic = sp_core::sr25519::Public;
 }
@@ -594,7 +594,8 @@ parameter_types! {
 }
 
 impl pallet_octopus_appchain::Config for Runtime {
-	type AuthorityId = OctopusAppCrypto;
+	type AuthorityId = pallet_octopus_appchain::sr25519::AuthorityId;
+	type AppCrypto = OctopusAppCrypto;
 	type Event = Event;
 	type Call = Call;
 	type PalletId = OctopusAppchainPalletId;
@@ -608,7 +609,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type Assets = OctopusAssets;
 	type AssetBalance = AssetBalance;
 	type AssetId = AssetId;
-	type AssetIdByName = OctopusAppchain;
+	type AssetIdByTokenId = OctopusAppchain;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
 	type RequestEventLimit = RequestEventLimit;
