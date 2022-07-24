@@ -7,6 +7,8 @@ use pallet_evm_precompile_blake2::Blake2F;
 use pallet_evm_precompile_bn128::{Bn128Add, Bn128Mul, Bn128Pairing};
 use pallet_evm_precompile_dispatch::Dispatch;
 use pallet_evm_precompile_modexp::Modexp;
+use pallet_evm_precompile_octopus_appchain::OctopusAppchainWrapper;
+use pallet_evm_precompile_octopus_session::OctopusSessionWrapper;
 use pallet_evm_precompile_sha3fips::Sha3FIPS256;
 use pallet_evm_precompile_simple::{ECRecover, ECRecoverPublicKey, Identity, Ripemd160, Sha256};
 
@@ -67,6 +69,8 @@ impl<R> PrecompileSet for FrontierPrecompiles<R>
 where
 	Dispatch<R>: Precompile,
 	Erc20BalancesPrecompile<R, NativeErc20Metadata>: Precompile,
+	OctopusAppchainWrapper<R>: Precompile,
+	OctopusSessionWrapper<R>: Precompile,
 	R: pallet_evm::Config,
 {
 	fn execute(
@@ -99,6 +103,10 @@ where
 				Some(Erc20BalancesPrecompile::<R, NativeErc20Metadata>::execute(
 					input, target_gas, context, is_static,
 				)),
+			a if a == hash(2051) =>
+				Some(OctopusAppchainWrapper::<R>::execute(input, target_gas, context, is_static)),
+			a if a == hash(2052) =>
+				Some(OctopusSessionWrapper::<R>::execute(input, target_gas, context, is_static)),
 			_ => None,
 		}
 	}

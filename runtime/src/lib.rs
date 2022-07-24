@@ -16,14 +16,13 @@ use sp_runtime::{
 	generic::{self, Era},
 	impl_opaque_keys,
 	traits::{
-		self, AccountIdLookup, BlakeTwo256, Block as BlockT, ConvertInto, IdentifyAccount,
-		IdentityLookup, Keccak256, NumberFor, OpaqueKeys, SaturatedConversion, StaticLookup,
-		Verify,
+		self, BlakeTwo256, Block as BlockT, ConvertInto, IdentifyAccount, IdentityLookup,
+		Keccak256, NumberFor, OpaqueKeys, SaturatedConversion, StaticLookup, Verify,
 	},
 	transaction_validity::{
 		InvalidTransaction, TransactionPriority, TransactionSource, TransactionValidity,
 	},
-	ApplyExtrinsicResult, MultiSignature, Perbill,
+	ApplyExtrinsicResult, Perbill,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
@@ -68,8 +67,8 @@ use pallet_ethereum::{Call::transact, Transaction as EthereumTransaction};
 #[cfg(feature = "std")]
 pub use pallet_evm::GenesisAccount;
 use pallet_evm::{
-	Account as EVMAccount, EnsureAddressNever, EnsureAddressRoot, EnsureAddressTruncated,
-	FeeCalculator, GasWeightMapping, HashedAddressMapping, Runner,
+	Account as EVMAccount, EnsureAddressNever, EnsureAddressRoot, FeeCalculator, GasWeightMapping,
+	Runner,
 };
 use precompiles::FrontierPrecompiles;
 pub type Precompiles = FrontierPrecompiles<Runtime>;
@@ -77,9 +76,8 @@ use sp_core::{ecdsa, H160, H256, U256};
 use sp_runtime::{
 	traits::{Dispatchable, PostDispatchInfoOf},
 	transaction_validity::TransactionValidityError,
-	Permill, RuntimeAppPublic,
+	Permill,
 };
-use sp_std::marker::PhantomData;
 
 /// Import the template pallet.
 pub use pallet_template;
@@ -567,6 +565,9 @@ parameter_types! {
 type ClassId = u128;
 type InstanceId = u128;
 
+parameter_types! {
+	pub const UniquesStringLimit: u32 = 2048;
+}
 impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type Event = Event;
 	type ClassId = ClassId;
@@ -578,7 +579,7 @@ impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type MetadataDepositBase = MetadataDepositBase;
 	type AttributeDepositBase = MetadataDepositBase;
 	type DepositPerByte = MetadataDepositPerByte;
-	type StringLimit = AssetsStringLimit;
+	type StringLimit = UniquesStringLimit;
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type WeightInfo = pallet_uniques::weights::SubstrateWeight<Runtime>;
@@ -638,6 +639,7 @@ parameter_types! {
 	   pub const UpwardMessagesLimit: u32 = 10;
 }
 
+use pallet_octopus_appchain::traits_default_impl::RmrkBaseMetadataConvertor;
 impl pallet_octopus_appchain::Config for Runtime {
 	type AuthorityId = pallet_octopus_appchain::ecdsa::AuthorityId;
 	type AppCrypto = OctopusAppCrypto;
@@ -649,7 +651,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type ClassId = ClassId;
 	type InstanceId = InstanceId;
 	type Uniques = OctopusUniques;
-	type Convertor = ();
+	type Convertor = RmrkBaseMetadataConvertor<Runtime>;
 	type Currency = Balances;
 	type Assets = OctopusAssets;
 	type AssetBalance = AssetBalance;
@@ -985,7 +987,7 @@ fn validate_self_contained_inner(
 		let extra_validation =
 			SignedExtra::validate_unsigned(call, &call.get_dispatch_info(), input_len)?;
 		// Then, do the controls defined by the ethereum pallet.
-		use fp_self_contained::SelfContainedCall as _;
+		// use fp_self_contained::SelfContainedCall as _;
 		let self_contained_validation = eth_call
 			.validate_self_contained(signed_info)
 			.ok_or(TransactionValidityError::Invalid(InvalidTransaction::BadProof))??;
@@ -1336,7 +1338,7 @@ impl_runtime_apis! {
 			max_priority_fee_per_gas: Option<U256>,
 			nonce: Option<U256>,
 			estimate: bool,
-			access_list: Option<Vec<(H160, Vec<H256>)>>,
+			_access_list: Option<Vec<(H160, Vec<H256>)>>,
 		) -> Result<pallet_evm::CallInfo, sp_runtime::DispatchError> {
 			let config = if estimate {
 				let mut config = <Runtime as pallet_evm::Config>::config().clone();
@@ -1370,7 +1372,7 @@ impl_runtime_apis! {
 			max_priority_fee_per_gas: Option<U256>,
 			nonce: Option<U256>,
 			estimate: bool,
-			access_list: Option<Vec<(H160, Vec<H256>)>>,
+			_access_list: Option<Vec<(H160, Vec<H256>)>>,
 		) -> Result<pallet_evm::CreateInfo, sp_runtime::DispatchError> {
 			let config = if estimate {
 				let mut config = <Runtime as pallet_evm::Config>::config().clone();

@@ -1,0 +1,66 @@
+[package]
+name = "pallet-evm-precompile-octopus-session"
+authors = ["Octopus Network <hi@oct.network>"]
+description = "A Precompile to make pallet-session accessible to pallet-evm"
+edition = "2021"
+version = "0.1.0"
+
+[dependencies]
+log = "0.4"
+num_enum = { version = "0.5.3", default-features = false }
+
+# Moonbeam
+precompile-utils = { path = "../utils", default-features = false }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = [ "max-encoded-len" ] }
+frame-support = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+frame-system = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+sp-core = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+sp-io = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+sp-std = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+
+# Frontier
+fp-evm = { git = "https://github.com/purestake/frontier", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+pallet-evm = { git = "https://github.com/purestake/frontier", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+
+# Octopus
+pallet-session = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
+# pallet-session = { version = "4.0.0-dev", git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
+
+[dev-dependencies]
+derive_more = { version = "0.99" }
+hex-literal = "0.3.4"
+libsecp256k1 = "0.7"
+serde = { version = "1.0.100" }
+sha3 = "0.8"
+
+pallet-timestamp = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18" }
+scale-info = { version = "2.0", default-features = false, features = [ "derive" ] }
+sp-runtime = { git = "https://github.com/purestake/substrate", branch = "moonbeam-polkadot-v0.9.18" }
+
+sp-staking = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
+pallet-assets = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
+pallet-balances = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
+pallet-uniques = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
+
+pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
+pallet-octopus-lpos = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
+pallet-octopus-upward-messages = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
+
+account = { path = "../../primitives/account/" }
+
+[features]
+default = [ "std" ]
+std = [
+	"codec/std",
+	"fp-evm/std",
+	"frame-support/std",
+	"frame-system/std",
+	"pallet-evm/std",
+	"precompile-utils/std",
+	"sp-core/std",
+	"sp-io/std",
+	"sp-std/std",
+	"pallet-session/std",
+]
