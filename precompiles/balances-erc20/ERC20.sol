@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.4.24;
 
 /**
@@ -130,7 +131,7 @@ interface WrappedNativeCurrency {
    * @dev Provide compatibility for contracts that expect wETH design.
    * Does nothing.
    * Selector: 2e1a7d4d
-   * @param Amount to withdraw/unwrap.
+   * @param value to withdraw/unwrap.
    */
   function withdraw(uint256 value) external;
 
