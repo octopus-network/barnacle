@@ -58,6 +58,9 @@ pallet-octopus-appchain = { default-features = false, git = "https://github.com/
 pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
 pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
 
+pallet-evm-precompile-octopus-appchain = { path = "../precompiles/octopus-appchain", default-features = false }
+pallet-evm-precompile-octopus-session = { path = "../precompiles/octopus-session", default-features = false }
+
 account = { path = "../primitives/account/", default-features = false }
 pallet-evm-precompile-balances-erc20 = { path = "../precompiles/balances-erc20", default-features = false }
 precompile-utils = { path = "../precompiles/utils", default-features = false }
@@ -134,6 +137,8 @@ std = [
 	"pallet-octopus-appchain/std",
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
+	"pallet-evm-precompile-octopus-appchain/std",
+	"pallet-evm-precompile-octopus-session/std",
 
 	"account/std",
 	"pallet-evm-precompile-balances-erc20/std",
