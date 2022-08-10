@@ -25,7 +25,7 @@ fp-evm = { git = "https://github.com/purestake/frontier", branch = "moonbeam-pol
 pallet-evm = { git = "https://github.com/purestake/frontier", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
 
 # Octopus
-pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 
 [dev-dependencies]
 derive_more = { version = "0.99" }
@@ -44,8 +44,8 @@ pallet-balances = { git = "https://github.com/paritytech/substrate.git", branch 
 pallet-session = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18", features = ["historical"] }
 pallet-uniques = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 
-pallet-octopus-lpos = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
-pallet-octopus-upward-messages = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18" }
+pallet-octopus-lpos = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-upward-messages = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 account = { path = "../../primitives/account/" }
 
 [features]
