@@ -75,4 +75,4 @@ sp-transaction-storage-proof = { git = 'https://github.com/paritytech/substrate.
 beefy-gadget-rpc = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13' }
 sp-authorship = { git = 'https://github.com/paritytech/substrate.git', branch = 'polkadot-v0.9.13' }
 
-pallet-octopus-appchain = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'release-v0.9.13' }
+pallet-octopus-appchain = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'release-v0.9.13-1' }
