@@ -2,8 +2,8 @@ use appchain_barnacle_runtime::{
 	currency::EBAR,
 	opaque::{Block, SessionKeys},
 	AccountId, BabeConfig, Balance, BalancesConfig, GenesisAccount, GenesisConfig, GrandpaConfig,
-	ImOnlineConfig, OctopusAppchainConfig, OctopusLposConfig, Precompiles, SessionConfig,
-	SudoConfig, SystemConfig, WASM_BINARY,
+	ImOnlineConfig, OctopusAppchainConfig, OctopusAssetsConfig, OctopusLposConfig, Precompiles,
+	SessionConfig, SudoConfig, SystemConfig, WASM_BINARY,
 };
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -186,10 +186,10 @@ fn testnet_genesis(
 		}
 	});
 
-	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
-
 	const ENDOWMENT: Balance = 10_000_000 * EBAR;
 	const STASH: Balance = 100 * 1_000_000_000_000_000_000; // 100 OCT with 18 decimals
+
+	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 	GenesisConfig {
 		system: SystemConfig {
@@ -233,7 +233,21 @@ fn testnet_genesis(
 			premined_amount: 1024 * EBAR,
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * EBAR, ..Default::default() },
-		octopus_assets: Default::default(),
+		octopus_assets: OctopusAssetsConfig {
+			assets: vec![(
+				0,
+				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+				true,
+				100,
+			)],
+			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
+			accounts: vec![(
+				0,
+				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+				1000_000_000_000_000_000_000_000_000_000,
+			)],
+		},
+
 		evm: EVMConfig {
 			// We need _some_ code inserted at the precompile address so that
 			// the evm will actually call the address.

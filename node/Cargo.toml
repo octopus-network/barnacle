@@ -56,7 +56,7 @@ sp-authorship = { version = "4.0.0-dev", git = "https://github.com/paritytech/su
 sp-consensus-babe = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 sp-keystore = { version = "0.12.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 sp-transaction-storage-proof = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
-pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18-2" }
 
 futures = "0.3"
 jsonrpc-pubsub = "18.0.0"

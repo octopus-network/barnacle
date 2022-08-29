@@ -54,14 +54,15 @@ pallet-uniques = { version = "4.0.0-dev", default-features = false, git = "https
 sp-consensus-babe = { version = "0.10.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 sp-staking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 
-pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
-pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
-pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18-2" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18-2" }
+pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.18-2" }
 
 pallet-evm-precompile-octopus-appchain = { path = "../precompiles/octopus-appchain", default-features = false }
 pallet-evm-precompile-octopus-session = { path = "../precompiles/octopus-session", default-features = false }
 
 account = { path = "../primitives/account/", default-features = false }
+pallet-evm-precompile-assets-erc20 = { path = "../precompiles/assets-erc20", default-features = false }
 pallet-evm-precompile-balances-erc20 = { path = "../precompiles/balances-erc20", default-features = false }
 precompile-utils = { path = "../precompiles/utils", default-features = false }
 fp-rpc = { git = "https://github.com/PureStake/frontier.git", branch = "moonbeam-polkadot-v0.9.18", default-features = false }
@@ -142,6 +143,7 @@ std = [
 
 	"account/std",
 	"pallet-evm-precompile-balances-erc20/std",
+	"pallet-evm-precompile-assets-erc20/std",
 	"precompile-utils/std",
 	"fp-rpc/std",
 	"fp-self-contained/std",
