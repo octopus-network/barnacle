@@ -1,8 +1,8 @@
 use appchain_barnacle_runtime::{
 	opaque::{Block, SessionKeys},
 	AccountId, BabeConfig, Balance, BalancesConfig, GenesisConfig, GrandpaConfig, ImOnlineConfig,
-	OctopusAppchainConfig, OctopusLposConfig, SessionConfig, Signature, SudoConfig, SystemConfig,
-	DOLLARS, WASM_BINARY,
+	OctopusAppchainConfig, OctopusAssetsConfig, OctopusLposConfig, SessionConfig, Signature,
+	SudoConfig, SystemConfig, DOLLARS, WASM_BINARY,
 };
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -190,10 +190,10 @@ fn testnet_genesis(
 		}
 	});
 
-	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
-
 	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
 	const STASH: Balance = 100 * 1_000_000_000_000_000_000; // 100 OCT with 18 decimals
+
+	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 	GenesisConfig {
 		system: SystemConfig {
@@ -237,6 +237,14 @@ fn testnet_genesis(
 			premined_amount: 1024 * DOLLARS,
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
-		octopus_assets: Default::default(),
+		octopus_assets: OctopusAssetsConfig {
+			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
+			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
+			accounts: vec![(
+				0,
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				1000_000_000_000 * DOLLARS,
+			)],
+		},
 	}
 }
