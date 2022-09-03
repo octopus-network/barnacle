@@ -44,9 +44,8 @@ pub use sp_runtime::{Perbill, Permill};
 
 // + necessary pallets
 use codec::Encode;
-use frame_election_provider_support::{onchain, SequentialPhragmen};
 use frame_support::{
-	traits::{AsEnsureOriginWithArg, ConstU16, U128CurrencyToVote},
+	traits::{AsEnsureOriginWithArg, ConstU16},
 	weights::{ConstantMultiplier, DispatchClass},
 };
 use frame_system::{
@@ -55,10 +54,8 @@ use frame_system::{
 };
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use pallet_session::historical::{self as pallet_session_historical};
-use pallet_staking::UseNominatorsAndValidatorsMap;
 pub use pallet_transaction_payment::{Multiplier, TargetedFeeAdjustment};
 use sp_runtime::{
-	curve::PiecewiseLinear,
 	generic::Era,
 	traits::{self, OpaqueKeys, SaturatedConversion, StaticLookup},
 	transaction_validity::TransactionPriority,
@@ -70,6 +67,10 @@ use static_assertions::const_assert;
 use beefy_primitives::{crypto::AuthorityId as BeefyId, mmr::MmrLeafVersion};
 use sp_mmr_primitives as mmr;
 use sp_runtime::traits::Keccak256;
+
+// + octopus pallets
+use frame_support::PalletId;
+use sp_runtime::traits::ConvertInto;
 
 /// Import the template pallet.
 pub use pallet_template;
@@ -118,6 +119,7 @@ pub mod opaque {
 			pub grandpa: Grandpa,
 			pub im_online: ImOnline,
 			pub beefy: Beefy,
+			pub octopus: OctopusAppchain,
 		}
 	}
 }
@@ -144,6 +146,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 pub const MILLICENTS: Balance = 10_000_000_000_000;
 pub const CENTS: Balance = 1_000 * MILLICENTS; // assume this is worth about a cent.
 pub const DOLLARS: Balance = 100 * CENTS;
+pub const OCT: Balance = 1_000_000_000_000_000_000;
 
 /// Since BABE is probabilistic this is the average expected block time that
 /// we are targeting. Blocks will be produced at a minimum duration defined
@@ -409,99 +412,28 @@ impl pallet_authorship::Config for Runtime {
 	type FindAuthor = pallet_session::FindAccountFromAuthorIndex<Self, Babe>;
 	type UncleGenerations = UncleGenerations;
 	type FilterUncle = ();
-	type EventHandler = (Staking, ImOnline);
+	type EventHandler = (OctopusLpos, ImOnline);
 }
 
 impl pallet_session::Config for Runtime {
 	type Event = Event;
 	type ValidatorId = <Self as frame_system::Config>::AccountId;
-	type ValidatorIdOf = pallet_staking::StashOf<Self>;
+	type ValidatorIdOf = ConvertInto;
 	type ShouldEndSession = Babe;
 	type NextSessionRotation = Babe;
-	type SessionManager = pallet_session::historical::NoteHistoricalRoot<Self, Staking>;
+	type SessionManager = pallet_session::historical::NoteHistoricalRoot<Self, OctopusLpos>;
 	type SessionHandler = <opaque::SessionKeys as OpaqueKeys>::KeyTypeIdProviders;
 	type Keys = opaque::SessionKeys;
 	type WeightInfo = pallet_session::weights::SubstrateWeight<Runtime>;
 }
 
 impl pallet_session::historical::Config for Runtime {
-	type FullIdentification = pallet_staking::Exposure<AccountId, Balance>;
-	type FullIdentificationOf = pallet_staking::ExposureOf<Runtime>;
-}
-
-pallet_staking_reward_curve::build! {
-	const REWARD_CURVE: PiecewiseLinear<'static> = curve!(
-		min_inflation: 0_025_000,
-		max_inflation: 0_100_000,
-		ideal_stake: 0_500_000,
-		falloff: 0_050_000,
-		max_piece_count: 40,
-		test_precision: 0_005_000,
-	);
-}
-
-parameter_types! {
-	pub const SessionsPerEra: sp_staking::SessionIndex = 6;
-	pub const BondingDuration: sp_staking::EraIndex = 24 * 28;
-	pub const SlashDeferDuration: sp_staking::EraIndex = 24 * 7; // 1/4 the bonding duration.
-	pub const RewardCurve: &'static PiecewiseLinear<'static> = &REWARD_CURVE;
-	pub const MaxNominatorRewardedPerValidator: u32 = 256;
-	pub const OffendingValidatorsThreshold: Perbill = Perbill::from_percent(17);
-	pub OffchainRepeat: BlockNumber = 5;
-}
-
-pub struct StakingBenchmarkingConfig;
-impl pallet_staking::BenchmarkingConfig for StakingBenchmarkingConfig {
-	type MaxNominators = ConstU32<1000>;
-	type MaxValidators = ConstU32<1000>;
-}
-
-impl pallet_staking::Config for Runtime {
-	type MaxNominations = ConstU32<16>;
-	type Currency = Balances;
-	type CurrencyBalance = Balance;
-	type UnixTime = Timestamp;
-	type CurrencyToVote = U128CurrencyToVote;
-	type RewardRemainder = ();
-	type Event = Event;
-	type Slash = ();
-	type Reward = (); // rewards are minted from the void
-	type SessionsPerEra = SessionsPerEra;
-	type BondingDuration = BondingDuration;
-	type SlashDeferDuration = SlashDeferDuration;
-	/// A super-majority of the council can cancel the slash.
-	type SlashCancelOrigin = frame_system::EnsureRoot<AccountId>;
-	type SessionInterface = Self;
-	type EraPayout = pallet_staking::ConvertCurve<RewardCurve>;
-	type NextNewSession = Session;
-	type MaxNominatorRewardedPerValidator = MaxNominatorRewardedPerValidator;
-	type OffendingValidatorsThreshold = OffendingValidatorsThreshold;
-	type ElectionProvider = onchain::UnboundedExecution<OnChainSeqPhragmen>;
-	type GenesisElectionProvider = onchain::UnboundedExecution<OnChainSeqPhragmen>;
-	type VoterList = UseNominatorsAndValidatorsMap<Runtime>;
-	type MaxUnlockingChunks = ConstU32<32>;
-	type OnStakerSlash = ();
-	type WeightInfo = pallet_staking::weights::SubstrateWeight<Runtime>;
-	type BenchmarkingConfig = StakingBenchmarkingConfig;
-}
-
-pub struct OnChainSeqPhragmen;
-impl onchain::Config for OnChainSeqPhragmen {
-	type System = Runtime;
-	type Solver = SequentialPhragmen<AccountId, Perbill>;
-	type DataProvider = Staking;
-	type WeightInfo = frame_election_provider_support::weights::SubstrateWeight<Runtime>;
-}
-
-impl onchain::BoundedConfig for OnChainSeqPhragmen {
-	type VotersBound = ConstU32<10_000>;
-	type TargetsBound = ConstU32<2_000>;
+	type FullIdentification = u128;
+	type FullIdentificationOf = pallet_octopus_lpos::ExposureOf<Runtime>;
 }
 
 parameter_types! {
 	pub const ImOnlineUnsignedPriority: TransactionPriority = TransactionPriority::max_value();
-	/// We prioritize im-online heartbeats over election solution submission.
-	pub const StakingUnsignedPriority: TransactionPriority = TransactionPriority::max_value() / 2;
 	pub const MaxAuthorities: u32 = 100;
 	pub const MaxKeys: u32 = 10_000;
 	pub const MaxPeerInHeartbeats: u32 = 10_000;
@@ -579,7 +511,7 @@ impl pallet_im_online::Config for Runtime {
 impl pallet_offences::Config for Runtime {
 	type Event = Event;
 	type IdentificationTuple = pallet_session::historical::IdentificationTuple<Self>;
-	type OnOffenceHandler = Staking;
+	type OnOffenceHandler = ();
 }
 
 impl pallet_beefy::Config for Runtime {
@@ -632,10 +564,13 @@ parameter_types! {
 	pub const MetadataDepositPerByte: Balance = 1 * DOLLARS;
 }
 
-impl pallet_assets::Config for Runtime {
+pub type AssetBalance = u128;
+pub type AssetId = u32;
+
+impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type Event = Event;
-	type Balance = u128;
-	type AssetId = u32;
+	type Balance = AssetBalance;
+	type AssetId = AssetId;
 	type Currency = Balances;
 	type ForceOrigin = EnsureRoot<AccountId>;
 	type AssetDeposit = AssetDeposit;
@@ -656,10 +591,13 @@ parameter_types! {
 	pub const ValueLimit: u32 = 256;
 }
 
-impl pallet_uniques::Config for Runtime {
+type CollectionId = u128;
+type InstanceId = u128;
+
+impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type Event = Event;
-	type CollectionId = u32;
-	type ItemId = u32;
+	type CollectionId = CollectionId;
+	type ItemId = InstanceId;
 	type Currency = Balances;
 	type ForceOrigin = frame_system::EnsureRoot<AccountId>;
 	type CollectionDeposit = CollectionDeposit;
@@ -675,6 +613,74 @@ impl pallet_uniques::Config for Runtime {
 	type Helper = ();
 	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
 	type Locker = ();
+}
+
+pub struct OctopusAppCrypto;
+
+impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature>
+	for OctopusAppCrypto
+{
+	type RuntimeAppPublic = pallet_octopus_appchain::sr25519::AuthorityId;
+	type GenericSignature = sp_core::sr25519::Signature;
+	type GenericPublic = sp_core::sr25519::Public;
+}
+
+parameter_types! {
+	   pub const OctopusAppchainPalletId: PalletId = PalletId(*b"py/octps");
+	   pub const GracePeriod: u32 = 10;
+	   pub const UnsignedPriority: u64 = 1 << 21;
+	   pub const RequestEventLimit: u32 = 10;
+	   pub const UpwardMessagesLimit: u32 = 10;
+}
+
+impl pallet_octopus_appchain::Config for Runtime {
+	type AuthorityId = pallet_octopus_appchain::sr25519::AuthorityId;
+	type AppCrypto = OctopusAppCrypto;
+	type Event = Event;
+	type Call = Call;
+	type PalletId = OctopusAppchainPalletId;
+	type LposInterface = OctopusLpos;
+	type UpwardMessagesInterface = OctopusUpwardMessages;
+	type ClassId = CollectionId;
+	type InstanceId = InstanceId;
+	type Uniques = OctopusUniques;
+	type Convertor = ();
+	type Currency = Balances;
+	type Assets = OctopusAssets;
+	type AssetBalance = AssetBalance;
+	type AssetId = AssetId;
+	type AssetIdByTokenId = OctopusAppchain;
+	type GracePeriod = GracePeriod;
+	type UnsignedPriority = UnsignedPriority;
+	type RequestEventLimit = RequestEventLimit;
+	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
+}
+
+parameter_types! {
+	pub const SessionsPerEra: sp_staking::SessionIndex = 6;
+	pub const BondingDuration: pallet_octopus_lpos::EraIndex = 24 * 21;
+}
+
+impl pallet_octopus_lpos::Config for Runtime {
+	type Currency = Balances;
+	type UnixTime = Timestamp;
+	type Event = Event;
+	type Reward = (); // rewards are minted from the void
+	type SessionsPerEra = SessionsPerEra;
+	type BondingDuration = BondingDuration;
+	type SessionInterface = Self;
+	type AppchainInterface = OctopusAppchain;
+	type UpwardMessagesInterface = OctopusUpwardMessages;
+	type PalletId = OctopusAppchainPalletId;
+	type ValidatorsProvider = OctopusAppchain;
+	type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
+}
+
+impl pallet_octopus_upward_messages::Config for Runtime {
+	type Event = Event;
+	type Call = Call;
+	type UpwardMessagesLimit = UpwardMessagesLimit;
+	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
 
 impl pallet_sudo::Config for Runtime {
@@ -704,15 +710,18 @@ construct_runtime!(
 		Authorship: pallet_authorship,
 		Balances: pallet_balances,
 		TransactionPayment: pallet_transaction_payment,
-		Staking: pallet_staking,
+		// OctopusAppchain must be before session.
+		OctopusAppchain: pallet_octopus_appchain,
+		OctopusLpos: pallet_octopus_lpos,
+		OctopusUpwardMessages: pallet_octopus_upward_messages,
+		OctopusAssets: pallet_assets::<Instance1>,
+		OctopusUniques: pallet_uniques::<Instance1>,
 		Session: pallet_session,
 		Grandpa: pallet_grandpa,
 		ImOnline: pallet_im_online,
 		Offences: pallet_offences,
 		Historical: pallet_session_historical::{Pallet},
 		RandomnessCollectiveFlip: pallet_randomness_collective_flip,
-		Assets: pallet_assets,
-		Uniques: pallet_uniques,
 		Mmr: pallet_mmr,
 		Beefy: pallet_beefy,
 		MmrLeaf: pallet_beefy_mmr,
@@ -768,7 +777,6 @@ mod benches {
 		[pallet_mmr, Mmr]
 		[pallet_offences, OffencesBench::<Runtime>]
 		[pallet_session, SessionBench::<Runtime>]
-		[pallet_staking, Staking]
 		[frame_system, SystemBench::<Runtime>]
 		[pallet_timestamp, Timestamp]
 		[pallet_uniques, Uniques]
