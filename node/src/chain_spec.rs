@@ -1,4 +1,4 @@
-use node_template_runtime::{
+use appchain_barnacle_runtime::{
 	AccountId, BalancesConfig, GenesisConfig, GrandpaConfig, Signature, SudoConfig, SystemConfig,
 	WASM_BINARY,
 };
@@ -8,7 +8,7 @@ use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
 // + necessary pallets
-use node_template_runtime::{
+use appchain_barnacle_runtime::{
 	opaque::{Block, SessionKeys},
 	BabeConfig, Balance, ImOnlineConfig, SessionConfig, DOLLARS,
 };
@@ -21,7 +21,9 @@ use sp_consensus_babe::AuthorityId as BabeId;
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
-use node_template_runtime::{OctopusAppchainConfig, OctopusAssetsConfig, OctopusLposConfig, OCT};
+use appchain_barnacle_runtime::{
+	OctopusAppchainConfig, OctopusAssetsConfig, OctopusLposConfig, OCT,
+};
 use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
 
 // The URL for the telemetry server.
@@ -228,7 +230,7 @@ fn testnet_genesis(
 		},
 		babe: BabeConfig {
 			authorities: vec![],
-			epoch_config: Some(node_template_runtime::BABE_GENESIS_EPOCH_CONFIG),
+			epoch_config: Some(appchain_barnacle_runtime::BABE_GENESIS_EPOCH_CONFIG),
 		},
 		grandpa: GrandpaConfig { authorities: vec![] },
 		im_online: ImOnlineConfig { keys: vec![] },

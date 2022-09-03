@@ -4,8 +4,8 @@ use crate::{
 	cli::{Cli, Subcommand},
 	service::{self, new_partial, ExecutorDispatch, FullClient},
 };
+use appchain_barnacle_runtime::{Block, ExistentialDeposit};
 use frame_benchmarking_cli::{BenchmarkCmd, ExtrinsicFactory, SUBSTRATE_REFERENCE_HARDWARE};
-use node_template_runtime::{Block, ExistentialDeposit};
 use sc_cli::{ChainSpec, RuntimeVersion, SubstrateCli};
 use sc_service::PartialComponents;
 use sp_keyring::Sr25519Keyring;
@@ -14,7 +14,7 @@ use std::sync::Arc;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Substrate Node".into()
+		"Octopus Appchain Node".into()
 	}
 
 	fn impl_version() -> String {
@@ -34,7 +34,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn copyright_start_year() -> i32 {
-		2017
+		2019
 	}
 
 	fn load_spec(&self, id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
@@ -49,7 +49,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&node_template_runtime::VERSION
+		&appchain_barnacle_runtime::VERSION
 	}
 }
 
