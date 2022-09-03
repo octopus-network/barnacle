@@ -74,6 +74,17 @@ pub struct GrandpaDeps<B> {
 	pub finality_provider: Arc<FinalityProofProvider<B, Block>>,
 }
 
+use beefy_gadget::notification::{BeefyBestBlockStream, BeefyVersionedFinalityProofStream};
+/// Dependencies for BEEFY
+pub struct BeefyDeps {
+	/// Receives notifications about finality proof events from BEEFY.
+	pub beefy_finality_proof_stream: BeefyVersionedFinalityProofStream<Block>,
+	/// Receives notifications about best block events from BEEFY.
+	pub beefy_best_block_stream: BeefyBestBlockStream<Block>,
+	/// Executor to drive the subscription manager in the BEEFY RPC handler.
+	pub subscription_executor: sc_rpc::SubscriptionTaskExecutor,
+}
+
 /// Full client dependencies.
 pub struct FullDeps<C, P, SC, B> {
 	/// The client instance to use.
@@ -90,6 +101,8 @@ pub struct FullDeps<C, P, SC, B> {
 	pub babe: BabeDeps,
 	/// GRANDPA specific dependencies.
 	pub grandpa: GrandpaDeps<B>,
+	/// BEEFY specific dependencies.
+	pub beefy: BeefyDeps,
 }
 
 /// Instantiate all Full RPC extensions.
@@ -116,6 +129,7 @@ where
 	B: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	B::State: sc_client_api::backend::StateBackend<sp_runtime::traits::HashFor<Block>>,
 {
+	use beefy_gadget_rpc::{Beefy, BeefyApiServer};
 	use pallet_mmr_rpc::{Mmr, MmrApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use sc_consensus_babe_rpc::{Babe, BabeApiServer};
@@ -125,7 +139,8 @@ where
 	use substrate_frame_rpc_system::{System, SystemApiServer};
 
 	let mut io = RpcModule::new(());
-	let FullDeps { client, pool, select_chain, chain_spec, deny_unsafe, babe, grandpa } = deps;
+	let FullDeps { client, pool, select_chain, chain_spec, deny_unsafe, babe, grandpa, beefy } =
+		deps;
 
 	let BabeDeps { keystore, babe_config, shared_epoch_changes } = babe;
 	let GrandpaDeps {
@@ -167,6 +182,15 @@ where
 	io.merge(
 		SyncState::new(chain_spec, client.clone(), shared_authority_set, shared_epoch_changes)?
 			.into_rpc(),
+	)?;
+
+	io.merge(
+		Beefy::<Block>::new(
+			beefy.beefy_finality_proof_stream,
+			beefy.beefy_best_block_stream,
+			beefy.subscription_executor,
+		)?
+		.into_rpc(),
 	)?;
 
 	io.merge(Dev::new(client, deny_unsafe).into_rpc())?;

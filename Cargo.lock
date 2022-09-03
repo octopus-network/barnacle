@@ -378,6 +378,85 @@ dependencies = [
 ]
 
 [[package]]
+name = "beefy-gadget"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.28#34a0621761c4a333cb2074ff720f7acbfb92dbb8"
+dependencies = [
+ "async-trait",
+ "beefy-primitives",
+ "fnv",
+ "futures",
+ "futures-timer",
+ "hex",
+ "log",
+ "parity-scale-codec",
+ "parking_lot 0.12.1",
+ "sc-chain-spec",
+ "sc-client-api",
+ "sc-consensus",
+ "sc-finality-grandpa",
+ "sc-keystore",
+ "sc-network",
+ "sc-network-gossip",
+ "sc-utils",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-arithmetic",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-core",
+ "sp-keystore",
+ "sp-mmr-primitives",
+ "sp-runtime",
+ "substrate-prometheus-endpoint",
+ "thiserror",
+ "wasm-timer",
+]
+
+[[package]]
+name = "beefy-gadget-rpc"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.28#34a0621761c4a333cb2074ff720f7acbfb92dbb8"
+dependencies = [
+ "beefy-gadget",
+ "beefy-primitives",
+ "futures",
+ "jsonrpsee",
+ "log",
+ "parity-scale-codec",
+ "parking_lot 0.12.1",
+ "sc-rpc",
+ "sc-utils",
+ "serde",
+ "sp-core",
+ "sp-runtime",
+ "thiserror",
+]
+
+[[package]]
+name = "beefy-merkle-tree"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.28#34a0621761c4a333cb2074ff720f7acbfb92dbb8"
+dependencies = [
+ "beefy-primitives",
+ "sp-api",
+]
+
+[[package]]
+name = "beefy-primitives"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.28#34a0621761c4a333cb2074ff720f7acbfb92dbb8"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "bimap"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3780,6 +3859,9 @@ dependencies = [
 name = "node-template"
 version = "4.0.0-dev"
 dependencies = [
+ "beefy-gadget",
+ "beefy-gadget-rpc",
+ "beefy-primitives",
  "clap",
  "frame-benchmarking",
  "frame-benchmarking-cli",
@@ -3843,6 +3925,8 @@ dependencies = [
 name = "node-template-runtime"
 version = "4.0.0-dev"
 dependencies = [
+ "beefy-merkle-tree",
+ "beefy-primitives",
  "frame-benchmarking",
  "frame-election-provider-support",
  "frame-executive",
@@ -3857,6 +3941,8 @@ dependencies = [
  "pallet-authorship",
  "pallet-babe",
  "pallet-balances",
+ "pallet-beefy",
+ "pallet-beefy-mmr",
  "pallet-grandpa",
  "pallet-im-online",
  "pallet-mmr",
@@ -3878,6 +3964,7 @@ dependencies = [
  "sp-consensus-babe",
  "sp-core",
  "sp-inherents",
+ "sp-mmr-primitives",
  "sp-offchain",
  "sp-runtime",
  "sp-session",
@@ -4118,6 +4205,45 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "scale-info",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-beefy"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.28#34a0621761c4a333cb2074ff720f7acbfb92dbb8"
+dependencies = [
+ "beefy-primitives",
+ "frame-support",
+ "frame-system",
+ "pallet-session",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-beefy-mmr"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.28#34a0621761c4a333cb2074ff720f7acbfb92dbb8"
+dependencies = [
+ "beefy-merkle-tree",
+ "beefy-primitives",
+ "frame-support",
+ "frame-system",
+ "hex",
+ "log",
+ "pallet-beefy",
+ "pallet-mmr",
+ "pallet-session",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-core",
+ "sp-io",
  "sp-runtime",
  "sp-std",
 ]
