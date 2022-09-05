@@ -24,15 +24,33 @@ Barnacle EVM doesn't have any custom Substrate pallets. The key to this template
 
 You can set pre-fund accounts. It contains the accounts that will receive a starting balance for you to test your smart contracts. To create a account, you only need to omit the first two characters to the public Ethereum wallet. So instead of `0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac` you get `f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac`.
 
-You can modify the snippet below within the `node/src/chain_spec.rs` file to add your pre-fund accounts.
+For testnet, you can modify the snippet below within the `node/src/chain_spec.rs` file to add your pre-fund accounts.
 
 ```rust
 let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
   vec![AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap()]
 });
 ```
+For development environment, you can modify the snippet below in `development_config()` to add your pre-fund accounts:
 
-For more configurations, you can refer to the codes and make appropriate changes.
+```rust
+move || {
+  testnet_genesis(
+    wasm_binary,
+    // Initial PoA authorities
+    vec![authority_keys_from_seed("Alice")],
+    // Sudo account
+    AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+    // Pre-funded accounts
+    Some(
+      vec![AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap()],
+    ),
+    true,
+  )
+}
+```
+
+Also, you can modify the sudo account as you need. For more configurations, you can refer to the codes and make appropriate changes.
 
 Substrate will run an EVM smart contract platform, making it inherently interoperable with the Ethereum network. You can run any EVM-based smart contract within the EVM platform, like running it on an Ethereum Testnet or Mainnet.
 
