@@ -6,64 +6,43 @@ You can run any Solidity smart contract in Barnacle EVM, and use any Ethereum de
 
 ## Running the Barnacle EVM
 
-The Barnacle EVM template is a ready-to-use Appchain. To run the Appchain, you can execute
+The Barnacle EVM template is a ready-to-use Appchain. To run the Appchain, you can firstly build it:
 
 ```
-$ cargo run -- --dev --tmp
+cargo build --release
 ```
 
-You need the `--dev` and `--tmp` flags when you want to run the Appchain in your local development environment; otherwise, you can do the following:
+Then run it:
 
 ```
-$ cargo run --release
+./target/release/appchain-barnacle --dev --enable-offchain-indexing true
 ```
+
+Also, you can read these docs for more details:
+
++ about [`--dev`](https://docs.substrate.io/tutorials/get-started/build-local-blockchain/)
++ about [chain spec](https://docs.substrate.io/build/chain-spec/)
 
 ## How Barnacle EVM Works
 
-Barnacle EVM doesn't have any custom Substrate pallets. The key to this template is in the `node/Cargo.toml`, where you have the `pallet-evm` and `pallet-ethereum` dependencies. You can configure the dependencies within the `node/src/chain_spec.rs` file, specifically within the `GenesisConfig`.
+Barnacle EVM doesn't have any custom Substrate pallets. The key to this template is in the `node/Cargo.toml`, where you have the `pallet-evm` and `pallet-ethereum` dependencies.
 
-The main things you have to notice in the `GenesisConfig` is the `evm` configurations:
+You can modify the snippet below within the `node/src/chain_spec.rs` file to add your pre-funded accounts.
 
 ```rust
-evm: EVMConfig {
-	accounts: {
-		let mut map = BTreeMap::new();
-		map.insert(
-			// H160 address of Alice dev account
-			// Derived from SS58 (42 prefix) address
-			// SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-			// hex: 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d
-			// Using the full hex key, truncating to the first 20 bytes (the first 40 hex chars)
-			H160::from_str("8097c3C354652CB1EEed3E5B65fBa2576470678A")
-				.expect("internal H160 is valid; qed"),
-			pallet_evm::GenesisAccount {
-				balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
-					.expect("internal U256 is valid; qed"),
-				code: Default::default(),
-				nonce: Default::default(),
-				storage: Default::default(),
-			},
-		);
-		map.insert(
-			// H160 address of CI test runner account
-			H160::from_str("676873D38A2C5d41bb22BCe86e9F6cAFAee16176")
-				.expect("internal H160 is valid; qed"),
-			pallet_evm::GenesisAccount {
-				balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
-					.expect("internal U256 is valid; qed"),
-				code: Default::default(),
-				nonce: Default::default(),
-				storage: Default::default(),
-			},
-		);
-		map
-	},
-},
+// Pre-funded accounts
+Some(
+  vec![AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap()],
+)
+```
+Also, you can modify the sudo account as you need.
+
+```rust
+// Sudo account
+AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 ```
 
-It contains the accounts that will receive a starting balance for you to test your smart contracts. You insert a new `H160` account within the `EVMConfig` and you can set the account's status/balance using the `pallet_evm::GenesisAccount` configuration.
-
-Each `H160` address is the equivalent of the public address of an Ethereum wallet. For example, the address `0x676873D38A2C5d41bb22BCe86e9F6cAFAee16176` is an Ethereum address inserted as the second account. To create a `H160` address, you only need to omit the first two characters to the public Ethereum wallet. So instead of `0x676873D38A2C5d41bb22BCe86e9F6cAFAee16176` you get `676873D38A2C5d41bb22BCe86e9F6cAFAee16176`.
+Note that there are two identical configurations in the file, but the difference is the running environment. Modify the configurations in `development_config()` if you run as development environment. Modify the configurations in `local_testnet_config()` if you run as local testnet environment.
 
 Substrate will run an EVM smart contract platform, making it inherently interoperable with the Ethereum network. You can run any EVM-based smart contract within the EVM platform, like running it on an Ethereum Testnet or Mainnet.
 
