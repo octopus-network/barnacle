@@ -72,6 +72,9 @@ use sp_runtime::traits::Keccak256;
 use frame_support::PalletId;
 use sp_runtime::traits::ConvertInto;
 
+// + example_pallet
+// use sp_core::blake2_128;
+
 /// An index to a block.
 pub type BlockNumber = u32;
 
@@ -689,6 +692,42 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
+parameter_types! {
+    pub const ChainId: u8 = 1;
+    pub const ProposalLifetime: BlockNumber = 1000;
+}
+
+impl pallet_chainbridge::Config for Runtime {
+	type Event = Event;
+	type AdminOrigin = frame_system::EnsureRoot<Self::AccountId>;
+	type Proposal = Call;
+	type ChainId = ChainId;
+	type ProposalLifetime = ProposalLifetime;
+}
+
+
+parameter_types! {
+    pub HashId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(1, &sp_io::hashing::blake2_128(b"hash"));
+    // Note: Chain ID is 0 indicating this is native to another chain
+    pub NativeTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"DAV"));
+
+    pub NFTTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(1, &sp_io::hashing::blake2_128(b"NFT"));
+}
+
+impl example_erc721::Config for Runtime {
+	type Event = Event;
+	type Identifier = NFTTokenId;
+}
+
+impl example_pallet::Config for Runtime {
+	type Event = Event;
+	type BridgeOrigin = pallet_chainbridge::EnsureBridge<Runtime>;
+	type Currency = pallet_balances::Pallet<Runtime>;
+	type HashId = HashId;
+	type NativeTokenId = NativeTokenId;
+	type Erc721Id = NFTTokenId;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub struct Runtime
@@ -722,6 +761,9 @@ construct_runtime!(
 		Beefy: pallet_beefy,
 		MmrLeaf: pallet_beefy_mmr,
 		Sudo: pallet_sudo,
+		ChainBridge: pallet_chainbridge,
+		Example: example_pallet,
+		Erc721: example_erc721,
 	}
 );
 

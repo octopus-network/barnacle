@@ -68,9 +68,16 @@ pallet-beefy-mmr = { version = "4.0.0-dev", default-features = false, git = "htt
 sp-mmr-primitives = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
 
 # + octopus pallets
-pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
-pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
-pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge" }
+pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge" }
+
+# + Chainbridge pallets
+pallet-chainbridge = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge"}
+example-pallet = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge"}
+example-erc721 = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge"}
+sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
+
 
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
@@ -123,6 +130,10 @@ std = [
 	"pallet-octopus-appchain/std",
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
+	"pallet-chainbridge/std",
+	"example-pallet/std",
+	"example-erc721/std",
+	"sp-io/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",
