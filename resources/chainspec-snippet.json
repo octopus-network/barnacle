@@ -1,0 +1,104 @@
+{
+  "bootNodes": [
+    "/dns/bootnode-v1-0.barnacle0928.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWMxxSkNS9ezzX7dUgcm9YQdP31fG7sKaUM2Z7mjbAiXrU",
+    "/dns/bootnode-v1-1.barnacle0928.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWEmMpu193G5MrbrM6ww3tXwDf9XGqkNMxN52AJLE52Zxa",
+    "/dns/bootnode-v1-2.barnacle0928.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWBbxsMNCBaoNwWmgubsGmC6N54b14Vb8W8wQqSroHu363",
+    "/dns/bootnode-v1-3.barnacle0928.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWQBXM7RSPpFJdQ8hTgZfP4YLp5ppECnbDYrgyxNRCezPT"
+  ],
+  "genesis": {
+    "runtime": {
+      "balances": {
+        "balances": [
+          [
+            "5HidyHoVTSqbEfgLC9mJy89WvMHfoatkJDLNok8n9AwvLPdx",
+            510000000000000000000
+          ],
+          [
+            "5DLv2R1JAr1js5xss51FbsEA8EZUrtd5jCBkZV2yP7qGqHij",
+            10000000000000000000
+          ],
+          [
+            "5FLcpF9nSxGSHDEfkgsUEsRmEpCoVtJiSDTMs6iExgaTULd8",
+            10000000000000000000
+          ],
+          [
+            "5Dc4GTqmcKdZT3MRhUUYq26QkbQ4DKCkwuC9V6UyUFtGg6Fm",
+            10000000000000000000
+          ]
+        ]
+      },
+      "octopusAppchain": {
+        "validators": [
+          [
+            "5HidyHoVTSqbEfgLC9mJy89WvMHfoatkJDLNok8n9AwvLPdx",
+            50000000000000000000000
+          ],
+          [
+            "5DLv2R1JAr1js5xss51FbsEA8EZUrtd5jCBkZV2yP7qGqHij",
+            50000000000000000000000
+          ],
+          [
+            "5FLcpF9nSxGSHDEfkgsUEsRmEpCoVtJiSDTMs6iExgaTULd8",
+            50000000000000000000000
+          ],
+          [
+            "5Dc4GTqmcKdZT3MRhUUYq26QkbQ4DKCkwuC9V6UyUFtGg6Fm",
+            50000000000000000000000
+          ]
+        ]
+      },
+      "session": {
+        "keys": [
+          [
+            "5HidyHoVTSqbEfgLC9mJy89WvMHfoatkJDLNok8n9AwvLPdx",
+            "5HidyHoVTSqbEfgLC9mJy89WvMHfoatkJDLNok8n9AwvLPdx",
+            {
+              "babe": "5HjbBSBUxkfq6N7YWo9K25iBhipCUMuWadNfbvapV6F1Rzt2",
+              "grandpa": "5F9ZyJgbDVHete4LtQ66ELvnxmNY1V2YWtbszM5N6GPqNfdi",
+              "im_online": "5E1h2FFT1KzYz48AAkT5N5Q48BaRzNXdEACPiBEXnvNjpYSm",
+              "beefy": "KW9evx7TpuXPTqiDZDrvDWUnbSpj5GZKvzsVY6N12N9vqyDMg",
+              "octopus": "5G186mhKR1urqFJVQED2spd5hUvGguTfLCKhJgvwUfpQ416Q"
+            }
+          ],
+          [
+            "5DLv2R1JAr1js5xss51FbsEA8EZUrtd5jCBkZV2yP7qGqHij",
+            "5DLv2R1JAr1js5xss51FbsEA8EZUrtd5jCBkZV2yP7qGqHij",
+            {
+              "babe": "5E9tGYPKq5t6DFnbWm9T32VfV1KSc5gd6BCTn7w14AEYCf5Q",
+              "grandpa": "5EUU2er4ByLamYkKr8L8L55TYbvH2F9YtySvvpUBqLnCWfwV",
+              "im_online": "5FFHASVrEtq1UchAiwMCjsanvLmqrekLtXydsZeeqiwPmdw6",
+              "beefy": "KW9zZm55NmphsfHjHktaRSFePup17KLYrKGC9QNCZnRxC9ZLT",
+              "octopus": "5F1ze4fr8GhdhQJrLYL1bsWrfBAFBLZaUkHrRsW89NHRGVBT"
+            }
+          ],
+          [
+            "5FLcpF9nSxGSHDEfkgsUEsRmEpCoVtJiSDTMs6iExgaTULd8",
+            "5FLcpF9nSxGSHDEfkgsUEsRmEpCoVtJiSDTMs6iExgaTULd8",
+            {
+              "babe": "5EZRY1W5XvrabhXAfHNk8aqA2MN2gj2KJuuUJTFiPJxVrErY",
+              "grandpa": "5Dgi9jZLRL6X3VX2VKPU9CZXEoRWyqPMdu5FyfzzrKJTHCM9",
+              "im_online": "5CPNNh1wMTrALswEypmSWd8LPFPC1ybgxsafVENtEZyWyTy8",
+              "beefy": "KW9T7whb3Vxah2SepUG5GDQQh4he7WGSkGyf8g7AC6kBwYo4e",
+              "octopus": "5DDM1YahiqBYjyuEDnUrYLEr692rKZ4hgknFkfHYe9KwoWS2"
+            }
+          ],
+          [
+            "5Dc4GTqmcKdZT3MRhUUYq26QkbQ4DKCkwuC9V6UyUFtGg6Fm",
+            "5Dc4GTqmcKdZT3MRhUUYq26QkbQ4DKCkwuC9V6UyUFtGg6Fm",
+            {
+              "babe": "5CPBtfXSSjUUoxtwpw44MC2RnoDANWhfTo7Xnq7L3nsGfSMc",
+              "grandpa": "5FgeJ3twvVdsAFr7szkQ6zJh7oAo5Xeuq1f4DbnX7isPHniJ",
+              "im_online": "5HCHNNoNkZxArYE44KxQMCAsWSmU1feRSoAfLm8YuQAQm5tA",
+              "beefy": "KW4yeDCjCxJbmhsbeybFs76mhjR9hY2eTtszMECGp2zgVp2PW",
+              "octopus": "5Gdw6LWinyva1ewwP7AAVoBHPbc8CFo4ARPnWjYX8t9GNFDq"
+            }
+          ]
+        ]
+      },
+      "sudo": {
+        "key": "5HidyHoVTSqbEfgLC9mJy89WvMHfoatkJDLNok8n9AwvLPdx"
+      },
+      "anchorContract": "barnacle0928.registry.test_oct.testnet"
+    }
+  }
+}
