@@ -1,7 +1,7 @@
 {
   "name": "Barnacle",
   "id": "barnacle0928",
-  "chainType": "Development",
+  "chainType": "Live",
   "bootNodes": [
     "/dns/bootnode-v1-0.barnacle0928.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWMxxSkNS9ezzX7dUgcm9YQdP31fG7sKaUM2Z7mjbAiXrU",
     "/dns/bootnode-v1-1.barnacle0928.testnet.octopus.network/tcp/30333/ws/p2p/12D3KooWEmMpu193G5MrbrM6ww3tXwDf9XGqkNMxN52AJLE52Zxa",
