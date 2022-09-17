@@ -72,6 +72,9 @@ pallet-octopus-appchain = { default-features = false, git = "https://github.com/
 pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 
+# + benchmarking
+pallet-octopus-appchain-benchmarking = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main", optional = true }
+
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
 
@@ -134,6 +137,10 @@ runtime-benchmarks = [
 	"pallet-grandpa/runtime-benchmarks",
 	"pallet-timestamp/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
+	"pallet-octopus-appchain-benchmarking",
+	"pallet-uniques/runtime-benchmarks",
+	"pallet-octopus-lpos/runtime-benchmarks",
+	"pallet-octopus-upward-messages/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-executive/try-runtime",
@@ -147,4 +154,5 @@ try-runtime = [
 	"pallet-transaction-payment/try-runtime",
 
 	"pallet-babe/try-runtime",
+	"pallet-uniques/try-runtime",
 ]

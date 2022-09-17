@@ -590,15 +590,16 @@ parameter_types! {
 	pub const ItemDeposit: Balance = 1 * DOLLARS;
 	pub const KeyLimit: u32 = 32;
 	pub const ValueLimit: u32 = 256;
+	pub const DataLimit: u32 = 4096;
 }
 
 type CollectionId = u128;
-type InstanceId = u128;
+type ItemId = u128;
 
 impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type Event = Event;
 	type CollectionId = CollectionId;
-	type ItemId = InstanceId;
+	type ItemId = ItemId;
 	type Currency = Balances;
 	type ForceOrigin = frame_system::EnsureRoot<AccountId>;
 	type CollectionDeposit = CollectionDeposit;
@@ -606,7 +607,7 @@ impl pallet_uniques::Config<pallet_uniques::Instance1> for Runtime {
 	type MetadataDepositBase = MetadataDepositBase;
 	type AttributeDepositBase = MetadataDepositBase;
 	type DepositPerByte = MetadataDepositPerByte;
-	type StringLimit = StringLimit;
+	type StringLimit = DataLimit;
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type WeightInfo = pallet_uniques::weights::SubstrateWeight<Runtime>;
@@ -642,8 +643,8 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type PalletId = OctopusAppchainPalletId;
 	type LposInterface = OctopusLpos;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
-	type ClassId = CollectionId;
-	type InstanceId = InstanceId;
+	type CollectionId = CollectionId;
+	type ItemId = ItemId;
 	type Uniques = OctopusUniques;
 	type Convertor = ();
 	type Currency = Balances;
@@ -763,17 +764,10 @@ extern crate frame_benchmarking;
 mod benches {
 	define_benchmarks!(
 		[frame_benchmarking, BaselineBench::<Runtime>]
-		[pallet_assets, Assets]
-		[pallet_babe, Babe]
-		[pallet_balances, Balances]
-		[pallet_grandpa, Grandpa]
-		[pallet_im_online, ImOnline]
-		[pallet_mmr, Mmr]
-		[pallet_offences, OffencesBench::<Runtime>]
-		[pallet_session, SessionBench::<Runtime>]
 		[frame_system, SystemBench::<Runtime>]
-		[pallet_timestamp, Timestamp]
-		[pallet_uniques, Uniques]
+		[pallet_octopus_upward_messages, OctopusUpwardMessages]
+		[pallet_octopus_appchain, AppchainBench::<Runtime>]
+		[pallet_octopus_lpos, OctopusLpos]
 	);
 }
 
@@ -1063,6 +1057,7 @@ impl_runtime_apis! {
 			use frame_support::traits::StorageInfoTrait;
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use baseline::Pallet as BaselineBench;
+			use pallet_octopus_appchain_benchmarking::Pallet as AppchainBench;
 
 			let mut list = Vec::<BenchmarkList>::new();
 			list_benchmarks!(list, extra);
@@ -1079,9 +1074,11 @@ impl_runtime_apis! {
 
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use baseline::Pallet as BaselineBench;
+			use pallet_octopus_appchain_benchmarking::Pallet as AppchainBench;
 
 			impl frame_system_benchmarking::Config for Runtime {}
 			impl baseline::Config for Runtime {}
+			impl pallet_octopus_appchain_benchmarking::Config for Runtime {}
 
 			let whitelist: Vec<TrackedStorageKey> = vec![
 				// Block Number
