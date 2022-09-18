@@ -628,7 +628,7 @@ impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature>
 }
 
 parameter_types! {
-	   pub const OctopusAppchainPalletId: PalletId = PalletId(*b"py/octps");
+	   pub const OctopusPalletId: PalletId = PalletId(*b"py/octps");
 	   pub const GracePeriod: u32 = 10;
 	   pub const UnsignedPriority: u64 = 1 << 21;
 	   pub const RequestEventLimit: u32 = 10;
@@ -651,7 +651,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 
 impl pallet_octopus_bridge::Config for Runtime {
 	type Event = Event;
-	type PalletId = OctopusAppchainPalletId;
+	type PalletId = OctopusPalletId;
 	type Currency = Balances;
 	type AppchainInterface = OctopusAppchain;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
@@ -681,7 +681,7 @@ impl pallet_octopus_lpos::Config for Runtime {
 	type SessionInterface = Self;
 	type AppchainInterface = OctopusAppchain;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
-	type PalletId = OctopusAppchainPalletId;
+	type PalletId = OctopusPalletId;
 	type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
 }
 
