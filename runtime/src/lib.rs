@@ -651,7 +651,6 @@ impl pallet_octopus_appchain::Config for Runtime {
 
 impl pallet_octopus_bridge::Config for Runtime {
 	type Event = Event;
-	type Call = Call;
 	type PalletId = OctopusAppchainPalletId;
 	type Currency = Balances;
 	type AppchainInterface = OctopusAppchain;
@@ -689,7 +688,6 @@ impl pallet_octopus_lpos::Config for Runtime {
 
 impl pallet_octopus_upward_messages::Config for Runtime {
 	type Event = Event;
-	type Call = Call;
 	type UpwardMessagesLimit = UpwardMessagesLimit;
 	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
