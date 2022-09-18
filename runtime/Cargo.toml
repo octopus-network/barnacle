@@ -69,6 +69,7 @@ sp-mmr-primitives = { version = "4.0.0-dev", default-features = false, git = "ht
 
 # + octopus pallets
 pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-bridge = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 
@@ -124,6 +125,7 @@ std = [
 	"sp-mmr-primitives/std",
 
 	"pallet-octopus-appchain/std",
+	"pallet-octopus-bridge/std",
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
 ]

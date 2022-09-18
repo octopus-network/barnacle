@@ -640,22 +640,31 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type AppCrypto = OctopusAppCrypto;
 	type Event = Event;
 	type Call = Call;
-	type PalletId = OctopusAppchainPalletId;
+	type BridgeInterface = OctopusBridge;
 	type LposInterface = OctopusLpos;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
-	type CollectionId = CollectionId;
-	type ItemId = ItemId;
-	type Uniques = OctopusUniques;
-	type Convertor = ();
-	type Currency = Balances;
-	type Assets = OctopusAssets;
-	type AssetBalance = AssetBalance;
-	type AssetId = AssetId;
-	type AssetIdByTokenId = OctopusAppchain;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
 	type RequestEventLimit = RequestEventLimit;
 	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
+}
+
+impl pallet_octopus_bridge::Config for Runtime {
+	type Event = Event;
+	type Call = Call;
+	type PalletId = OctopusAppchainPalletId;
+	type Currency = Balances;
+	type AppchainInterface = OctopusAppchain;
+	type UpwardMessagesInterface = OctopusUpwardMessages;
+	type AssetIdByTokenId = OctopusBridge;
+	type AssetId = AssetId;
+	type AssetBalance = AssetBalance;
+	type Assets = OctopusAssets;
+	type CollectionId = CollectionId;
+	type ItemId = ItemId;
+	type Uniques = OctopusUniques;
+	type Convertor = ();
+	type WeightInfo = ();
 }
 
 parameter_types! {
@@ -709,6 +718,7 @@ construct_runtime!(
 		TransactionPayment: pallet_transaction_payment,
 		// OctopusAppchain must be before session.
 		OctopusAppchain: pallet_octopus_appchain,
+		OctopusBridge: pallet_octopus_bridge,
 		OctopusLpos: pallet_octopus_lpos,
 		OctopusUpwardMessages: pallet_octopus_upward_messages,
 		OctopusAssets: pallet_assets::<Instance1>,
