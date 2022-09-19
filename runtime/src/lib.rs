@@ -628,7 +628,7 @@ impl frame_system::offchain::AppCrypto<<Signature as Verify>::Signer, Signature>
 }
 
 parameter_types! {
-	   pub const OctopusAppchainPalletId: PalletId = PalletId(*b"py/octps");
+	   pub const OctopusPalletId: PalletId = PalletId(*b"py/octps");
 	   pub const GracePeriod: u32 = 10;
 	   pub const UnsignedPriority: u64 = 1 << 21;
 	   pub const RequestEventLimit: u32 = 10;
@@ -640,22 +640,30 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type AppCrypto = OctopusAppCrypto;
 	type Event = Event;
 	type Call = Call;
-	type PalletId = OctopusAppchainPalletId;
+	type BridgeInterface = OctopusBridge;
 	type LposInterface = OctopusLpos;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
-	type CollectionId = CollectionId;
-	type ItemId = ItemId;
-	type Uniques = OctopusUniques;
-	type Convertor = ();
-	type Currency = Balances;
-	type Assets = OctopusAssets;
-	type AssetBalance = AssetBalance;
-	type AssetId = AssetId;
-	type AssetIdByTokenId = OctopusAppchain;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
 	type RequestEventLimit = RequestEventLimit;
 	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
+}
+
+impl pallet_octopus_bridge::Config for Runtime {
+	type Event = Event;
+	type PalletId = OctopusPalletId;
+	type Currency = Balances;
+	type AppchainInterface = OctopusAppchain;
+	type UpwardMessagesInterface = OctopusUpwardMessages;
+	type AssetIdByTokenId = OctopusBridge;
+	type AssetId = AssetId;
+	type AssetBalance = AssetBalance;
+	type Fungibles = OctopusAssets;
+	type CollectionId = CollectionId;
+	type ItemId = ItemId;
+	type Nonfungibles = OctopusUniques;
+	type Convertor = ();
+	type WeightInfo = ();
 }
 
 parameter_types! {
@@ -673,14 +681,12 @@ impl pallet_octopus_lpos::Config for Runtime {
 	type SessionInterface = Self;
 	type AppchainInterface = OctopusAppchain;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
-	type PalletId = OctopusAppchainPalletId;
-	type ValidatorsProvider = OctopusAppchain;
+	type PalletId = OctopusPalletId;
 	type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
 }
 
 impl pallet_octopus_upward_messages::Config for Runtime {
 	type Event = Event;
-	type Call = Call;
 	type UpwardMessagesLimit = UpwardMessagesLimit;
 	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
@@ -709,6 +715,7 @@ construct_runtime!(
 		TransactionPayment: pallet_transaction_payment,
 		// OctopusAppchain must be before session.
 		OctopusAppchain: pallet_octopus_appchain,
+		OctopusBridge: pallet_octopus_bridge,
 		OctopusLpos: pallet_octopus_lpos,
 		OctopusUpwardMessages: pallet_octopus_upward_messages,
 		OctopusAssets: pallet_assets::<Instance1>,

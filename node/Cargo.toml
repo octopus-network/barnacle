@@ -90,6 +90,7 @@ beefy-gadget-rpc = { version = "4.0.0-dev", git = "https://github.com/paritytech
 
 # + octopus-pallets
 pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-bridge = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 
 [build-dependencies]
 substrate-build-script-utils = { version = "3.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }

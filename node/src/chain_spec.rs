@@ -22,7 +22,7 @@ use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
 use appchain_barnacle_runtime::{
-	OctopusAppchainConfig, OctopusAssetsConfig, OctopusLposConfig, OCT,
+	OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig, OctopusLposConfig, OCT,
 };
 use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
 
@@ -242,9 +242,11 @@ fn testnet_genesis(
 		beefy: Default::default(),
 		octopus_appchain: OctopusAppchainConfig {
 			anchor_contract: "octopus-anchor.testnet".to_string(),
-			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
 			validators,
+		},
+		octopus_bridge: OctopusBridgeConfig {
 			premined_amount: 1024 * DOLLARS,
+			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
 		octopus_assets: OctopusAssetsConfig {
