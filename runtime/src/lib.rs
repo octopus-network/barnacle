@@ -632,7 +632,6 @@ parameter_types! {
 	   pub const GracePeriod: u32 = 10;
 	   pub const UnsignedPriority: u64 = 1 << 21;
 	   pub const RequestEventLimit: u32 = 10;
-	   pub const UpwardMessagesLimit: u32 = 10;
 }
 
 impl pallet_octopus_appchain::Config for Runtime {
@@ -685,9 +684,16 @@ impl pallet_octopus_lpos::Config for Runtime {
 	type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
 }
 
+parameter_types! {
+	pub const MaxMessagePayloadSize: u32 = 256;
+	pub const MaxMessagesPerCommit: u32 = 20;
+}
+
 impl pallet_octopus_upward_messages::Config for Runtime {
 	type Event = Event;
-	type UpwardMessagesLimit = UpwardMessagesLimit;
+	type Hashing = Keccak256;
+	type MaxMessagePayloadSize = MaxMessagePayloadSize;
+	type MaxMessagesPerCommit = MaxMessagesPerCommit;
 	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
 
