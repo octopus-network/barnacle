@@ -658,10 +658,10 @@ impl pallet_octopus_bridge::Config for Runtime {
 	type AssetIdByTokenId = OctopusBridge;
 	type AssetId = AssetId;
 	type AssetBalance = AssetBalance;
-	type Assets = OctopusAssets;
+	type Fungibles = OctopusAssets;
 	type CollectionId = CollectionId;
 	type ItemId = ItemId;
-	type Uniques = OctopusUniques;
+	type Nonfungibles = OctopusUniques;
 	type Convertor = ();
 	type WeightInfo = ();
 }
