@@ -242,9 +242,7 @@ fn testnet_genesis(
 		beefy: Default::default(),
 		octopus_appchain: OctopusAppchainConfig {
 			anchor_contract: "octopus-anchor.testnet".to_string(),
-			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
-			validators,
-			premined_amount: 1024 * DOLLARS,
+			validators
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
 		octopus_assets: OctopusAssetsConfig {
@@ -256,5 +254,8 @@ fn testnet_genesis(
 				1000_000_000_000 * DOLLARS,
 			)],
 		},
+		octopus_bridge: Default::default(),
+		chain_bridge_transfer: Default::default(),
+		chain_bridge_assets: Default::default(),
 	}
 }

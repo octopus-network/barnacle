@@ -71,6 +71,7 @@ sp-mmr-primitives = { version = "4.0.0-dev", default-features = false, git = "ht
 pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1" }
 pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1" }
 pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1" }
+pallet-octopus-bridge = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1" }
 
 # + Chainbridge pallets
 pallet-chainbridge = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1"}
@@ -129,6 +130,7 @@ std = [
 	"pallet-octopus-appchain/std",
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
+	"pallet-octopus-bridge/std",
 	"pallet-chainbridge/std",
 	"pallet-chainbridge-transfer/std",
 	"sp-io/std",
