@@ -89,7 +89,7 @@ beefy-gadget = { version = "4.0.0-dev", git = "https://github.com/paritytech/sub
 beefy-gadget-rpc = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
 
 # + octopus-pallets
-pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge" }
+pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1" }
 
 [build-dependencies]
 substrate-build-script-utils = { version = "3.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }

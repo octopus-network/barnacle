@@ -588,6 +588,24 @@ impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
 }
 
+// + for chainbridgeAssets
+impl pallet_assets::Config<pallet_assets::Instance2> for Runtime {
+	type Event = Event;
+	type Balance = AssetBalance;
+	type AssetId = AssetId;
+	type Currency = Balances;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = AssetDeposit;
+	type AssetAccountDeposit = ConstU128<DOLLARS>;
+	type MetadataDepositBase = MetadataDepositBase;
+	type MetadataDepositPerByte = MetadataDepositPerByte;
+	type ApprovalDeposit = ApprovalDeposit;
+	type StringLimit = StringLimit;
+	type Freezer = ();
+	type Extra = ();
+	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+}
+
 parameter_types! {
 	pub const CollectionDeposit: Balance = 100 * DOLLARS;
 	pub const ItemDeposit: Balance = 1 * DOLLARS;
@@ -707,25 +725,19 @@ impl pallet_chainbridge::Config for Runtime {
 
 
 parameter_types! {
-    pub HashId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(1, &sp_io::hashing::blake2_128(b"hash"));
     // Note: Chain ID is 0 indicating this is native to another chain
-    pub NativeTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"DAV"));
-
-    pub NFTTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(1, &sp_io::hashing::blake2_128(b"NFT"));
+    pub NativeTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"BAR"));
 }
 
-impl example_erc721::Config for Runtime {
+impl pallet_chainbridge_transfer::Config for Runtime {
 	type Event = Event;
-	type Identifier = NFTTokenId;
-}
-
-impl example_pallet::Config for Runtime {
-	type Event = Event;
-	type BridgeOrigin = pallet_chainbridge::EnsureBridge<Runtime>;
-	type Currency = pallet_balances::Pallet<Runtime>;
-	type HashId = HashId;
+	type BridgeOrigin = pallet_chainbridge::EnsureBridge<Test>;
+	type Currency = Balances;
 	type NativeTokenId = NativeTokenId;
-	type Erc721Id = NFTTokenId;
+	type AssetId = AssetId;
+	type AssetBalance = AssetBalance;
+	type Assets = ChainBridgeAssets;
+	type AssetIdByName = ChainBridgeTransfer;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -761,9 +773,9 @@ construct_runtime!(
 		Beefy: pallet_beefy,
 		MmrLeaf: pallet_beefy_mmr,
 		Sudo: pallet_sudo,
+		ChainBridgeAssets: pallet_assets::<Instance2>,
 		ChainBridge: pallet_chainbridge,
-		Example: example_pallet,
-		Erc721: example_erc721,
+		ChainBridgeTransfer: pallet_chainbridge_transfer,
 	}
 );
 
