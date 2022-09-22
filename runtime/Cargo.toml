@@ -76,6 +76,7 @@ pallet-octopus-bridge = { default-features = false, git = "https://github.com/oc
 # + Chainbridge pallets
 pallet-chainbridge = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1"}
 pallet-chainbridge-transfer = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1"}
+pallet-chainbridge-erc721 = {default-features = false,  git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/add-chainbridge-v1"}
 sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.28" }
 
 
@@ -133,6 +134,7 @@ std = [
 	"pallet-octopus-bridge/std",
 	"pallet-chainbridge/std",
 	"pallet-chainbridge-transfer/std",
+	"pallet-chainbridge-erc721/std",
 	"sp-io/std",
 ]
 runtime-benchmarks = [

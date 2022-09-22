@@ -733,6 +733,14 @@ impl pallet_chainbridge::Config for Runtime {
 parameter_types! {
     // Note: Chain ID is 0 indicating this is native to another chain
     pub NativeTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"BAR"));
+	pub HashId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"hash"));
+	pub Erc721Id: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"NFT"));
+}
+
+
+impl pallet_chainbridge_erc721::Config for Runtime {
+	type Event = Event;
+	type Identifier = Erc721Id;
 }
 
 impl pallet_chainbridge_transfer::Config for Runtime {
@@ -742,8 +750,10 @@ impl pallet_chainbridge_transfer::Config for Runtime {
 	type NativeTokenId = NativeTokenId;
 	type AssetId = AssetId;
 	type AssetBalance = AssetBalance;
-	type Assets = ChainBridgeAssets;
+	type Fungibles = ChainBridgeAssets;
 	type AssetIdByName = ChainBridgeTransfer;
+	type HashId = HashId;
+	type Erc721Id = Erc721Id;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -783,6 +793,7 @@ construct_runtime!(
 		ChainBridgeAssets: pallet_assets::<Instance2>,
 		ChainBridge: pallet_chainbridge,
 		ChainBridgeTransfer: pallet_chainbridge_transfer,
+		Erc721: pallet_chainbridge_erc721,
 	}
 );
 
