@@ -22,7 +22,8 @@ use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
 use appchain_barnacle_runtime::{
-	OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig, OctopusLposConfig, OCT,
+	OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig, OctopusLposConfig,
+	OctopusUpwardMessagesConfig, OCT,
 };
 use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
 
@@ -249,6 +250,7 @@ fn testnet_genesis(
 			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
 		octopus_assets: OctopusAssetsConfig {
 			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
 			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
