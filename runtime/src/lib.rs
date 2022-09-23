@@ -644,6 +644,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type UpwardMessagesInterface = OctopusUpwardMessages;
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
+	type MaxValidators = MaxAuthorities;
 	type RequestEventLimit = RequestEventLimit;
 	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
 }
