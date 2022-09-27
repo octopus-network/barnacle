@@ -735,6 +735,7 @@ parameter_types! {
     pub NativeTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"BAR"));
 	pub HashId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"hash"));
 	pub Erc721Id: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"NFT"));
+	pub NativeTokenMaxValue : Balance = 1000_000_000_000_000_0000 * OCT; // need to set correct value
 }
 
 
@@ -752,6 +753,7 @@ impl pallet_chainbridge_transfer::Config for Runtime {
 	type AssetBalance = AssetBalance;
 	type Fungibles = ChainBridgeAssets;
 	type AssetIdByName = ChainBridgeTransfer;
+	type NativeTokenMaxValue = NativeTokenMaxValue;
 	type HashId = HashId;
 	type Erc721Id = Erc721Id;
 }
