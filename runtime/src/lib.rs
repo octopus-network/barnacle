@@ -525,6 +525,25 @@ impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
 }
 
+
+// + for chainbridgeAssets
+impl pallet_assets::Config<pallet_assets::Instance2> for Runtime {
+	type Event = Event;
+	type Balance = AssetBalance;
+	type AssetId = AssetId;
+	type Currency = Balances;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = AssetDeposit;
+	type AssetAccountDeposit = ConstU128<DOLLARS>;
+	type MetadataDepositBase = MetadataDepositBase;
+	type MetadataDepositPerByte = MetadataDepositPerByte;
+	type ApprovalDeposit = ApprovalDeposit;
+	type StringLimit = StringLimit;
+	type Freezer = ();
+	type Extra = ();
+	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+}
+
 parameter_types! {
 	pub const ClassDeposit: Balance = 100 * DOLLARS;
 	pub const InstanceDeposit: Balance = 1 * DOLLARS;
@@ -663,6 +682,48 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
+parameter_types! {
+    pub const ChainId: u8 = 1;
+    pub const ProposalLifetime: BlockNumber = 1000;
+}
+
+impl pallet_chainbridge::Config for Runtime {
+	type Event = Event;
+	type AdminOrigin = frame_system::EnsureRoot<Self::AccountId>;
+	type Proposal = Call;
+	type ChainId = ChainId;
+	type ProposalLifetime = ProposalLifetime;
+}
+
+
+parameter_types! {
+    // Note: Chain ID is 0 indicating this is native to another chain
+    pub NativeTokenId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"BAR"));
+	pub HashId: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"hash"));
+	pub Erc721Id: pallet_chainbridge::ResourceId = pallet_chainbridge::derive_resource_id(0, &sp_io::hashing::blake2_128(b"NFT"));
+	pub NativeTokenMaxValue: Balance = 100_000_000_000_000 * DOLLARS; // need corrent set
+}
+
+
+impl pallet_chainbridge_erc721::Config for Runtime {
+	type Event = Event;
+	type Identifier = Erc721Id;
+}
+
+impl pallet_chainbridge_transfer::Config for Runtime {
+	type Event = Event;
+	type BridgeOrigin = pallet_chainbridge::EnsureBridge<Runtime>;
+	type Currency = Balances;
+	type NativeTokenId = NativeTokenId;
+	type AssetId = AssetId;
+	type AssetBalance = AssetBalance;
+	type Fungibles = ChainBridgeAssets;
+	type AssetIdByName = ChainBridgeTransfer;
+	type NativeTokenMaxValue = NativeTokenMaxValue; 
+	type HashId = HashId;
+	type Erc721Id = Erc721Id;
+}
+
 /// Configure the pallet-template in pallets/template.
 impl pallet_template::Config for Runtime {
 	type Event = Event;
@@ -698,6 +759,10 @@ construct_runtime!(
 		Beefy: pallet_beefy,
 		MmrLeaf: pallet_beefy_mmr,
 		Sudo: pallet_sudo,
+		ChainBridgeAssets: pallet_assets::<Instance2>,
+		ChainBridge: pallet_chainbridge,
+		ChainBridgeTransfer: pallet_chainbridge_transfer,
+		Erc721: pallet_chainbridge_erc721,
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template,
 	}
