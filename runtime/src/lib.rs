@@ -781,6 +781,7 @@ mod benches {
 		[frame_system, SystemBench::<Runtime>]
 		[pallet_octopus_upward_messages, OctopusUpwardMessages]
 		[pallet_octopus_appchain, AppchainBench::<Runtime>]
+		[pallet_octopus_bridge, BridgeBench::<Runtime>]
 		[pallet_octopus_lpos, OctopusLpos]
 	);
 }
@@ -1072,6 +1073,7 @@ impl_runtime_apis! {
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use baseline::Pallet as BaselineBench;
 			use pallet_octopus_appchain_benchmarking::Pallet as AppchainBench;
+			use pallet_octopus_bridge_benchmarking::Pallet as BridgeBench;
 
 			let mut list = Vec::<BenchmarkList>::new();
 			list_benchmarks!(list, extra);
@@ -1089,10 +1091,12 @@ impl_runtime_apis! {
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use baseline::Pallet as BaselineBench;
 			use pallet_octopus_appchain_benchmarking::Pallet as AppchainBench;
+			use pallet_octopus_bridge_benchmarking::Pallet as BridgeBench;
 
 			impl frame_system_benchmarking::Config for Runtime {}
 			impl baseline::Config for Runtime {}
 			impl pallet_octopus_appchain_benchmarking::Config for Runtime {}
+			impl pallet_octopus_bridge_benchmarking::Config for Runtime {}
 
 			let whitelist: Vec<TrackedStorageKey> = vec![
 				// Block Number
