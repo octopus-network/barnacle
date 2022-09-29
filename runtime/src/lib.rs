@@ -670,6 +670,7 @@ parameter_types! {
 	   pub const UnsignedPriority: u64 = 1 << 21;
 	   pub const RequestEventLimit: u32 = 10;
 	   pub const UpwardMessagesLimit: u32 = 10;
+	   pub const MaxValidators: u32 = 10 ;
 }
 
 impl pallet_octopus_appchain::Config for Runtime {
@@ -683,19 +684,21 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type GracePeriod = GracePeriod;
 	type UnsignedPriority = UnsignedPriority;
 	type RequestEventLimit = RequestEventLimit;
+	type MaxValidators = MaxValidators;
 	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
 }
 
 parameter_types! {
 	pub const SessionsPerEra: sp_staking::SessionIndex = 6;
 	pub const BondingDuration: pallet_octopus_lpos::EraIndex = 24 * 21;
+	pub const MaxMessagePayloadSize:u32 = 256;
+	pub const MaxMessagesPerCommit: u32 = 20 ;
 }
 
 impl pallet_octopus_lpos::Config for Runtime {
 	type Currency = Balances;
 	type UnixTime = Timestamp;
 	type Event = Event;
-	type Reward = (); // rewards are minted from the void
 	type SessionsPerEra = SessionsPerEra;
 	type BondingDuration = BondingDuration;
 	type SessionInterface = Self;
@@ -707,8 +710,10 @@ impl pallet_octopus_lpos::Config for Runtime {
 
 impl pallet_octopus_upward_messages::Config for Runtime {
 	type Event = Event;
-	type UpwardMessagesLimit = UpwardMessagesLimit;
 	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
+	type MaxMessagePayloadSize = MaxMessagePayloadSize;
+	type MaxMessagesPerCommit = MaxMessagesPerCommit;
+	type Hashing = BlakeTwo256;
 }
 
 impl pallet_sudo::Config for Runtime {

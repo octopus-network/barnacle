@@ -257,5 +257,6 @@ fn testnet_genesis(
 		octopus_bridge: Default::default(),
 		chain_bridge_transfer: Default::default(),
 		chain_bridge_assets: Default::default(),
+		octopus_upward_messages: Default::default(),
 	}
 }
