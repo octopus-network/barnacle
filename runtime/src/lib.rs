@@ -767,7 +767,18 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPalletsWithSystem,
+	// This migration is used to set the interval value in the upward-messages. It should be
+	// deleted after the upgrade.
+	SetIntervalValueRuntimeUpgrade,
 >;
+
+pub struct SetIntervalValueRuntimeUpgrade;
+impl frame_support::traits::OnRuntimeUpgrade for SetIntervalValueRuntimeUpgrade {
+	fn on_runtime_upgrade() -> frame_support::weights::Weight {
+		// Please set the value of interval according to your own needs.
+		pallet_octopus_upward_messages::migrations::migration_to_v1::<Runtime>(1)
+	}
+}
 
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
