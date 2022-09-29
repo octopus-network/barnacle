@@ -55,9 +55,9 @@ pallet-uniques = { version = "4.0.0-dev", default-features = false, git = "https
 sp-consensus-babe = { version = "0.10.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 sp-staking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 
-pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-2" }
-pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-2" }
-pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-2" }
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-3" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-3" }
+pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-3" }
 
 # Used for the node template's RPCs
 frame-system-rpc-runtime-api = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
@@ -70,9 +70,9 @@ hex-literal = { version = "0.3.4", optional = true }
 
 	
 # + Chainbridge pallets
-pallet-chainbridge = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-2"}
-pallet-chainbridge-transfer = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-2"}
-pallet-chainbridge-erc721 = {default-features = false,  git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-2"}
+pallet-chainbridge = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-3"}
+pallet-chainbridge-transfer = {default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-3"}
+pallet-chainbridge-erc721 = {default-features = false,  git = "https://github.com/octopus-network/octopus-pallets.git", branch = "feature/chainbridge-base-v0.9.18-3"}
 sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.18" }
 
 
