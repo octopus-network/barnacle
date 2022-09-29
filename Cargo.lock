@@ -172,6 +172,9 @@ dependencies = [
  "pallet-balances",
  "pallet-beefy",
  "pallet-beefy-mmr",
+ "pallet-chainbridge",
+ "pallet-chainbridge-erc721",
+ "pallet-chainbridge-transfer",
  "pallet-grandpa",
  "pallet-im-online",
  "pallet-mmr",
@@ -194,6 +197,7 @@ dependencies = [
  "sp-consensus-babe",
  "sp-core",
  "sp-inherents",
+ "sp-io",
  "sp-offchain",
  "sp-runtime",
  "sp-session",
@@ -4224,6 +4228,60 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-chainbridge"
+version = "0.1.0"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-chainbridge-erc721"
+version = "0.1.0"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "hex",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-chainbridge-transfer"
+version = "0.1.0"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "hex",
+ "log",
+ "pallet-chainbridge",
+ "pallet-chainbridge-erc721",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-grandpa"
 version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.18#fc3fd073d3a0acf9933c3994b660ebd7b5833f65"
@@ -4319,7 +4377,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.18#929324c1c53d4353bbd89aa04e114c50a4f291fd"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
 dependencies = [
  "base64",
  "borsh",
@@ -4344,7 +4402,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.18#929324c1c53d4353bbd89aa04e114c50a4f291fd"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
 dependencies = [
  "borsh",
  "frame-benchmarking",
@@ -4366,7 +4424,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-support"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.18#929324c1c53d4353bbd89aa04e114c50a4f291fd"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
 dependencies = [
  "borsh",
  "frame-support",
@@ -4379,7 +4437,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-upward-messages"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.18#929324c1c53d4353bbd89aa04e114c50a4f291fd"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=feature/chainbridge-base-v0.9.18-3#67ee52dfc3878ad6a23c0d6b411a615fea3e32a5"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -8041,7 +8099,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "digest 0.10.3",
  "rand 0.8.5",
  "static_assertions",

@@ -238,5 +238,7 @@ fn testnet_genesis(
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
 		octopus_assets: Default::default(),
+		chain_bridge_transfer: Default::default(),
+		chain_bridge_assets: Default::default(),
 	}
 }
