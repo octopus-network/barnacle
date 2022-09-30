@@ -1,6 +1,6 @@
 use appchain_barnacle_runtime::{
 	AccountId, BalancesConfig, GenesisConfig, GrandpaConfig, Signature, SudoConfig, SystemConfig,
-	WASM_BINARY,
+	WASM_BINARY, OctopusUpwardMessagesConfig, OctopusBridgeConfig,
 };
 use sc_service::ChainType;
 use sp_core::{sr25519, Pair, Public};
@@ -254,9 +254,12 @@ fn testnet_genesis(
 				1000_000_000_000 * DOLLARS,
 			)],
 		},
-		octopus_bridge: Default::default(),
+		octopus_bridge: OctopusBridgeConfig {
+			premined_amount: 1024 * DOLLARS,
+			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
+		},
 		chain_bridge_transfer: Default::default(),
 		chain_bridge_assets: Default::default(),
-		octopus_upward_messages: Default::default(),
+		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
 	}
 }
