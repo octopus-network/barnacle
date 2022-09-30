@@ -772,11 +772,12 @@ pub type Executive = frame_executive::Executive<
 	SetIntervalValueRuntimeUpgrade,
 >;
 
+/// Please set the value of interval according to your own needs.
+const INTERVAL: u32 = 1;
 pub struct SetIntervalValueRuntimeUpgrade;
 impl frame_support::traits::OnRuntimeUpgrade for SetIntervalValueRuntimeUpgrade {
 	fn on_runtime_upgrade() -> frame_support::weights::Weight {
-		// Please set the value of interval according to your own needs.
-		pallet_octopus_upward_messages::migrations::migration_to_v1::<Runtime>(1)
+		pallet_octopus_upward_messages::migrations::migration_to_v1::<Runtime>(INTERVAL)
 	}
 }
 
