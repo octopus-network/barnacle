@@ -55,7 +55,6 @@ Start the development chain with detailed logging:
 ```bash
 RUST_BACKTRACE=1 ./target/release/appchain-barnacle -ldebug --dev --enable-offchain-indexing true
 ```
-
 ### Connect with Polkadot-JS Apps Front-end
 
 Once the node template is running locally, you can connect it with **Polkadot-JS Apps** front-end
