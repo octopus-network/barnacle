@@ -49,19 +49,21 @@ frame-system-benchmarking = { version = "4.0.0-dev", default-features = false, g
 pallet-babe = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sp-consensus-babe = { version = "0.10.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-mmr = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
-pallet-staking-reward-curve = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 log = { version = "0.4.17", default-features = false }
 static_assertions = "1.1.0"
 pallet-uniques = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-session = { version = "4.0.0-dev", default-features = false, features = [ "historical" ], git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
-pallet-staking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-offences = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-im-online = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-authorship = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-assets = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sp-staking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
-frame-election-provider-support = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
+# + octopus pallets
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-bridge = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
@@ -103,12 +105,22 @@ std = [
 	"log/std",
 	"pallet-uniques/std",
 	"pallet-session/std",
-	"pallet-staking/std",
 	"pallet-offences/std",
 	"pallet-im-online/std",
 	"pallet-authorship/std",
 	"pallet-assets/std",
 	"sp-staking/std",
+
+	"beefy-primitives/std",
+	"beefy-merkle-tree/std",
+	"pallet-beefy/std",
+	"pallet-beefy-mmr/std",
+	"sp-mmr-primitives/std",
+
+	"pallet-octopus-appchain/std",
+	"pallet-octopus-bridge/std",
+	"pallet-octopus-lpos/std",
+	"pallet-octopus-upward-messages/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",

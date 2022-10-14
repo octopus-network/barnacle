@@ -14,11 +14,18 @@ use appchain_barnacle_runtime::{
 	BabeConfig, Balance, ImOnlineConfig, SessionConfig, StakingConfig, DOLLARS,
 };
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
-use pallet_staking::StakerStatus;
 use sc_chain_spec::ChainSpecExtension;
 use serde::{Deserialize, Serialize};
 use sp_consensus_babe::AuthorityId as BabeId;
-use sp_runtime::Perbill;
+
+// + beefy
+use beefy_primitives::crypto::AuthorityId as BeefyId;
+
+// + octopus pallets
+use appchain_barnacle_runtime::{
+	OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig, OctopusLposConfig, OCT,
+};
+use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -51,8 +58,14 @@ pub fn octopus_mainnet_config() -> Result<ChainSpec, String> {
 	ChainSpec::from_json_bytes(&include_bytes!("../../resources/octopus-mainnet.json")[..])
 }
 
-fn session_keys(babe: BabeId, grandpa: GrandpaId, im_online: ImOnlineId) -> SessionKeys {
-	SessionKeys { babe, grandpa, im_online }
+fn session_keys(
+	babe: BabeId,
+	grandpa: GrandpaId,
+	im_online: ImOnlineId,
+	beefy: BeefyId,
+	octopus: OctopusId,
+) -> SessionKeys {
+	SessionKeys { babe, grandpa, im_online, beefy, octopus }
 }
 
 /// Generate a crypto pair from seed.
@@ -75,13 +88,14 @@ where
 /// Helper function to generate stash, controller and session key from seed
 pub fn authority_keys_from_seed(
 	seed: &str,
-) -> (AccountId, AccountId, BabeId, GrandpaId, ImOnlineId) {
+) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId) {
 	(
-		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", seed)),
 		get_account_id_from_seed::<sr25519::Public>(seed),
 		get_from_seed::<BabeId>(seed),
 		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<ImOnlineId>(seed),
+		get_from_seed::<BeefyId>(seed),
+		get_from_seed::<OctopusId>(seed),
 	)
 }
 
@@ -110,15 +124,12 @@ pub fn development_config() -> Result<ChainSpec, String> {
 				wasm_binary,
 				// Initial PoA authorities
 				vec![authority_keys_from_seed("Alice")],
-				vec![],
 				// Sudo account
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				// Pre-funded accounts
 				vec![
 					get_account_id_from_seed::<sr25519::Public>("Alice"),
 					get_account_id_from_seed::<sr25519::Public>("Bob"),
-					get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
 				],
 				true,
 			)
@@ -151,7 +162,6 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 				wasm_binary,
 				// Initial PoA authorities
 				vec![authority_keys_from_seed("Alice"), authority_keys_from_seed("Bob")],
-				vec![],
 				// Sudo account
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
 				// Pre-funded accounts
@@ -162,12 +172,6 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 					get_account_id_from_seed::<sr25519::Public>("Dave"),
 					get_account_id_from_seed::<sr25519::Public>("Eve"),
 					get_account_id_from_seed::<sr25519::Public>("Ferdie"),
-					get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
-					get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 				],
 				true,
 			)
@@ -189,33 +193,14 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 /// Configure initial storage state for FRAME modules.
 fn testnet_genesis(
 	wasm_binary: &[u8],
-	initial_authorities: Vec<(AccountId, AccountId, BabeId, GrandpaId, ImOnlineId)>,
-	initial_nominators: Vec<AccountId>,
+	initial_authorities: Vec<(AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId)>,
 	root_key: AccountId,
 	endowed_accounts: Vec<AccountId>,
 	_enable_println: bool,
 ) -> GenesisConfig {
 	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = ENDOWMENT / 1000;
-
-	// stakers: all validators and nominators.
-	let mut rng = rand::thread_rng();
-	let stakers = initial_authorities
-		.iter()
-		.map(|x| (x.0.clone(), x.1.clone(), STASH, StakerStatus::Validator))
-		.chain(initial_nominators.iter().map(|x| {
-			use rand::{seq::SliceRandom, Rng};
-			let limit = (16 as usize).min(initial_authorities.len());
-			let count = rng.gen::<usize>() % limit;
-			let nominations = initial_authorities
-				.as_slice()
-				.choose_multiple(&mut rng, count)
-				.into_iter()
-				.map(|choice| choice.0.clone())
-				.collect::<Vec<_>>();
-			(x.clone(), x.clone(), STASH, StakerStatus::Nominator(nominations))
-		}))
-		.collect::<Vec<_>>();
+	const STASH: Balance = 100 * OCT;
+	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 
 	GenesisConfig {
@@ -224,14 +209,24 @@ fn testnet_genesis(
 			code: wasm_binary.to_vec(),
 		},
 		balances: BalancesConfig {
-			// Configure endowed accounts with initial balance of 1 << 60.
+			// Configure endowed accounts with initial balance of ENDOWMENT.
 			balances: endowed_accounts.iter().cloned().map(|k| (k, ENDOWMENT)).collect(),
 		},
 		session: SessionConfig {
 			keys: initial_authorities
 				.iter()
 				.map(|x| {
-					(x.0.clone(), x.0.clone(), session_keys(x.2.clone(), x.3.clone(), x.4.clone()))
+					(
+						x.0.clone(),
+						x.0.clone(),
+						session_keys(
+							x.1.clone(),
+							x.2.clone(),
+							x.3.clone(),
+							x.4.clone(),
+							x.5.clone(),
+						),
+					)
 				})
 				.collect::<Vec<_>>(),
 		},
@@ -241,11 +236,29 @@ fn testnet_genesis(
 		},
 		grandpa: GrandpaConfig { authorities: vec![] },
 		im_online: ImOnlineConfig { keys: vec![] },
-		assets: Default::default(),
 		sudo: SudoConfig {
 			// Assign network admin rights.
 			key: Some(root_key),
 		},
 		transaction_payment: Default::default(),
+		beefy: Default::default(),
+		octopus_appchain: OctopusAppchainConfig {
+			anchor_contract: "octopus-anchor.testnet".to_string(),
+			validators,
+		},
+		octopus_bridge: OctopusBridgeConfig {
+			premined_amount: 1024 * DOLLARS,
+			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
+		},
+		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_assets: OctopusAssetsConfig {
+			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
+			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
+			accounts: vec![(
+				0,
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				1000_000_000_000 * DOLLARS,
+			)],
+		},
 	}
 }
