@@ -4,6 +4,7 @@ version = "0.9.30"
 description = "A minimal node template for octopus appchain."
 authors = ["Octopus Network <hi@oct.network>"]
 homepage = "https://oct.network/"
+edition = "2021"
 license = "Unlicense"
 publish = false
 repository = "https://github.com/octopus-network/barnacle/"
@@ -60,6 +61,7 @@ appchain-barnacle-runtime = { version = "0.9.30", path = "../runtime" }
 try-runtime-cli = { version = "0.10.0-dev", optional = true, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
 # + necessary pallets
+sc-consensus-babe = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sp-consensus-babe = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sc-consensus-epochs = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sp-keystore = { version = "0.12.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
@@ -80,6 +82,10 @@ sp-authorship = { version = "4.0.0-dev", git = "https://github.com/paritytech/su
 serde = { version = "1.0.136", features = ["derive"] }
 pallet-im-online = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 serde_json = "1.0.85"
+sp-transaction-storage-proof = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+pallet-transaction-payment = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+
+
 
 # + beefy
 beefy-primitives = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }

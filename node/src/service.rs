@@ -410,21 +410,20 @@ pub fn new_full_base(
 							*timestamp,
 							slot_duration,
 						);
-					
-					let storage_proof =
-						sp_transaction_storage_proof::registration::new_data_provider(
-							&*client_clone,
-							&parent,
-						)?;
 
-					// Ok((slot, timestamp, uncles))
-					Ok((slot, timestamp, uncles, storage_proof))
+					//let storage_proof =
+					//	sp_transaction_storage_proof::registration::new_data_provider(
+					//		&*client_clone,
+					//		&parent,
+					//	)?;
+
+					Ok((slot, timestamp, uncles))
+					//Ok((slot, timestamp, uncles, storage_proof))
 				}
 			},
 			force_authoring,
 			backoff_authoring_blocks,
 			babe_link,
-			can_author_with,
 			block_proposal_slot_portion: SlotProportion::new(0.5),
 			max_block_proposal_slot_portion: None,
 			telemetry: telemetry.as_ref().map(|x| x.handle()),

@@ -1,9 +1,8 @@
 use appchain_barnacle_runtime::{
-	AccountId, BalancesConfig, GenesisConfig, GrandpaConfig, Signature, SudoConfig,
-	SystemConfig, WASM_BINARY,
+	AccountId, BalancesConfig, GenesisConfig, GrandpaConfig, Signature, SudoConfig, SystemConfig,
+	WASM_BINARY,
 };
 use sc_service::ChainType;
-use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{sr25519, Pair, Public};
 use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{IdentifyAccount, Verify};
@@ -11,7 +10,7 @@ use sp_runtime::traits::{IdentifyAccount, Verify};
 // + necessary pallets
 use appchain_barnacle_runtime::{
 	opaque::{Block, SessionKeys},
-	BabeConfig, Balance, ImOnlineConfig, SessionConfig, StakingConfig, DOLLARS,
+	BabeConfig, Balance, ImOnlineConfig, SessionConfig, DOLLARS,
 };
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use sc_chain_spec::ChainSpecExtension;
@@ -23,7 +22,8 @@ use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
 use appchain_barnacle_runtime::{
-	OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig, OctopusLposConfig, OCT,
+	OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig, OctopusLposConfig,
+	OctopusUpwardMessagesConfig, OCT,
 };
 use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
 
@@ -202,7 +202,6 @@ fn testnet_genesis(
 	const STASH: Balance = 100 * OCT;
 	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
-
 	GenesisConfig {
 		system: SystemConfig {
 			// Add Wasm runtime to storage.
@@ -251,6 +250,7 @@ fn testnet_genesis(
 			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
 		octopus_assets: OctopusAssetsConfig {
 			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
 			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
