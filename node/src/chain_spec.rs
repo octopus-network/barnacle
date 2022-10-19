@@ -85,7 +85,7 @@ where
 	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
 }
 
-/// Helper function to generate controller and session key from seed
+/// Helper function to generate stash, controller and session key from seed
 pub fn authority_keys_from_seed(
 	seed: &str,
 ) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId) {
