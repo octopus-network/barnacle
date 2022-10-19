@@ -19,6 +19,12 @@ targets = ['x86_64-unknown-linux-gnu']
 [dependencies]
 static_assertions = '1.1.0'
 
+beefy-primitives = { git = 'https://github.com/paritytech/substrate', default-features = false , branch = 'polkadot-v0.9.30' }
+beefy-merkle-tree = { git = 'https://github.com/paritytech/substrate', default-features = false , branch = 'polkadot-v0.9.30' }
+pallet-beefy = { git = 'https://github.com/paritytech/substrate', default-features = false , branch = 'polkadot-v0.9.30' }
+pallet-beefy-mmr = { git = 'https://github.com/paritytech/substrate', default-features = false , branch = 'polkadot-v0.9.30' }
+sp-mmr-primitives = { git = 'https://github.com/paritytech/substrate', default-features = false , branch = 'polkadot-v0.9.30' }
+
 [dependencies.codec]
 default-features = false
 features = [
@@ -683,6 +689,10 @@ std = [
     'sp-io/std',
     'pallet-child-bounties/std',
     'pallet-alliance/std',
+    'pallet-beefy/std',
+    'pallet-beefy-mmr/std',
+    'beefy-primitives/std',
+    'sp-mmr-primitives/std',
 ]
 try-runtime = [
     'frame-try-runtime',

@@ -226,6 +226,9 @@ log = '0.4.17'
 rand = '0.8'
 serde_json = '1.0.85'
 
+beefy-primitives = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.30' }
+beefy-gadget = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.30' }
+
 [dependencies.clap]
 features = ['derive']
 optional = true
