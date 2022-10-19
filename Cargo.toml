@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    'bench',
+    'cli',
+    'executor',
+    'inspect',
+    'primitives',
+    'rpc',
+    'runtime',
+    'testing',
+]
+[profile.release]
+panic = 'unwind'
