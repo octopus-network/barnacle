@@ -22,8 +22,8 @@ use crate::{
 	service::{new_partial, FullClient},
 	Cli, Subcommand,
 };
+use appchain_barnacle_runtime::{ExistentialDeposit, RuntimeApi};
 use frame_benchmarking_cli::*;
-use kitchensink_runtime::{ExistentialDeposit, RuntimeApi};
 use node_executor::ExecutorDispatch;
 use node_primitives::Block;
 use sc_cli::{ChainSpec, Result, RuntimeVersion, SubstrateCli};
@@ -34,7 +34,7 @@ use std::sync::Arc;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Substrate Node".into()
+		"Octopus Appchain Node".into()
 	}
 
 	fn impl_version() -> String {
@@ -50,11 +50,11 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/paritytech/substrate/issues/new".into()
+		"support.anonymous.an".into()
 	}
 
 	fn copyright_start_year() -> i32 {
-		2017
+		2019
 	}
 
 	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
@@ -66,7 +66,8 @@ impl SubstrateCli for Cli {
 				),
 			"dev" => Box::new(chain_spec::development_config()),
 			"local" => Box::new(chain_spec::local_testnet_config()),
-			"fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
+			"octopus-testnet" => Box::new(chain_spec::octopus_testnet_config()?),
+			"octopus-mainnet" => Box::new(chain_spec::octopus_mainnet_config()?),
 			path =>
 				Box::new(chain_spec::ChainSpec::from_json_file(std::path::PathBuf::from(path))?),
 		};
@@ -74,7 +75,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&kitchensink_runtime::VERSION
+		&appchain_barnacle_runtime::VERSION
 	}
 }
 

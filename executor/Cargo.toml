@@ -10,9 +10,9 @@ branch = 'polkadot-v0.9.30'
 git = 'https://github.com/paritytech/substrate.git'
 version = '4.0.0-dev'
 
-[dependencies.kitchensink-runtime]
+[dependencies.appchain-barnacle-runtime]
 path = '../runtime'
-version = '3.0.0-dev'
+version = '0.9.30'
 
 [dependencies.node-primitives]
 path = '../primitives'
@@ -60,7 +60,7 @@ homepage = 'https://substrate.io'
 license = 'Apache-2.0'
 name = 'node-executor'
 repository = 'https://github.com/paritytech/substrate/'
-version = '3.0.0-dev'
+version = '0.9.30'
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
 

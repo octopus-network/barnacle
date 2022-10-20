@@ -4,15 +4,15 @@ git = 'https://github.com/paritytech/substrate.git'
 version = '5.0.0-dev'
 
 [package]
-authors = ['Parity Technologies <admin@parity.io>']
+authors = ['Octopus Network <hi@oct.network>']
 build = 'build.rs'
-description = 'Substrate node kitchensink runtime.'
+description = 'Octopus appchain node barnacle runtime.'
 edition = '2021'
-homepage = 'https://substrate.io'
+homepage = 'https://oct.network/'
 license = 'Apache-2.0'
-name = 'kitchensink-runtime'
-repository = 'https://github.com/paritytech/substrate/'
-version = '3.0.0-dev'
+name = 'appchain-barnacle-runtime'
+repository = 'https://github.com/octopus-network/barnacle/'
+version = '0.9.30'
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
 

@@ -1,18 +1,9 @@
 [[bin]]
-name = 'substrate'
+name = 'appchain-barnacle'
 path = 'bin/main.rs'
 required-features = ['cli']
 [badges.is-it-maintained-issue-resolution]
-repository = 'paritytech/substrate'
-
-[badges.is-it-maintained-open-issues]
-repository = 'paritytech/substrate'
-
-[badges.maintenance]
-status = 'actively-developed'
-
-[badges.travis-ci]
-repository = 'paritytech/substrate'
+repository = 'https://github.com/octopus-network/barnacle/'
 
 [features]
 cli = [
@@ -28,18 +19,18 @@ cli = [
 ]
 default = ['cli']
 runtime-benchmarks = [
-    'kitchensink-runtime/runtime-benchmarks',
+    'appchain-barnacle-runtime/runtime-benchmarks',
     'frame-benchmarking-cli/runtime-benchmarks',
 ]
 try-runtime = [
-    'kitchensink-runtime/try-runtime',
+    'appchain-barnacle-runtime/try-runtime',
     'try-runtime-cli',
 ]
 
 [target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.node-executor]
 features = ['wasmtime']
 path = '../executor'
-version = '3.0.0-dev'
+version = '0.9.30'
 
 [target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.sc-cli]
 features = ['wasmtime']
@@ -144,16 +135,16 @@ features = [
 version = '1.17.0'
 
 [package]
-authors = ['Parity Technologies <admin@parity.io>']
+authors = ['Octopus Network <hi@oct.network>']
 build = 'build.rs'
-default-run = 'substrate'
-description = 'Generic Substrate node implementation in Rust.'
+default-run = 'appchain-barnacle'
+description = 'A minimal node template for octopus appchain.'
 edition = '2021'
-homepage = 'https://substrate.io'
+homepage = 'https://oct.network/'
 license = 'GPL-3.0-or-later WITH Classpath-exception-2.0'
-name = 'node-cli'
-repository = 'https://github.com/paritytech/substrate/'
-version = '3.0.0-dev'
+name = 'appchain-cli'
+repository = 'https://github.com/octopus-network/barnacle/'
+version = '0.9.30'
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
 [package.metadata.wasm-pack.profile.release]
@@ -263,13 +254,13 @@ version = '4.0.0-dev'
 features = ['server']
 version = '0.15.1'
 
-[dependencies.kitchensink-runtime]
+[dependencies.appchain-barnacle-runtime]
 path = '../runtime'
-version = '3.0.0-dev'
+version = '0.9.30'
 
 [dependencies.node-executor]
 path = '../executor'
-version = '3.0.0-dev'
+version = '0.9.30'
 
 [dependencies.node-inspect]
 optional = true
@@ -282,7 +273,7 @@ version = '2.0.0'
 
 [dependencies.node-rpc]
 path = '../rpc'
-version = '3.0.0-dev'
+version = '0.9.30'
 
 [dependencies.pallet-im-online]
 branch = 'polkadot-v0.9.30'

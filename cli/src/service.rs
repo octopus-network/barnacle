@@ -20,9 +20,9 @@
 
 //! Service implementation. Specialized wrapper over substrate service.
 
+use appchain_barnacle_runtime::RuntimeApi;
 use codec::Encode;
 use frame_system_rpc_runtime_api::AccountNonceApi;
-use kitchensink_runtime::RuntimeApi;
 use node_executor::ExecutorDispatch;
 use node_primitives::Block;
 use sc_client_api::BlockBackend;
@@ -69,43 +69,43 @@ pub fn fetch_nonce(client: &FullClient, account: sp_core::sr25519::Pair) -> u32 
 pub fn create_extrinsic(
 	client: &FullClient,
 	sender: sp_core::sr25519::Pair,
-	function: impl Into<kitchensink_runtime::RuntimeCall>,
+	function: impl Into<appchain_barnacle_runtime::RuntimeCall>,
 	nonce: Option<u32>,
-) -> kitchensink_runtime::UncheckedExtrinsic {
+) -> appchain_barnacle_runtime::UncheckedExtrinsic {
 	let function = function.into();
 	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
 	let best_hash = client.chain_info().best_hash;
 	let best_block = client.chain_info().best_number;
 	let nonce = nonce.unwrap_or_else(|| fetch_nonce(client, sender.clone()));
 
-	let period = kitchensink_runtime::BlockHashCount::get()
+	let period = appchain_barnacle_runtime::BlockHashCount::get()
 		.checked_next_power_of_two()
 		.map(|c| c / 2)
 		.unwrap_or(2) as u64;
 	let tip = 0;
-	let extra: kitchensink_runtime::SignedExtra = (
-		frame_system::CheckNonZeroSender::<kitchensink_runtime::Runtime>::new(),
-		frame_system::CheckSpecVersion::<kitchensink_runtime::Runtime>::new(),
-		frame_system::CheckTxVersion::<kitchensink_runtime::Runtime>::new(),
-		frame_system::CheckGenesis::<kitchensink_runtime::Runtime>::new(),
-		frame_system::CheckEra::<kitchensink_runtime::Runtime>::from(generic::Era::mortal(
-			period,
-			best_block.saturated_into(),
-		)),
-		frame_system::CheckNonce::<kitchensink_runtime::Runtime>::from(nonce),
-		frame_system::CheckWeight::<kitchensink_runtime::Runtime>::new(),
-		pallet_transaction_payment::ChargeTransactionPayment::<kitchensink_runtime::Runtime>::from(
-			tip,
-		),
-	);
+	let extra: appchain_barnacle_runtime::SignedExtra =
+		(
+			frame_system::CheckNonZeroSender::<appchain_barnacle_runtime::Runtime>::new(),
+			frame_system::CheckSpecVersion::<appchain_barnacle_runtime::Runtime>::new(),
+			frame_system::CheckTxVersion::<appchain_barnacle_runtime::Runtime>::new(),
+			frame_system::CheckGenesis::<appchain_barnacle_runtime::Runtime>::new(),
+			frame_system::CheckEra::<appchain_barnacle_runtime::Runtime>::from(
+				generic::Era::mortal(period, best_block.saturated_into()),
+			),
+			frame_system::CheckNonce::<appchain_barnacle_runtime::Runtime>::from(nonce),
+			frame_system::CheckWeight::<appchain_barnacle_runtime::Runtime>::new(),
+			pallet_transaction_payment::ChargeTransactionPayment::<
+				appchain_barnacle_runtime::Runtime,
+			>::from(tip),
+		);
 
-	let raw_payload = kitchensink_runtime::SignedPayload::from_raw(
+	let raw_payload = appchain_barnacle_runtime::SignedPayload::from_raw(
 		function.clone(),
 		extra.clone(),
 		(
 			(),
-			kitchensink_runtime::VERSION.spec_version,
-			kitchensink_runtime::VERSION.transaction_version,
+			appchain_barnacle_runtime::VERSION.spec_version,
+			appchain_barnacle_runtime::VERSION.transaction_version,
 			genesis_hash,
 			best_hash,
 			(),
@@ -115,10 +115,10 @@ pub fn create_extrinsic(
 	);
 	let signature = raw_payload.using_encoded(|e| sender.sign(e));
 
-	kitchensink_runtime::UncheckedExtrinsic::new_signed(
+	appchain_barnacle_runtime::UncheckedExtrinsic::new_signed(
 		function,
 		sp_runtime::AccountId32::from(sender.public()).into(),
-		kitchensink_runtime::Signature::Sr25519(signature),
+		appchain_barnacle_runtime::Signature::Sr25519(signature),
 		extra,
 	)
 }
@@ -566,11 +566,11 @@ pub fn new_full(
 #[cfg(test)]
 mod tests {
 	use crate::service::{new_full_base, NewFullBase};
-	use codec::Encode;
-	use kitchensink_runtime::{
+	use appchain_barnacle_runtime::{
 		constants::{currency::CENTS, time::SLOT_DURATION},
 		Address, BalancesCall, RuntimeCall, UncheckedExtrinsic,
 	};
+	use codec::Encode;
 	use node_primitives::{Block, DigestItem, Signature};
 	use sc_client_api::BlockBackend;
 	use sc_consensus::{BlockImport, BlockImportParams, ForkChoiceStrategy};

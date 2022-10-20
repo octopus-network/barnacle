@@ -15,16 +15,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use appchain_barnacle_runtime::{
+	constants::{currency::*, time::SLOT_DURATION},
+	Balances, CheckedExtrinsic, Multiplier, Runtime, RuntimeCall, TransactionByteFee,
+	TransactionPayment,
+};
 use codec::{Encode, Joiner};
 use frame_support::{
 	dispatch::GetDispatchInfo,
 	traits::Currency,
 	weights::{constants::ExtrinsicBaseWeight, IdentityFee, WeightToFee},
-};
-use kitchensink_runtime::{
-	constants::{currency::*, time::SLOT_DURATION},
-	Balances, CheckedExtrinsic, Multiplier, Runtime, RuntimeCall, TransactionByteFee,
-	TransactionPayment,
 };
 use node_primitives::Balance;
 use node_testing::keyring::*;

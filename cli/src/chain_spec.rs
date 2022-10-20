@@ -18,11 +18,11 @@
 
 //! Substrate chain configurations.
 
-use grandpa_primitives::AuthorityId as GrandpaId;
-use kitchensink_runtime::{
+use appchain_barnacle_runtime::{
 	constants::currency::*, wasm_binary_unwrap, BabeConfig, BalancesConfig, Block, GrandpaConfig,
 	ImOnlineConfig, SessionConfig, SessionKeys, SudoConfig, SystemConfig,
 };
+use grandpa_primitives::AuthorityId as GrandpaId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use sc_chain_spec::ChainSpecExtension;
 use sc_service::ChainType;
@@ -31,14 +31,14 @@ use sp_consensus_babe::AuthorityId as BabeId;
 use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
-pub use kitchensink_runtime::GenesisConfig;
+pub use appchain_barnacle_runtime::GenesisConfig;
 pub use node_primitives::{AccountId, Balance, Signature};
 
 // +beefy
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
-use kitchensink_runtime::{
+use appchain_barnacle_runtime::{
 	constants::currency::OCT, OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig,
 	OctopusLposConfig, OctopusUpwardMessagesConfig,
 };
@@ -63,9 +63,15 @@ pub struct Extensions {
 
 /// Specialized `ChainSpec`.
 pub type ChainSpec = sc_service::GenericChainSpec<GenesisConfig, Extensions>;
-/// Flaming Fir testnet generator
-pub fn flaming_fir_config() -> Result<ChainSpec, String> {
-	ChainSpec::from_json_bytes(&include_bytes!("../res/flaming-fir.json")[..])
+
+/// Octopus testnet generator
+pub fn octopus_testnet_config() -> Result<ChainSpec, String> {
+	ChainSpec::from_json_bytes(&include_bytes!("../res/octopus-testnet.json")[..])
+}
+
+/// Octopus mainnet generator
+pub fn octopus_mainnet_config() -> Result<ChainSpec, String> {
+	ChainSpec::from_json_bytes(&include_bytes!("../res/octopus-mainnet.json")[..])
 }
 
 fn session_keys(
@@ -105,6 +111,17 @@ pub fn authority_keys_from_seed(
 		get_from_seed::<BeefyId>(seed),
 		get_from_seed::<OctopusId>(seed),
 	)
+}
+
+fn barnacle_chain_spec_properties() -> serde_json::map::Map<String, serde_json::Value> {
+	serde_json::json!({
+		"ss58Format": 42,
+		"tokenDecimals": 18,
+		"tokenSymbol": "BAR",
+	})
+	.as_object()
+	.expect("Map given; qed")
+	.clone()
 }
 
 /// Helper function to create GenesisConfig for testing
@@ -155,7 +172,7 @@ pub fn testnet_genesis(
 		sudo: SudoConfig { key: Some(root_key) },
 		babe: BabeConfig {
 			authorities: vec![],
-			epoch_config: Some(kitchensink_runtime::BABE_GENESIS_EPOCH_CONFIG),
+			epoch_config: Some(appchain_barnacle_runtime::BABE_GENESIS_EPOCH_CONFIG),
 		},
 		im_online: ImOnlineConfig { keys: vec![] },
 		grandpa: GrandpaConfig { authorities: vec![] },
@@ -199,9 +216,12 @@ pub fn development_config() -> ChainSpec {
 		development_config_genesis,
 		vec![],
 		None,
+		// Protocol ID
+		Some("bar"),
 		None,
-		None,
-		None,
+		// Properties
+		Some(barnacle_chain_spec_properties()),
+		// Extensions
 		Default::default(),
 	)
 }
@@ -223,9 +243,12 @@ pub fn local_testnet_config() -> ChainSpec {
 		local_testnet_genesis,
 		vec![],
 		None,
+		// Protocol ID
+		Some("bar"),
 		None,
-		None,
-		None,
+		// Properties
+		Some(barnacle_chain_spec_properties()),
+		// Extensions
 		Default::default(),
 	)
 }
@@ -254,9 +277,12 @@ pub(crate) mod tests {
 			local_testnet_genesis_instant_single,
 			vec![],
 			None,
+			// Protocol ID
+			Some("bar"),
 			None,
-			None,
-			None,
+			// Properties
+			Some(barnacle_chain_spec_properties()),
+			// Extensions
 			Default::default(),
 		)
 	}
@@ -270,9 +296,12 @@ pub(crate) mod tests {
 			local_testnet_genesis,
 			vec![],
 			None,
+			// Protocol ID
+			Some("bar"),
 			None,
-			None,
-			None,
+			// Properties
+			Some(barnacle_chain_spec_properties()),
+			// Extensions
 			Default::default(),
 		)
 	}

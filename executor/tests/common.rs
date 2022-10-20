@@ -34,7 +34,7 @@ use sp_runtime::{
 };
 use sp_state_machine::TestExternalities as CoreTestExternalities;
 
-use kitchensink_runtime::{
+use appchain_barnacle_runtime::{
 	constants::currency::*, Block, BuildStorage, CheckedExtrinsic, Header, Runtime,
 	UncheckedExtrinsic,
 };
@@ -68,7 +68,7 @@ impl AppCrypto<MultiSigner, MultiSignature> for TestAuthorityId {
 /// making the binary slimmer. There is a convention to use compact version of the runtime
 /// as canonical.
 pub fn compact_code_unwrap() -> &'static [u8] {
-	kitchensink_runtime::WASM_BINARY.expect(
+	appchain_barnacle_runtime::WASM_BINARY.expect(
 		"Development wasm binary is not available. Testing is only supported with the flag \
 		 disabled.",
 	)
@@ -76,9 +76,9 @@ pub fn compact_code_unwrap() -> &'static [u8] {
 
 pub const GENESIS_HASH: [u8; 32] = [69u8; 32];
 
-pub const SPEC_VERSION: u32 = kitchensink_runtime::VERSION.spec_version;
+pub const SPEC_VERSION: u32 = appchain_barnacle_runtime::VERSION.spec_version;
 
-pub const TRANSACTION_VERSION: u32 = kitchensink_runtime::VERSION.transaction_version;
+pub const TRANSACTION_VERSION: u32 = appchain_barnacle_runtime::VERSION.transaction_version;
 
 pub type TestExternalities<H> = CoreTestExternalities<H>;
 
