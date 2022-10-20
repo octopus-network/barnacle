@@ -79,10 +79,6 @@ branch = 'polkadot-v0.9.30'
 git = 'https://github.com/paritytech/substrate.git'
 version = '4.0.0-dev'
 
-[dev-dependencies.node-testing]
-path = '../testing'
-version = '3.0.0-dev'
-
 [dev-dependencies.pallet-balances]
 branch = 'polkadot-v0.9.30'
 git = 'https://github.com/paritytech/substrate.git'
@@ -142,7 +138,3 @@ version = '6.0.0'
 branch = 'polkadot-v0.9.30'
 git = 'https://github.com/paritytech/substrate.git'
 version = '6.0.0'
-
-[[bench]]
-harness = false
-name = 'bench'

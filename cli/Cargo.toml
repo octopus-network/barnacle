@@ -36,13 +36,6 @@ try-runtime = [
     'try-runtime-cli',
 ]
 
-[[bench]]
-harness = false
-name = 'transaction_pool'
-
-[[bench]]
-harness = false
-name = 'block_production'
 [target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.node-executor]
 features = ['wasmtime']
 path = '../executor'
@@ -221,13 +214,13 @@ crate-type = [
 
 [dependencies]
 array-bytes = '4.1'
-futures = '0.3.21'
 log = '0.4.17'
-rand = '0.8'
 serde_json = '1.0.85'
 
 beefy-primitives = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.30' }
 beefy-gadget = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.30' }
+
+pallet-octopus-appchain = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'main' }
 
 [dependencies.clap]
 features = ['derive']
@@ -291,11 +284,6 @@ version = '2.0.0'
 path = '../rpc'
 version = '3.0.0-dev'
 
-[dependencies.pallet-asset-tx-payment]
-branch = 'polkadot-v0.9.30'
-git = 'https://github.com/paritytech/substrate.git'
-version = '4.0.0-dev'
-
 [dependencies.pallet-im-online]
 branch = 'polkadot-v0.9.30'
 default-features = false
@@ -306,11 +294,6 @@ version = '4.0.0-dev'
 branch = 'polkadot-v0.9.30'
 git = 'https://github.com/paritytech/substrate.git'
 version = '4.0.0-dev'
-
-[dependencies.sc-authority-discovery]
-branch = 'polkadot-v0.9.30'
-git = 'https://github.com/paritytech/substrate.git'
-version = '0.10.0-dev'
 
 [dependencies.sc-basic-authorship]
 branch = 'polkadot-v0.9.30'
@@ -464,11 +447,6 @@ git = 'https://github.com/paritytech/substrate.git'
 version = '4.0.0-dev'
 
 [dependencies.sp-transaction-pool]
-branch = 'polkadot-v0.9.30'
-git = 'https://github.com/paritytech/substrate.git'
-version = '4.0.0-dev'
-
-[dependencies.sp-transaction-storage-proof]
 branch = 'polkadot-v0.9.30'
 git = 'https://github.com/paritytech/substrate.git'
 version = '4.0.0-dev'

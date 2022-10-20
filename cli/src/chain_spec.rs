@@ -20,29 +20,29 @@
 
 use grandpa_primitives::AuthorityId as GrandpaId;
 use kitchensink_runtime::{
-	constants::currency::*, wasm_binary_unwrap, AuthorityDiscoveryConfig, BabeConfig,
-	BalancesConfig, Block, CouncilConfig, DemocracyConfig, ElectionsConfig, GrandpaConfig,
-	ImOnlineConfig, IndicesConfig, MaxNominations, NominationPoolsConfig, SessionConfig,
-	SessionKeys, SocietyConfig, StakerStatus, StakingConfig, SudoConfig, SystemConfig,
-	TechnicalCommitteeConfig,
+	constants::currency::*, wasm_binary_unwrap, BabeConfig, BalancesConfig, Block, GrandpaConfig,
+	ImOnlineConfig, SessionConfig, SessionKeys, SudoConfig, SystemConfig,
 };
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use sc_chain_spec::ChainSpecExtension;
 use sc_service::ChainType;
 use serde::{Deserialize, Serialize};
-use sp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
 use sp_consensus_babe::AuthorityId as BabeId;
 use sp_core::{sr25519, Pair, Public};
-use sp_runtime::{
-	traits::{IdentifyAccount, Verify},
-	Perbill,
-};
+use sp_runtime::traits::{IdentifyAccount, Verify};
 
 pub use kitchensink_runtime::GenesisConfig;
 pub use node_primitives::{AccountId, Balance, Signature};
 
 // +beefy
 use beefy_primitives::crypto::AuthorityId as BeefyId;
+
+// + octopus pallets
+use kitchensink_runtime::{
+	constants::currency::OCT, OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig,
+	OctopusLposConfig, OctopusUpwardMessagesConfig,
+};
+use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
 
 type AccountPublic = <Signature as Verify>::Signer;
 
@@ -69,13 +69,13 @@ pub fn flaming_fir_config() -> Result<ChainSpec, String> {
 }
 
 fn session_keys(
-	grandpa: GrandpaId,
 	babe: BabeId,
+	grandpa: GrandpaId,
 	im_online: ImOnlineId,
-	authority_discovery: AuthorityDiscoveryId,
 	beefy: BeefyId,
+	octopus: OctopusId,
 ) -> SessionKeys {
-	SessionKeys { grandpa, babe, im_online, authority_discovery, beefy }
+	SessionKeys { babe, grandpa, im_online, beefy, octopus }
 }
 
 /// Helper function to generate a crypto pair from seed
@@ -93,37 +93,27 @@ where
 	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
 }
 
-/// Helper function to generate stash, controller and session key from seed
+/// Helper function to generate controller and session key from seed
 pub fn authority_keys_from_seed(
 	seed: &str,
-) -> (AccountId, AccountId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId, BeefyId) {
+) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId) {
 	(
-		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", seed)),
 		get_account_id_from_seed::<sr25519::Public>(seed),
-		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<BabeId>(seed),
+		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<ImOnlineId>(seed),
-		get_from_seed::<AuthorityDiscoveryId>(seed),
 		get_from_seed::<BeefyId>(seed),
+		get_from_seed::<OctopusId>(seed),
 	)
 }
 
 /// Helper function to create GenesisConfig for testing
 pub fn testnet_genesis(
-	initial_authorities: Vec<(
-		AccountId,
-		AccountId,
-		GrandpaId,
-		BabeId,
-		ImOnlineId,
-		AuthorityDiscoveryId,
-		BeefyId,
-	)>,
-	initial_nominators: Vec<AccountId>,
+	initial_authorities: Vec<(AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId)>,
 	root_key: AccountId,
 	endowed_accounts: Option<Vec<AccountId>>,
 ) -> GenesisConfig {
-	let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
+	let endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
 		vec![
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
 			get_account_id_from_seed::<sr25519::Public>("Bob"),
@@ -131,48 +121,12 @@ pub fn testnet_genesis(
 			get_account_id_from_seed::<sr25519::Public>("Dave"),
 			get_account_id_from_seed::<sr25519::Public>("Eve"),
 			get_account_id_from_seed::<sr25519::Public>("Ferdie"),
-			get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 		]
 	});
-	// endow all authorities and nominators.
-	initial_authorities
-		.iter()
-		.map(|x| &x.0)
-		.chain(initial_nominators.iter())
-		.for_each(|x| {
-			if !endowed_accounts.contains(x) {
-				endowed_accounts.push(x.clone())
-			}
-		});
-
-	// stakers: all validators and nominators.
-	let mut rng = rand::thread_rng();
-	let stakers = initial_authorities
-		.iter()
-		.map(|x| (x.0.clone(), x.1.clone(), STASH, StakerStatus::Validator))
-		.chain(initial_nominators.iter().map(|x| {
-			use rand::{seq::SliceRandom, Rng};
-			let limit = (MaxNominations::get() as usize).min(initial_authorities.len());
-			let count = rng.gen::<usize>() % limit;
-			let nominations = initial_authorities
-				.as_slice()
-				.choose_multiple(&mut rng, count)
-				.into_iter()
-				.map(|choice| choice.0.clone())
-				.collect::<Vec<_>>();
-			(x.clone(), x.clone(), STASH, StakerStatus::Nominator(nominations))
-		}))
-		.collect::<Vec<_>>();
-
-	let num_endowed_accounts = endowed_accounts.len();
 
 	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = ENDOWMENT / 1000;
+	const STASH: Balance = 100 * OCT;
+	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 	GenesisConfig {
 		system: SystemConfig { code: wasm_binary_unwrap().to_vec() },
@@ -180,7 +134,6 @@ pub fn testnet_genesis(
 			balances: endowed_accounts.iter().cloned().map(|x| (x, ENDOWMENT)).collect(),
 		},
 		beefy: Default::default(),
-		indices: IndicesConfig { indices: vec![] },
 		session: SessionConfig {
 			keys: initial_authorities
 				.iter()
@@ -189,41 +142,15 @@ pub fn testnet_genesis(
 						x.0.clone(),
 						x.0.clone(),
 						session_keys(
+							x.1.clone(),
 							x.2.clone(),
 							x.3.clone(),
 							x.4.clone(),
 							x.5.clone(),
-							x.6.clone(),
 						),
 					)
 				})
 				.collect::<Vec<_>>(),
-		},
-		staking: StakingConfig {
-			validator_count: initial_authorities.len() as u32,
-			minimum_validator_count: initial_authorities.len() as u32,
-			invulnerables: initial_authorities.iter().map(|x| x.0.clone()).collect(),
-			slash_reward_fraction: Perbill::from_percent(10),
-			stakers,
-			..Default::default()
-		},
-		democracy: DemocracyConfig::default(),
-		elections: ElectionsConfig {
-			members: endowed_accounts
-				.iter()
-				.take((num_endowed_accounts + 1) / 2)
-				.cloned()
-				.map(|member| (member, STASH))
-				.collect(),
-		},
-		council: CouncilConfig::default(),
-		technical_committee: TechnicalCommitteeConfig {
-			members: endowed_accounts
-				.iter()
-				.take((num_endowed_accounts + 1) / 2)
-				.cloned()
-				.collect(),
-			phantom: Default::default(),
 		},
 		sudo: SudoConfig { key: Some(root_key) },
 		babe: BabeConfig {
@@ -231,30 +158,26 @@ pub fn testnet_genesis(
 			epoch_config: Some(kitchensink_runtime::BABE_GENESIS_EPOCH_CONFIG),
 		},
 		im_online: ImOnlineConfig { keys: vec![] },
-		authority_discovery: AuthorityDiscoveryConfig { keys: vec![] },
 		grandpa: GrandpaConfig { authorities: vec![] },
-		technical_membership: Default::default(),
-		treasury: Default::default(),
-		society: SocietyConfig {
-			members: endowed_accounts
-				.iter()
-				.take((num_endowed_accounts + 1) / 2)
-				.cloned()
-				.collect(),
-			pot: 0,
-			max_members: 999,
-		},
-		vesting: Default::default(),
-		assets: Default::default(),
-		gilt: Default::default(),
-		transaction_storage: Default::default(),
 		transaction_payment: Default::default(),
-		alliance: Default::default(),
-		alliance_motion: Default::default(),
-		nomination_pools: NominationPoolsConfig {
-			min_create_bond: 10 * DOLLARS,
-			min_join_bond: 1 * DOLLARS,
-			..Default::default()
+		octopus_appchain: OctopusAppchainConfig {
+			anchor_contract: "octopus-anchor.testnet".to_string(),
+			validators,
+		},
+		octopus_bridge: OctopusBridgeConfig {
+			premined_amount: 1024 * DOLLARS,
+			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
+		},
+		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
+		octopus_assets: OctopusAssetsConfig {
+			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
+			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
+			accounts: vec![(
+				0,
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				1000_000_000_000 * DOLLARS,
+			)],
 		},
 	}
 }
@@ -262,7 +185,6 @@ pub fn testnet_genesis(
 fn development_config_genesis() -> GenesisConfig {
 	testnet_genesis(
 		vec![authority_keys_from_seed("Alice")],
-		vec![],
 		get_account_id_from_seed::<sr25519::Public>("Alice"),
 		None,
 	)
@@ -287,7 +209,6 @@ pub fn development_config() -> ChainSpec {
 fn local_testnet_genesis() -> GenesisConfig {
 	testnet_genesis(
 		vec![authority_keys_from_seed("Alice"), authority_keys_from_seed("Bob")],
-		vec![],
 		get_account_id_from_seed::<sr25519::Public>("Alice"),
 		None,
 	)
@@ -319,7 +240,6 @@ pub(crate) mod tests {
 	fn local_testnet_genesis_instant_single() -> GenesisConfig {
 		testnet_genesis(
 			vec![authority_keys_from_seed("Alice")],
-			vec![],
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
 			None,
 		)
