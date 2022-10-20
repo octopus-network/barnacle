@@ -1,0 +1,56 @@
+[package]
+authors = ['Parity Technologies <admin@parity.io>']
+description = 'Substrate node low-level primitives.'
+edition = '2021'
+homepage = 'https://substrate.io'
+license = 'Apache-2.0'
+name = 'node-primitives'
+repository = 'https://github.com/paritytech/substrate/'
+version = '2.0.0'
+[package.metadata.docs.rs]
+targets = ['x86_64-unknown-linux-gnu']
+[dependencies.codec]
+default-features = false
+features = ['derive']
+package = 'parity-scale-codec'
+version = '3.0.0'
+
+[dependencies.frame-system]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.scale-info]
+default-features = false
+features = ['derive']
+version = '2.1.1'
+
+[dependencies.sp-application-crypto]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dependencies.sp-core]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dependencies.sp-runtime]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[features]
+default = ['std']
+std = [
+    'codec/std',
+    'frame-system/std',
+    'scale-info/std',
+    'sp-application-crypto/std',
+    'sp-core/std',
+    'sp-runtime/std',
+]

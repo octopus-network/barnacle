@@ -1,7 +1,11 @@
 [workspace]
 members = [
-    "node",
-    "runtime",
+    'cli',
+    'executor',
+    'inspect',
+    'primitives',
+    'rpc',
+    'runtime',
 ]
 [profile.release]
-panic = "unwind"
+panic = 'unwind'

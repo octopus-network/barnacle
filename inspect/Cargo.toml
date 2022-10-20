@@ -1,0 +1,58 @@
+[package]
+authors = ['Parity Technologies <admin@parity.io>']
+description = 'Substrate node block inspection tool.'
+edition = '2021'
+homepage = 'https://substrate.io'
+license = 'GPL-3.0-or-later WITH Classpath-exception-2.0'
+name = 'node-inspect'
+repository = 'https://github.com/paritytech/substrate/'
+version = '0.9.0-dev'
+[package.metadata.docs.rs]
+targets = ['x86_64-unknown-linux-gnu']
+
+[dependencies]
+thiserror = '1.0'
+
+[dependencies.clap]
+features = ['derive']
+version = '3.1.6'
+
+[dependencies.codec]
+package = 'parity-scale-codec'
+version = '3.0.0'
+
+[dependencies.sc-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-client-api]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-executor]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-service]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sp-blockchain]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sp-core]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dependencies.sp-runtime]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'

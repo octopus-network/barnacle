@@ -1,0 +1,449 @@
+[[bin]]
+name = 'appchain-barnacle'
+path = 'bin/main.rs'
+required-features = ['cli']
+[badges.is-it-maintained-issue-resolution]
+repository = 'https://github.com/octopus-network/barnacle/'
+
+[features]
+cli = [
+    'node-inspect',
+    'sc-cli',
+    'frame-benchmarking-cli',
+    'substrate-frame-cli',
+    'sc-service/rocksdb',
+    'clap',
+    'clap_complete',
+    'substrate-build-script-utils',
+    'try-runtime-cli',
+]
+default = ['cli']
+runtime-benchmarks = [
+    'appchain-barnacle-runtime/runtime-benchmarks',
+    'frame-benchmarking-cli/runtime-benchmarks',
+]
+try-runtime = [
+    'appchain-barnacle-runtime/try-runtime',
+    'try-runtime-cli',
+]
+
+[target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.node-executor]
+features = ['wasmtime']
+path = '../executor'
+version = '0.9.30'
+
+[target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.sc-cli]
+features = ['wasmtime']
+optional = true
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.sc-service]
+default-features = false
+features = ['wasmtime']
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[target."cfg(any(target_arch=\"x86_64\", target_arch=\"aarch64\"))".dependencies.sp-trie]
+default-features = false
+features = ['memory-tracker']
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dev-dependencies]
+assert_cmd = '2.0.2'
+futures = '0.3.21'
+nix = '0.23'
+platforms = '2.0'
+regex = '1.5.5'
+serde_json = '1.0'
+soketto = '0.7.1'
+tempfile = '3.1.0'
+wait-timeout = '0.2'
+
+[dev-dependencies.async-std]
+features = ['attributes']
+version = '1.11.0'
+
+[dev-dependencies.criterion]
+features = ['async_tokio']
+version = '0.3.5'
+
+[dev-dependencies.pallet-timestamp]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dev-dependencies.remote-externalities]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+
+[dev-dependencies.sc-block-builder]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dev-dependencies.sc-client-db]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dev-dependencies.sc-consensus]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dev-dependencies.sc-consensus-babe]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dev-dependencies.sc-consensus-epochs]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dev-dependencies.sc-keystore]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dev-dependencies.sc-service-test]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '2.0.0'
+
+[dev-dependencies.sp-blockchain]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dev-dependencies.sp-tracing]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '5.0.0'
+
+[dev-dependencies.tokio]
+features = [
+    'macros',
+    'time',
+    'parking_lot',
+]
+version = '1.17.0'
+
+[package]
+authors = ['Octopus Network <hi@oct.network>']
+build = 'build.rs'
+default-run = 'appchain-barnacle'
+description = 'A minimal node template for octopus appchain.'
+edition = '2021'
+homepage = 'https://oct.network/'
+license = 'GPL-3.0-or-later WITH Classpath-exception-2.0'
+name = 'appchain-cli'
+repository = 'https://github.com/octopus-network/barnacle/'
+version = '0.9.30'
+[package.metadata.docs.rs]
+targets = ['x86_64-unknown-linux-gnu']
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+[build-dependencies.clap]
+optional = true
+version = '3.1.18'
+
+[build-dependencies.clap_complete]
+optional = true
+version = '3.0'
+
+[build-dependencies.frame-benchmarking-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '4.0.0-dev'
+
+[build-dependencies.node-inspect]
+optional = true
+path = '../inspect'
+version = '0.9.0-dev'
+
+[build-dependencies.pallet-balances]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[build-dependencies.sc-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '0.10.0-dev'
+
+[build-dependencies.substrate-build-script-utils]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '3.0.0'
+
+[build-dependencies.substrate-frame-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '4.0.0-dev'
+
+[build-dependencies.try-runtime-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '0.10.0-dev'
+
+[lib]
+crate-type = [
+    'cdylib',
+    'rlib',
+]
+
+[dependencies]
+array-bytes = '4.1'
+log = '0.4.17'
+serde_json = '1.0.85'
+
+beefy-primitives = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.30' }
+beefy-gadget = { git = 'https://github.com/paritytech/substrate', branch = 'polkadot-v0.9.30' }
+
+pallet-octopus-appchain = { git = 'https://github.com/octopus-network/octopus-pallets.git', branch = 'main' }
+
+[dependencies.clap]
+features = ['derive']
+optional = true
+version = '3.1.18'
+
+[dependencies.codec]
+package = 'parity-scale-codec'
+version = '3.0.0'
+
+[dependencies.frame-benchmarking-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '4.0.0-dev'
+
+[dependencies.frame-system]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.frame-system-rpc-runtime-api]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.grandpa]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+package = 'sc-finality-grandpa'
+version = '0.10.0-dev'
+
+[dependencies.grandpa-primitives]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+package = 'sp-finality-grandpa'
+version = '4.0.0-dev'
+
+[dependencies.jsonrpsee]
+features = ['server']
+version = '0.15.1'
+
+[dependencies.appchain-barnacle-runtime]
+path = '../runtime'
+version = '0.9.30'
+
+[dependencies.node-executor]
+path = '../executor'
+version = '0.9.30'
+
+[dependencies.node-inspect]
+optional = true
+path = '../inspect'
+version = '0.9.0-dev'
+
+[dependencies.node-primitives]
+path = '../primitives'
+version = '2.0.0'
+
+[dependencies.node-rpc]
+path = '../rpc'
+version = '0.9.30'
+
+[dependencies.pallet-im-online]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.pallet-transaction-payment]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-basic-authorship]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-chain-spec]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '0.10.0-dev'
+
+[dependencies.sc-client-api]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-consensus]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-consensus-babe]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-consensus-slots]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-consensus-uncles]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-executor]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-network]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-network-common]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-rpc]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-service]
+branch = 'polkadot-v0.9.30'
+default-features = false
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-sync-state-rpc]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sc-sysinfo]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0-dev'
+
+[dependencies.sc-telemetry]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-transaction-pool]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sc-transaction-pool-api]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.serde]
+features = ['derive']
+version = '1.0.136'
+
+[dependencies.sp-api]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sp-authority-discovery]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sp-authorship]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sp-consensus]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sp-consensus-babe]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.10.0-dev'
+
+[dependencies.sp-core]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dependencies.sp-inherents]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sp-keyring]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dependencies.sp-keystore]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '0.12.0'
+
+[dependencies.sp-runtime]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '6.0.0'
+
+[dependencies.sp-timestamp]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.sp-transaction-pool]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+version = '4.0.0-dev'
+
+[dependencies.try-runtime-cli]
+branch = 'polkadot-v0.9.30'
+git = 'https://github.com/paritytech/substrate.git'
+optional = true
+version = '0.10.0-dev'
