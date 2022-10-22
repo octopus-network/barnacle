@@ -34,7 +34,7 @@ use sp_runtime::traits::{IdentifyAccount, Verify};
 pub use appchain_barnacle_runtime::GenesisConfig;
 pub use node_primitives::{AccountId, Balance, Signature};
 
-// +beefy
+// + beefy
 use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
@@ -193,7 +193,7 @@ pub fn testnet_genesis(
 			accounts: vec![(
 				0,
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				1000_000_000_000 * DOLLARS,
+				1_000_000_000_000 * DOLLARS,
 			)],
 		},
 	}

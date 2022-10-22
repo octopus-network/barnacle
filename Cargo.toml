@@ -1,11 +1,11 @@
 [workspace]
 members = [
-    'cli',
-    'executor',
-    'inspect',
-    'primitives',
-    'rpc',
-    'runtime',
+    "cli",
+    "executor",
+    "inspect",
+    "primitives",
+    "rpc",
+    "runtime",
 ]
 [profile.release]
-panic = 'unwind'
+panic = "unwind"
