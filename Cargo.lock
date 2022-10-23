@@ -4757,7 +4757,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-appchain"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.30#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=main#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
 dependencies = [
  "base64",
  "frame-benchmarking",
@@ -4781,7 +4781,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-bridge"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.30#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=main#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
 dependencies = [
  "borsh",
  "frame-benchmarking",
@@ -4801,7 +4801,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-lpos"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.30#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=main#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
 dependencies = [
  "borsh",
  "frame-benchmarking",
@@ -4823,7 +4823,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-support"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.30#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=main#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
 dependencies = [
  "borsh",
  "frame-support",
@@ -4836,7 +4836,7 @@ dependencies = [
 [[package]]
 name = "pallet-octopus-upward-messages"
 version = "4.0.0-pre.0"
-source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=release-v0.9.30#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
+source = "git+https://github.com/octopus-network/octopus-pallets.git?branch=main#24449c14ab86a8c0971ec07d1db07d5a34fd2c54"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
