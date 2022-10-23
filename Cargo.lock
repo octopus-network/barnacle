@@ -101,6 +101,7 @@ checksum = "afddf7f520a80dbf76e6f50a35bca42a2331ef227a28b3b6dc5c2e2338d114b1"
 name = "appchain-barnacle-runtime"
 version = "3.0.0-dev"
 dependencies = [
+ "appchain-primitives",
  "beefy-merkle-tree",
  "beefy-primitives",
  "frame-benchmarking",
@@ -111,7 +112,6 @@ dependencies = [
  "frame-system-rpc-runtime-api",
  "frame-try-runtime",
  "log",
- "appchain-primitives",
  "pallet-assets",
  "pallet-authorship",
  "pallet-babe",
@@ -160,6 +160,10 @@ name = "appchain-cli"
 version = "0.9.30"
 dependencies = [
  "appchain-barnacle-runtime",
+ "appchain-executor",
+ "appchain-inspect",
+ "appchain-primitives",
+ "appchain-rpc",
  "array-bytes",
  "assert_cmd",
  "async-std",
@@ -175,10 +179,6 @@ dependencies = [
  "jsonrpsee",
  "log",
  "nix 0.23.1",
- "node-executor",
- "appchain-inspect",
- "appchain-primitives",
- "appchain-rpc",
  "pallet-balances",
  "pallet-im-online",
  "pallet-octopus-appchain",
@@ -237,6 +237,100 @@ dependencies = [
  "tokio",
  "try-runtime-cli",
  "wait-timeout",
+]
+
+[[package]]
+name = "appchain-executor"
+version = "3.0.0-dev"
+dependencies = [
+ "appchain-barnacle-runtime",
+ "appchain-primitives",
+ "criterion",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "futures",
+ "pallet-balances",
+ "pallet-contracts",
+ "pallet-im-online",
+ "pallet-sudo",
+ "pallet-timestamp",
+ "pallet-transaction-payment",
+ "pallet-treasury",
+ "parity-scale-codec",
+ "sc-executor",
+ "scale-info",
+ "sp-application-crypto",
+ "sp-consensus-babe",
+ "sp-core",
+ "sp-externalities",
+ "sp-keyring",
+ "sp-keystore",
+ "sp-runtime",
+ "sp-state-machine",
+ "sp-tracing",
+ "sp-trie",
+ "wat",
+]
+
+[[package]]
+name = "appchain-inspect"
+version = "0.9.0-dev"
+dependencies = [
+ "clap 3.1.18",
+ "parity-scale-codec",
+ "sc-cli",
+ "sc-client-api",
+ "sc-executor",
+ "sc-service",
+ "sp-blockchain",
+ "sp-core",
+ "sp-runtime",
+ "thiserror",
+]
+
+[[package]]
+name = "appchain-primitives"
+version = "2.0.0"
+dependencies = [
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-application-crypto",
+ "sp-core",
+ "sp-runtime",
+]
+
+[[package]]
+name = "appchain-rpc"
+version = "3.0.0-dev"
+dependencies = [
+ "appchain-primitives",
+ "beefy-gadget",
+ "beefy-gadget-rpc",
+ "jsonrpsee",
+ "pallet-mmr-rpc",
+ "pallet-transaction-payment-rpc",
+ "sc-chain-spec",
+ "sc-client-api",
+ "sc-consensus-babe",
+ "sc-consensus-babe-rpc",
+ "sc-consensus-epochs",
+ "sc-finality-grandpa",
+ "sc-finality-grandpa-rpc",
+ "sc-rpc",
+ "sc-rpc-api",
+ "sc-rpc-spec-v2",
+ "sc-sync-state-rpc",
+ "sc-transaction-pool-api",
+ "sp-api",
+ "sp-block-builder",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-consensus-babe",
+ "sp-keystore",
+ "sp-runtime",
+ "substrate-frame-rpc-system",
 ]
 
 [[package]]
@@ -4239,100 +4333,6 @@ dependencies = [
  "cfg-if 1.0.0",
  "libc",
  "memoffset",
-]
-
-[[package]]
-name = "node-executor"
-version = "3.0.0-dev"
-dependencies = [
- "appchain-barnacle-runtime",
- "criterion",
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "futures",
- "appchain-primitives",
- "pallet-balances",
- "pallet-contracts",
- "pallet-im-online",
- "pallet-sudo",
- "pallet-timestamp",
- "pallet-transaction-payment",
- "pallet-treasury",
- "parity-scale-codec",
- "sc-executor",
- "scale-info",
- "sp-application-crypto",
- "sp-consensus-babe",
- "sp-core",
- "sp-externalities",
- "sp-keyring",
- "sp-keystore",
- "sp-runtime",
- "sp-state-machine",
- "sp-tracing",
- "sp-trie",
- "wat",
-]
-
-[[package]]
-name = "appchain-inspect"
-version = "0.9.0-dev"
-dependencies = [
- "clap 3.1.18",
- "parity-scale-codec",
- "sc-cli",
- "sc-client-api",
- "sc-executor",
- "sc-service",
- "sp-blockchain",
- "sp-core",
- "sp-runtime",
- "thiserror",
-]
-
-[[package]]
-name = "appchain-primitives"
-version = "2.0.0"
-dependencies = [
- "frame-system",
- "parity-scale-codec",
- "scale-info",
- "sp-application-crypto",
- "sp-core",
- "sp-runtime",
-]
-
-[[package]]
-name = "appchain-rpc"
-version = "3.0.0-dev"
-dependencies = [
- "beefy-gadget",
- "beefy-gadget-rpc",
- "jsonrpsee",
- "appchain-primitives",
- "pallet-mmr-rpc",
- "pallet-transaction-payment-rpc",
- "sc-chain-spec",
- "sc-client-api",
- "sc-consensus-babe",
- "sc-consensus-babe-rpc",
- "sc-consensus-epochs",
- "sc-finality-grandpa",
- "sc-finality-grandpa-rpc",
- "sc-rpc",
- "sc-rpc-api",
- "sc-rpc-spec-v2",
- "sc-sync-state-rpc",
- "sc-transaction-pool-api",
- "sp-api",
- "sp-block-builder",
- "sp-blockchain",
- "sp-consensus",
- "sp-consensus-babe",
- "sp-keystore",
- "sp-runtime",
- "substrate-frame-rpc-system",
 ]
 
 [[package]]
