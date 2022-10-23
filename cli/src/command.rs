@@ -23,9 +23,9 @@ use crate::{
 	Cli, Subcommand,
 };
 use appchain_barnacle_runtime::{ExistentialDeposit, RuntimeApi};
+use appchain_executor::ExecutorDispatch;
+use appchain_primitives::Block;
 use frame_benchmarking_cli::*;
-use node_executor::ExecutorDispatch;
-use node_primitives::Block;
 use sc_cli::{ChainSpec, Result, RuntimeVersion, SubstrateCli};
 use sc_service::PartialComponents;
 use sp_keyring::Sr25519Keyring;

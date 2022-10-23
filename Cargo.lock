@@ -111,7 +111,7 @@ dependencies = [
  "frame-system-rpc-runtime-api",
  "frame-try-runtime",
  "log",
- "node-primitives",
+ "appchain-primitives",
  "pallet-assets",
  "pallet-authorship",
  "pallet-babe",
@@ -176,9 +176,9 @@ dependencies = [
  "log",
  "nix 0.23.1",
  "node-executor",
- "node-inspect",
- "node-primitives",
- "node-rpc",
+ "appchain-inspect",
+ "appchain-primitives",
+ "appchain-rpc",
  "pallet-balances",
  "pallet-im-online",
  "pallet-octopus-appchain",
@@ -4251,7 +4251,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "futures",
- "node-primitives",
+ "appchain-primitives",
  "pallet-balances",
  "pallet-contracts",
  "pallet-im-online",
@@ -4276,7 +4276,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "node-inspect"
+name = "appchain-inspect"
 version = "0.9.0-dev"
 dependencies = [
  "clap 3.1.18",
@@ -4292,7 +4292,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "node-primitives"
+name = "appchain-primitives"
 version = "2.0.0"
 dependencies = [
  "frame-system",
@@ -4304,13 +4304,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "node-rpc"
+name = "appchain-rpc"
 version = "3.0.0-dev"
 dependencies = [
  "beefy-gadget",
  "beefy-gadget-rpc",
  "jsonrpsee",
- "node-primitives",
+ "appchain-primitives",
  "pallet-mmr-rpc",
  "pallet-transaction-payment-rpc",
  "sc-chain-spec",

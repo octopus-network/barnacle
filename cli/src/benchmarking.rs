@@ -23,7 +23,7 @@
 use crate::service::{create_extrinsic, FullClient};
 
 use appchain_barnacle_runtime::{BalancesCall, SystemCall};
-use node_primitives::{AccountId, Balance};
+use appchain_primitives::{AccountId, Balance};
 use sc_cli::Result;
 use sp_inherents::{InherentData, InherentDataProvider};
 use sp_keyring::Sr25519Keyring;

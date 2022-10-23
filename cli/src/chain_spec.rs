@@ -32,7 +32,7 @@ use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
 pub use appchain_barnacle_runtime::GenesisConfig;
-pub use node_primitives::{AccountId, Balance, Signature};
+pub use appchain_primitives::{AccountId, Balance, Signature};
 
 // + beefy
 use beefy_primitives::crypto::AuthorityId as BeefyId;

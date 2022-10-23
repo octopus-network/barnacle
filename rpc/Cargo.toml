@@ -1,5 +1,5 @@
 [package]
-name = "node-rpc"
+name = "appchain-rpc"
 version = "3.0.0-dev"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Substrate node rpc methods."
@@ -13,7 +13,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 jsonrpsee = { version = "0.15.1", features = ["server"] }
-node-primitives = { version = "2.0.0", path = "../primitives" }
+appchain-primitives = { version = "2.0.0", path = "../primitives" }
 pallet-mmr-rpc = { version = "3.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-transaction-payment-rpc = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sc-chain-spec = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }

@@ -21,10 +21,10 @@
 //! Service implementation. Specialized wrapper over substrate service.
 
 use appchain_barnacle_runtime::RuntimeApi;
+use appchain_executor::ExecutorDispatch;
+use appchain_primitives::Block;
 use codec::Encode;
 use frame_system_rpc_runtime_api::AccountNonceApi;
-use node_executor::ExecutorDispatch;
-use node_primitives::Block;
 use sc_client_api::BlockBackend;
 use sc_consensus_babe::{self, SlotProportion};
 use sc_executor::NativeElseWasmExecutor;
@@ -135,7 +135,7 @@ pub fn new_partial(
 		sc_transaction_pool::FullPool<Block, FullClient>,
 		(
 			impl Fn(
-				node_rpc::DenyUnsafe,
+				appchain_rpc::DenyUnsafe,
 				sc_rpc::SubscriptionTaskExecutor,
 			) -> Result<jsonrpsee::RpcModule<()>, sc_service::Error>,
 			(
@@ -265,25 +265,25 @@ pub fn new_partial(
 		let rpc_backend = backend.clone();
 		let rpc_extensions_builder =
 			move |deny_unsafe, subscription_executor: sc_rpc::SubscriptionTaskExecutor| {
-				let deps = node_rpc::FullDeps {
+				let deps = appchain_rpc::FullDeps {
 					client: client.clone(),
 					pool: pool.clone(),
 					select_chain: select_chain.clone(),
 					chain_spec: chain_spec.cloned_box(),
 					deny_unsafe,
-					babe: node_rpc::BabeDeps {
+					babe: appchain_rpc::BabeDeps {
 						babe_config: babe_config.clone(),
 						shared_epoch_changes: shared_epoch_changes.clone(),
 						keystore: keystore.clone(),
 					},
-					grandpa: node_rpc::GrandpaDeps {
+					grandpa: appchain_rpc::GrandpaDeps {
 						shared_voter_state: shared_voter_state.clone(),
 						shared_authority_set: shared_authority_set.clone(),
 						justification_stream: justification_stream.clone(),
 						subscription_executor: subscription_executor.clone(),
 						finality_provider: finality_proof_provider.clone(),
 					},
-					beefy: node_rpc::BeefyDeps {
+					beefy: appchain_rpc::BeefyDeps {
 						beefy_finality_proof_stream: beefy_rpc_links
 							.from_voter_justif_stream
 							.clone(),
@@ -294,7 +294,7 @@ pub fn new_partial(
 					},
 				};
 
-				node_rpc::create_full(deps, rpc_backend.clone()).map_err(Into::into)
+				appchain_rpc::create_full(deps, rpc_backend.clone()).map_err(Into::into)
 			};
 
 		(rpc_extensions_builder, shared_voter_state2)
@@ -570,8 +570,8 @@ mod tests {
 		constants::{currency::CENTS, time::SLOT_DURATION},
 		Address, BalancesCall, RuntimeCall, UncheckedExtrinsic,
 	};
+	use appchain_primitives::{Block, DigestItem, Signature};
 	use codec::Encode;
-	use node_primitives::{Block, DigestItem, Signature};
 	use sc_client_api::BlockBackend;
 	use sc_consensus::{BlockImport, BlockImportParams, ForkChoiceStrategy};
 	use sc_consensus_babe::{BabeIntermediate, CompatibleDigestItem, INTERMEDIATE_KEY};

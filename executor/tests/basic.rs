@@ -32,7 +32,7 @@ use appchain_barnacle_runtime::{
 	Balances, CheckedExtrinsic, Header, Runtime, RuntimeCall, RuntimeEvent, System,
 	TransactionPayment, UncheckedExtrinsic,
 };
-use node_primitives::{Balance, Hash};
+use appchain_primitives::{Balance, Hash};
 use node_testing::keyring::*;
 use wat;
 
@@ -834,7 +834,7 @@ fn should_import_block_with_test_client() {
 	let mut client = TestClientBuilder::new().build();
 	let block1 = changes_trie_block();
 	let block_data = block1.0;
-	let block = node_primitives::Block::decode(&mut &block_data[..]).unwrap();
+	let block = appchain_primitives::Block::decode(&mut &block_data[..]).unwrap();
 
 	futures::executor::block_on(client.import(BlockOrigin::Own, block)).unwrap();
 }
