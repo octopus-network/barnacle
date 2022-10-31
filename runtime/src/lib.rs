@@ -459,6 +459,23 @@ impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
 }
 
+impl pallet_assets::Config<pallet_assets::Instance2> for Runtime {
+    type RuntimeEvent = RuntimeEvent;
+    type Balance = AssetBalance;
+    type AssetId = AssetId;
+    type Currency = Balances;
+    type ForceOrigin = EnsureRoot<AccountId>;
+    type AssetDeposit = AssetDeposit;
+    type AssetAccountDeposit = ConstU128<DOLLARS>;
+    type MetadataDepositBase = MetadataDepositBase;
+    type MetadataDepositPerByte = MetadataDepositPerByte;
+    type ApprovalDeposit = ApprovalDeposit;
+    type StringLimit = StringLimit;
+    type Freezer = ();
+    type Extra = ();
+    type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+}
+
 parameter_types! {
 	pub const CollectionDeposit: Balance = 100 * DOLLARS;
 	pub const ItemDeposit: Balance = 1 * DOLLARS;
@@ -611,6 +628,23 @@ impl pallet_octopus_upward_messages::Config for Runtime {
 	// type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
 
+impl pallet_ics20_transfer::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type AssetId = AssetId;
+	type AssetBalance = AssetBalance;
+    type Fungibles = IbcAssets;
+    type AssetIdByName = Ics20;
+	type AccountIdConversion = pallet_ics20_transfer::ics20_impl::IbcAccount;
+	const NATIVE_TOKEN_NAME: &'static [u8] = b"BAR";
+	type IbcContext = pallet_ibc::context::Context<Runtime>;
+}
+
+impl pallet_ibc::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type TimeProvider = pallet_timestamp::Pallet<Runtime>;
+}
+
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -643,6 +677,10 @@ construct_runtime!(
 		Beefy: pallet_beefy,
 		Mmr: pallet_mmr,
 		MmrLeaf: pallet_beefy_mmr,
+        // substrate ibc support
+        Ics20: pallet_ics20_transfer,
+        Ibc: pallet_ibc,
+        IbcAssets: pallet_assets::<Instance2>,
 	}
 );
 

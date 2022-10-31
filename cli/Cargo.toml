@@ -96,6 +96,9 @@ beefy-gadget = { git = "https://github.com/paritytech/substrate.git", branch = "
 # octopus pallets
 pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.30" }
 
+# substrte-ibc
+pallet-ics20-transfer = { version = "0.1.0", git = "https://github.com/octopus-network/substrate-ibc.git", branch = "dev" }
+
 [target.'cfg(any(target_arch="x86_64", target_arch="aarch64"))'.dependencies]
 node-executor = { version = "3.0.0-dev", path = "../executor", features = ["wasmtime"] }
 sc-cli = { version = "0.10.0-dev", optional = true, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30", features = ["wasmtime"] }

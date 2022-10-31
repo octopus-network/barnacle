@@ -20,7 +20,7 @@
 
 use appchain_barnacle_runtime::{
 	constants::currency::*, wasm_binary_unwrap, BabeConfig, BalancesConfig, Block, GrandpaConfig,
-	ImOnlineConfig, SessionConfig, SessionKeys, SudoConfig, SystemConfig,
+	ImOnlineConfig, SessionConfig, SessionKeys, SudoConfig, SystemConfig, Ics20Config,
 };
 use grandpa_primitives::AuthorityId as GrandpaId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -196,6 +196,8 @@ pub fn testnet_genesis(
 				1_000_000_000_000 * DOLLARS,
 			)],
 		},
+        ibc_assets: Default::default(),
+        ics_20: Default::default(),
 	}
 }
 

@@ -9,3 +9,6 @@ members = [
 ]
 [profile.release]
 panic = "unwind"
+
+[patch.crates-io]
+ibc-proto = { git = "https://github.com/octopus-network/ibc-proto-rs.git", branch = "dev" }
