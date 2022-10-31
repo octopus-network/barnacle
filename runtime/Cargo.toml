@@ -78,6 +78,10 @@ pallet-octopus-bridge = { git = "https://github.com/octopus-network/octopus-pall
 pallet-octopus-lpos = { git = "https://github.com/octopus-network/octopus-pallets.git", default-features = false, branch = "main" }
 pallet-octopus-upward-messages = { git = "https://github.com/octopus-network/octopus-pallets.git", default-features = false, branch = "main" }
 
+# benchmarking
+pallet-octopus-bridge-benchmarking = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main", default-features = false, optional = true }
+pallet-octopus-appchain-benchmarking = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main", default-features = false, optional = true }
+
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
@@ -134,6 +138,9 @@ std = [
 	"pallet-octopus-bridge/std",
 	"pallet-octopus-lpos/std",
 	"pallet-octopus-upward-messages/std",
+
+	"pallet-octopus-bridge-benchmarking?/std",
+	"pallet-octopus-appchain-benchmarking?/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",
@@ -151,6 +158,11 @@ runtime-benchmarks = [
 	"pallet-timestamp/runtime-benchmarks",
 	"pallet-uniques/runtime-benchmarks",
 	"frame-system-benchmarking/runtime-benchmarks",
+
+	"pallet-octopus-upward-messages/runtime-benchmarks",
+	"pallet-octopus-lpos/runtime-benchmarks",
+	"pallet-octopus-bridge-benchmarking/runtime-benchmarks",
+	"pallet-octopus-appchain-benchmarking/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-try-runtime",

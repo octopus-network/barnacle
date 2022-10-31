@@ -560,7 +560,7 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type UnsignedPriority = UnsignedPriority;
 	type MaxValidators = MaxAuthorities;
 	type RequestEventLimit = RequestEventLimit;
-	// type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
+	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
 }
 
 impl pallet_octopus_bridge::Config for Runtime {
@@ -577,7 +577,7 @@ impl pallet_octopus_bridge::Config for Runtime {
 	type ItemId = ItemId;
 	type Nonfungibles = OctopusUniques;
 	type Convertor = ();
-	// type WeightInfo = ();
+	type WeightInfo = pallet_octopus_bridge::weights::SubstrateWeight<Runtime>;
 }
 
 parameter_types! {
@@ -595,7 +595,7 @@ impl pallet_octopus_lpos::Config for Runtime {
 	type AppchainInterface = OctopusAppchain;
 	type UpwardMessagesInterface = OctopusUpwardMessages;
 	type PalletId = OctopusPalletId;
-	// type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
+	type WeightInfo = pallet_octopus_lpos::weights::SubstrateWeight<Runtime>;
 }
 
 parameter_types! {
@@ -608,7 +608,7 @@ impl pallet_octopus_upward_messages::Config for Runtime {
 	type Hashing = Keccak256;
 	type MaxMessagePayloadSize = MaxMessagePayloadSize;
 	type MaxMessagesPerCommit = MaxMessagesPerCommit;
-	// type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
+	type WeightInfo = pallet_octopus_upward_messages::weights::SubstrateWeight<Runtime>;
 }
 
 construct_runtime!(
@@ -701,17 +701,11 @@ extern crate frame_benchmarking;
 mod benches {
 	define_benchmarks!(
 		[frame_benchmarking, BaselineBench::<Runtime>]
-		[pallet_assets, Assets]
-		[pallet_babe, Babe]
-		[pallet_balances, Balances]
-		[pallet_grandpa, Grandpa]
-		[pallet_im_online, ImOnline]
-		[pallet_mmr, Mmr]
-		[pallet_offences, OffencesBench::<Runtime>]
-		[pallet_session, SessionBench::<Runtime>]
 		[frame_system, SystemBench::<Runtime>]
-		[pallet_timestamp, Timestamp]
-		[pallet_uniques, Uniques]
+		[pallet_octopus_lpos, OctopusLpos]
+		[pallet_octopus_bridge, BridgeBench::<Runtime>]
+		[pallet_octopus_appchain, AppchainBench::<Runtime>]
+		[pallet_octopus_upward_messages, OctopusUpwardMessages]
 	);
 }
 
@@ -1017,10 +1011,12 @@ impl_runtime_apis! {
 			// Trying to add benchmarks directly to the Session Pallet caused cyclic dependency
 			// issues. To get around that, we separated the Session benchmarks into its own crate,
 			// which is why we need these two lines below.
-			use pallet_session_benchmarking::Pallet as SessionBench;
-			use pallet_offences_benchmarking::Pallet as OffencesBench;
+			// use pallet_session_benchmarking::Pallet as SessionBench;
+			// use pallet_offences_benchmarking::Pallet as OffencesBench;
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use baseline::Pallet as BaselineBench;
+			use pallet_octopus_appchain_benchmarking::Pallet as AppchainBench;
+			use pallet_octopus_bridge_benchmarking::Pallet as BridgeBench;
 
 			let mut list = Vec::<BenchmarkList>::new();
 			list_benchmarks!(list, extra);
@@ -1038,18 +1034,18 @@ impl_runtime_apis! {
 			// Trying to add benchmarks directly to the Session Pallet caused cyclic dependency
 			// issues. To get around that, we separated the Session benchmarks into its own crate,
 			// which is why we need these two lines below.
-			use pallet_session_benchmarking::Pallet as SessionBench;
-			use pallet_offences_benchmarking::Pallet as OffencesBench;
 			use frame_system_benchmarking::Pallet as SystemBench;
 			use baseline::Pallet as BaselineBench;
+			use pallet_octopus_appchain_benchmarking::Pallet as AppchainBench;
+			use pallet_octopus_bridge_benchmarking::Pallet as BridgeBench;
 
-			impl pallet_session_benchmarking::Config for Runtime {}
-			impl pallet_offences_benchmarking::Config for Runtime {}
 			impl frame_system_benchmarking::Config for Runtime {}
 			impl baseline::Config for Runtime {}
+			impl pallet_octopus_appchain_benchmarking::Config for Runtime {}
+			impl pallet_octopus_bridge_benchmarking::Config for Runtime {}
 
 			use frame_support::traits::WhitelistedStorageKeys;
-			let mut whitelist: Vec<TrackedStorageKey> = AllPalletsWithSystem::whitelisted_storage_keys();
+			let whitelist: Vec<TrackedStorageKey> = AllPalletsWithSystem::whitelisted_storage_keys();
 			let mut batches = Vec::<BenchmarkBatch>::new();
 			let params = (&config, &whitelist);
 			add_benchmarks!(params, batches);
