@@ -563,6 +563,11 @@ impl pallet_octopus_appchain::Config for Runtime {
 	type WeightInfo = pallet_octopus_appchain::weights::SubstrateWeight<Runtime>;
 }
 
+parameter_types! {
+	pub const NativeTokenDecimals: u128 = 1_000_000_000_000_000_000;
+	pub const FeeTh: u64 = 300;
+}
+
 impl pallet_octopus_bridge::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type PalletId = OctopusPalletId;
@@ -577,6 +582,8 @@ impl pallet_octopus_bridge::Config for Runtime {
 	type ItemId = ItemId;
 	type Nonfungibles = OctopusUniques;
 	type Convertor = ();
+	type NativeTokenDecimals = NativeTokenDecimals;
+	type Threshold = FeeTh;
 	type WeightInfo = pallet_octopus_bridge::weights::SubstrateWeight<Runtime>;
 }
 
