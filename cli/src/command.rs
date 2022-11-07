@@ -85,9 +85,9 @@ pub fn run() -> Result<()> {
 
 	match &cli.subcommand {
 		None => {
-			let runner = cli.create_runner(&cli.run)?;
+			let runner = cli.create_runner(&cli.run.base)?;
 			runner.run_node_until_exit(|config| async move {
-				service::new_full(config, cli.no_hardware_benchmarks)
+				service::new_full(config, &cli, cli.no_hardware_benchmarks)
 					.map_err(sc_cli::Error::Service)
 			})
 		},
@@ -116,7 +116,7 @@ pub fn run() -> Result<()> {
 					},
 					BenchmarkCmd::Block(cmd) => {
 						// ensure that we keep the task manager alive
-						let partial = new_partial(&config)?;
+						let partial = new_partial(&config, &cli)?;
 						cmd.run(partial.client)
 					},
 					#[cfg(not(feature = "runtime-benchmarks"))]
@@ -127,7 +127,7 @@ pub fn run() -> Result<()> {
 					#[cfg(feature = "runtime-benchmarks")]
 					BenchmarkCmd::Storage(cmd) => {
 						// ensure that we keep the task manager alive
-						let partial = new_partial(&config)?;
+						let partial = new_partial(&config, &cli)?;
 						let db = partial.backend.expose_db();
 						let storage = partial.backend.expose_storage();
 
@@ -135,7 +135,7 @@ pub fn run() -> Result<()> {
 					},
 					BenchmarkCmd::Overhead(cmd) => {
 						// ensure that we keep the task manager alive
-						let partial = new_partial(&config)?;
+						let partial = new_partial(&config, &cli)?;
 						let ext_builder = RemarkBuilder::new(partial.client.clone());
 
 						cmd.run(
@@ -148,7 +148,7 @@ pub fn run() -> Result<()> {
 					},
 					BenchmarkCmd::Extrinsic(cmd) => {
 						// ensure that we keep the task manager alive
-						let partial = service::new_partial(&config)?;
+						let partial = service::new_partial(&config, &cli)?;
 						// Register the *Remark* and *TKA* builders.
 						let ext_factory = ExtrinsicFactory(vec![
 							Box::new(RemarkBuilder::new(partial.client.clone())),
@@ -183,21 +183,21 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, import_queue, .. } =
-					new_partial(&config)?;
+					new_partial(&config, &cli)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		},
 		Some(Subcommand::ExportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
-				let PartialComponents { client, task_manager, .. } = new_partial(&config)?;
+				let PartialComponents { client, task_manager, .. } = new_partial(&config, &cli)?;
 				Ok((cmd.run(client, config.database), task_manager))
 			})
 		},
 		Some(Subcommand::ExportState(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
-				let PartialComponents { client, task_manager, .. } = new_partial(&config)?;
+				let PartialComponents { client, task_manager, .. } = new_partial(&config, &cli)?;
 				Ok((cmd.run(client, config.chain_spec), task_manager))
 			})
 		},
@@ -205,7 +205,7 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, import_queue, .. } =
-					new_partial(&config)?;
+					new_partial(&config, &cli)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		},
@@ -216,7 +216,8 @@ pub fn run() -> Result<()> {
 		Some(Subcommand::Revert(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
-				let PartialComponents { client, task_manager, backend, .. } = new_partial(&config)?;
+				let PartialComponents { client, task_manager, backend, .. } =
+					new_partial(&config, &cli)?;
 				let aux_revert = Box::new(|client: Arc<FullClient>, backend, blocks| {
 					sc_consensus_babe::revert(client.clone(), backend, blocks)?;
 					grandpa::revert(client, blocks)?;

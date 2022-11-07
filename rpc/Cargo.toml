@@ -40,3 +40,22 @@ substrate-frame-rpc-system = { version = "4.0.0-dev", git = "https://github.com/
 # beefy
 beefy-gadget = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 beefy-gadget-rpc = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+
+# frontier
+# futures = "0.3"
+# jsonrpc-pubsub = "18.0.0"
+# fc-consensus = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+fc-db = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+# fc-mapping-sync = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+fc-rpc = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+fc-rpc-core = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+fp-rpc = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+fp-storage = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+# pallet-base-fee = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+# pallet-dynamic-fee = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+# pallet-ethereum = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+# pallet-evm = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+
+sc-network = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+sc-transaction-pool = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+appchain-barnacle-runtime = { version = "3.0.0-dev", path = "../runtime" }

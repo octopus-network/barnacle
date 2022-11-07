@@ -82,6 +82,17 @@ pallet-octopus-upward-messages = { git = "https://github.com/octopus-network/oct
 pallet-octopus-bridge-benchmarking = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main", default-features = false, optional = true }
 pallet-octopus-appchain-benchmarking = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main", default-features = false, optional = true }
 
+# frontier
+fp-rpc = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+fp-self-contained = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-base-fee = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-dynamic-fee = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-ethereum = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm-precompile-modexp = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm-precompile-sha3fips = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm-precompile-simple = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
@@ -141,6 +152,16 @@ std = [
 
 	"pallet-octopus-bridge-benchmarking?/std",
 	"pallet-octopus-appchain-benchmarking?/std",
+
+	"fp-rpc/std",
+	"fp-self-contained/std",
+	"pallet-base-fee/std",
+	"pallet-dynamic-fee/std",
+	"pallet-ethereum/std",
+	"pallet-evm/std",
+	"pallet-evm-precompile-modexp/std",
+	"pallet-evm-precompile-sha3fips/std",
+	"pallet-evm-precompile-simple/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",
