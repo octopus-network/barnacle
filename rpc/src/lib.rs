@@ -216,19 +216,8 @@ where
 {
 	use beefy_gadget_rpc::{Beefy, BeefyApiServer};
 	use fc_rpc::{
-		Eth,
-		EthApiServer,
-		EthDevSigner,
-		EthFilter,
-		EthFilterApiServer,
-		EthPubSub,
-		EthPubSubApiServer,
-		EthSigner,
-		// HexEncodedIdProvider,
-		Net,
-		NetApiServer,
-		Web3,
-		Web3ApiServer,
+		Eth, EthApiServer, EthDevSigner, EthFilter, EthFilterApiServer, EthPubSub,
+		EthPubSubApiServer, EthSigner, Net, NetApiServer, Web3, Web3ApiServer,
 	};
 	use pallet_mmr_rpc::{Mmr, MmrApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};

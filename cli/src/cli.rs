@@ -48,11 +48,10 @@ pub enum Subcommand {
 	)]
 	Inspect(appchain_inspect::cli::InspectCmd),
 
-	/// Sub-commands concerned with benchmarking.
-	/// The pallet benchmarking moved to the `pallet` sub-command.
-	#[clap(subcommand)]
-	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
-
+	// /// Sub-commands concerned with benchmarking.
+	// /// The pallet benchmarking moved to the `pallet` sub-command.
+	// #[clap(subcommand)]
+	// Benchmark(frame_benchmarking_cli::BenchmarkCmd),
 	/// Try some command against runtime state.
 	#[cfg(feature = "try-runtime")]
 	TryRuntime(try_runtime_cli::TryRuntimeCmd),

@@ -23,17 +23,17 @@
 use appchain_barnacle_runtime::RuntimeApi;
 use appchain_executor::ExecutorDispatch;
 use appchain_primitives::Block;
-use codec::Encode;
-use frame_system_rpc_runtime_api::AccountNonceApi;
+// use codec::Encode;
+// use frame_system_rpc_runtime_api::AccountNonceApi;
 use sc_client_api::BlockBackend;
 use sc_consensus_babe::{self, SlotProportion};
 use sc_executor::NativeElseWasmExecutor;
 use sc_network::NetworkService;
 use sc_service::{config::Configuration, error::Error as ServiceError, RpcHandlers, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
-use sp_api::ProvideRuntimeApi;
-use sp_core::crypto::Pair;
-use sp_runtime::{generic, traits::Block as BlockT, SaturatedConversion};
+// use sp_api::ProvideRuntimeApi;
+// use sp_core::crypto::Pair;
+use sp_runtime::traits::Block as BlockT;
 use std::sync::Arc;
 
 use fc_consensus::FrontierBlockImport;
@@ -91,80 +91,6 @@ where
 			},
 		},
 	)?))
-}
-
-/// Fetch the nonce of the given `account` from the chain state.
-///
-/// Note: Should only be used for tests.
-pub fn fetch_nonce(client: &FullClient, account: sp_core::sr25519::Pair) -> u32 {
-	let best_hash = client.chain_info().best_hash;
-	client
-		.runtime_api()
-		.account_nonce(&generic::BlockId::Hash(best_hash), account.public().into())
-		.expect("Fetching account nonce works; qed")
-}
-
-/// Create a transaction using the given `call`.
-///
-/// The transaction will be signed by `sender`. If `nonce` is `None` it will be fetched from the
-/// state of the best block.
-///
-/// Note: Should only be used for tests.
-pub fn create_extrinsic(
-	client: &FullClient,
-	sender: sp_core::sr25519::Pair,
-	function: impl Into<appchain_barnacle_runtime::RuntimeCall>,
-	nonce: Option<u32>,
-) -> appchain_barnacle_runtime::UncheckedExtrinsic {
-	let function = function.into();
-	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
-	let best_hash = client.chain_info().best_hash;
-	let best_block = client.chain_info().best_number;
-	let nonce = nonce.unwrap_or_else(|| fetch_nonce(client, sender.clone()));
-
-	let period = appchain_barnacle_runtime::BlockHashCount::get()
-		.checked_next_power_of_two()
-		.map(|c| c / 2)
-		.unwrap_or(2) as u64;
-	let tip = 0;
-	let extra: appchain_barnacle_runtime::SignedExtra =
-		(
-			frame_system::CheckNonZeroSender::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckSpecVersion::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckTxVersion::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckGenesis::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckEra::<appchain_barnacle_runtime::Runtime>::from(
-				generic::Era::mortal(period, best_block.saturated_into()),
-			),
-			frame_system::CheckNonce::<appchain_barnacle_runtime::Runtime>::from(nonce),
-			frame_system::CheckWeight::<appchain_barnacle_runtime::Runtime>::new(),
-			pallet_transaction_payment::ChargeTransactionPayment::<
-				appchain_barnacle_runtime::Runtime,
-			>::from(tip),
-		);
-
-	let raw_payload = appchain_barnacle_runtime::SignedPayload::from_raw(
-		function.clone(),
-		extra.clone(),
-		(
-			(),
-			appchain_barnacle_runtime::VERSION.spec_version,
-			appchain_barnacle_runtime::VERSION.transaction_version,
-			genesis_hash,
-			best_hash,
-			(),
-			(),
-			(),
-		),
-	);
-	let signature = raw_payload.using_encoded(|e| sender.sign(e));
-
-	appchain_barnacle_runtime::UncheckedExtrinsic::new_signed(
-		function,
-		sp_runtime::AccountId32::from(sender.public()).into(),
-		appchain_barnacle_runtime::Signature::Sr25519(signature),
-		extra,
-	)
 }
 
 /// Creates a new partial node.
@@ -437,8 +363,6 @@ pub fn new_full_base(
 
 	let is_authority = config.role.is_authority();
 	let enable_dev_signer = cli.run.enable_dev_signer;
-	// let subscription_task_executor =
-	// sc_rpc::SubscriptionTaskExecutor::new(task_manager.spawn_handle());
 	let overrides = appchain_rpc::overrides_handle(client.clone());
 	let fee_history_limit = cli.run.fee_history_limit;
 
@@ -450,15 +374,8 @@ pub fn new_full_base(
 		prometheus_registry.clone(),
 	));
 
-	// let (beefy_commitment_link, beefy_finality_proof_stream) =
-	// 	beefy_gadget::notification::BeefyVersionedFinalityProofStream::<Block>::channel();
-	// let (beefy_best_block_link, beefy_best_block_stream) =
-	// 	beefy_gadget::notification::BeefyBestBlockStream::<Block>::channel();
-	// let beefy_links = (beefy_commitment_link, beefy_best_block_link);
-
 	let (block_import, grandpa_link, babe_link, beefy_voter_links, beefy_rpc_links) = import_setup;
 	let (rpc_builder, rpc_setup) = {
-		// let (_, grandpa_link, babe_link, _, beefy_rpc_links) = &import_setup;
 		let justification_stream = grandpa_link.justification_stream();
 		let shared_authority_set = grandpa_link.shared_authority_set().clone();
 		let shared_voter_state = grandpa::SharedVoterState::empty();
@@ -485,7 +402,6 @@ pub fn new_full_base(
 		let max_past_logs = cli.run.max_past_logs;
 
 		(
-			// Box::new(
 			move |deny_unsafe, subscription_executor: sc_rpc::SubscriptionTaskExecutor| {
 				let deps = appchain_rpc::FullDeps {
 					client: client.clone(),
@@ -531,7 +447,6 @@ pub fn new_full_base(
 				appchain_rpc::create_full(deps, subscription_executor, overrides.clone())
 					.map_err(Into::into)
 			},
-			// ),
 			rpc_setup,
 		)
 	};

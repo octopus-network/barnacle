@@ -92,6 +92,14 @@ pallet-evm = { git = "https://github.com/paritytech/frontier.git", branch = "pol
 pallet-evm-precompile-modexp = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
 pallet-evm-precompile-sha3fips = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
 pallet-evm-precompile-simple = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm-precompile-blake2 = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm-precompile-bn128 = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+pallet-evm-precompile-dispatch = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+fp-evm = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
+
+account = { path = "../primitives/account/", default-features = false }
+pallet-evm-precompile-balances-erc20 = { path = "../precompiles/balances-erc20", default-features = false }
+precompile-utils = { path = "../precompiles/utils", default-features = false }
 
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
@@ -162,6 +170,13 @@ std = [
 	"pallet-evm-precompile-modexp/std",
 	"pallet-evm-precompile-sha3fips/std",
 	"pallet-evm-precompile-simple/std",
+	"account/std",
+	"pallet-evm-precompile-balances-erc20/std",
+	"precompile-utils/std",
+	"pallet-evm-precompile-blake2/std",
+	"pallet-evm-precompile-bn128/std",
+	"pallet-evm-precompile-dispatch/std",
+	"fp-evm/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",

@@ -19,8 +19,8 @@
 //! Substrate chain configurations.
 
 use appchain_barnacle_runtime::{
-	constants::currency::*, wasm_binary_unwrap, BabeConfig, BalancesConfig, Block, GrandpaConfig,
-	ImOnlineConfig, SessionConfig, SessionKeys, SudoConfig, SystemConfig,
+	wasm_binary_unwrap, BabeConfig, BalancesConfig, Block, GenesisAccount, GrandpaConfig,
+	ImOnlineConfig, Precompiles, SessionConfig, SessionKeys, SudoConfig, SystemConfig,
 };
 use grandpa_primitives::AuthorityId as GrandpaId;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -28,12 +28,10 @@ use sc_chain_spec::ChainSpecExtension;
 use sc_service::ChainType;
 use serde::{Deserialize, Serialize};
 use sp_consensus_babe::AuthorityId as BabeId;
-use sp_core::{sr25519, Pair, Public};
-use sp_runtime::traits::{IdentifyAccount, Verify};
+use sp_core::{Pair, Public};
 
 use appchain_barnacle_runtime::{EVMConfig, EthereumConfig};
-use sp_core::{H160, U256};
-use std::{collections::BTreeMap, str::FromStr};
+use std::str::FromStr;
 
 pub use appchain_barnacle_runtime::GenesisConfig;
 pub use appchain_primitives::{AccountId, Balance, Signature};
@@ -43,12 +41,10 @@ use beefy_primitives::crypto::AuthorityId as BeefyId;
 
 // + octopus pallets
 use appchain_barnacle_runtime::{
-	constants::currency::OCT, OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig,
+	constants::currency::EBAR, OctopusAppchainConfig, OctopusAssetsConfig, OctopusBridgeConfig,
 	OctopusLposConfig, OctopusUpwardMessagesConfig,
 };
-use pallet_octopus_appchain::sr25519::AuthorityId as OctopusId;
-
-type AccountPublic = <Signature as Verify>::Signer;
+use pallet_octopus_appchain::ecdsa::AuthorityId as OctopusId;
 
 /// Node `ChainSpec` extensions.
 ///
@@ -95,20 +91,12 @@ pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Pu
 		.public()
 }
 
-/// Helper function to generate an account ID from seed
-pub fn get_account_id_from_seed<TPublic: Public>(seed: &str) -> AccountId
-where
-	AccountPublic: From<<TPublic::Pair as Pair>::Public>,
-{
-	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
-}
-
 /// Helper function to generate controller and session key from seed
 pub fn authority_keys_from_seed(
 	seed: &str,
 ) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId) {
 	(
-		get_account_id_from_seed::<sr25519::Public>(seed),
+		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		get_from_seed::<BabeId>(seed),
 		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<ImOnlineId>(seed),
@@ -119,9 +107,9 @@ pub fn authority_keys_from_seed(
 
 fn barnacle_chain_spec_properties() -> serde_json::map::Map<String, serde_json::Value> {
 	serde_json::json!({
-		"ss58Format": 42,
+		"SS58Prefix": 1284,
 		"tokenDecimals": 18,
-		"tokenSymbol": "BAR",
+		"tokenSymbol": "EBAR",
 	})
 	.as_object()
 	.expect("Map given; qed")
@@ -134,19 +122,18 @@ pub fn testnet_genesis(
 	root_key: AccountId,
 	endowed_accounts: Option<Vec<AccountId>>,
 ) -> GenesisConfig {
+	// This is the simplest bytecode to revert without returning any data.
+	// We will pre-deploy it under all of our precompiles to ensure they can be called from
+	// within contracts.
+	// (PUSH1 0x00 PUSH1 0x00 REVERT)
+	let revert_bytecode = vec![0x60, 0x00, 0x60, 0x00, 0xFD];
+
 	let endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
-		vec![
-			get_account_id_from_seed::<sr25519::Public>("Alice"),
-			get_account_id_from_seed::<sr25519::Public>("Bob"),
-			get_account_id_from_seed::<sr25519::Public>("Charlie"),
-			get_account_id_from_seed::<sr25519::Public>("Dave"),
-			get_account_id_from_seed::<sr25519::Public>("Eve"),
-			get_account_id_from_seed::<sr25519::Public>("Ferdie"),
-		]
+		vec![AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap()]
 	});
 
-	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = 100 * OCT;
+	const ENDOWMENT: Balance = 10_000_000 * EBAR;
+	const STASH: Balance = 100 * 1_000_000_000_000_000_000;
 	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 	GenesisConfig {
@@ -186,54 +173,41 @@ pub fn testnet_genesis(
 			validators,
 		},
 		octopus_bridge: OctopusBridgeConfig {
-			premined_amount: 1024 * DOLLARS,
+			premined_amount: 1024 * EBAR,
 			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
 		},
-		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_lpos: OctopusLposConfig { era_payout: 2 * EBAR, ..Default::default() },
 		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
 		octopus_assets: OctopusAssetsConfig {
-			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
+			assets: vec![(
+				0,
+				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+				true,
+				100,
+			)],
 			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
 			accounts: vec![(
 				0,
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				1_000_000_000_000 * DOLLARS,
+				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+				1_000_000_000_000 * EBAR,
 			)],
 		},
 		evm: EVMConfig {
-			accounts: {
-				let mut map = BTreeMap::new();
-				map.insert(
-					// H160 address of Alice dev account
-					// Derived from SS58 (42 prefix) address
-					// SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-					// hex: 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d
-					// Using the full hex key, truncating to the first 20 bytes (the first 40 hex
-					// chars)
-					H160::from_str("d43593c715fdd31c61141abd04a99fd6822c8558")
-						.expect("internal H160 is valid; qed"),
-					fp_evm::GenesisAccount {
-						balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
-							.expect("internal U256 is valid; qed"),
-						code: Default::default(),
-						nonce: Default::default(),
-						storage: Default::default(),
-					},
-				);
-				map.insert(
-					// H160 address of CI test runner account
-					H160::from_str("6be02d1d3665660d22ff9624b7be0551ee1ac91b")
-						.expect("internal H160 is valid; qed"),
-					fp_evm::GenesisAccount {
-						balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
-							.expect("internal U256 is valid; qed"),
-						code: Default::default(),
-						nonce: Default::default(),
-						storage: Default::default(),
-					},
-				);
-				map
-			},
+			// We need _some_ code inserted at the precompile address so that
+			// the evm will actually call the address.
+			accounts: Precompiles::used_addresses()
+				.map(|addr| {
+					(
+						addr.into(),
+						GenesisAccount {
+							nonce: Default::default(),
+							balance: Default::default(),
+							storage: Default::default(),
+							code: revert_bytecode.clone(),
+						},
+					)
+				})
+				.collect(),
 		},
 		ethereum: EthereumConfig {},
 		dynamic_fee: Default::default(),
@@ -244,7 +218,7 @@ pub fn testnet_genesis(
 fn development_config_genesis() -> GenesisConfig {
 	testnet_genesis(
 		vec![authority_keys_from_seed("Alice")],
-		get_account_id_from_seed::<sr25519::Public>("Alice"),
+		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		None,
 	)
 }
@@ -271,7 +245,7 @@ pub fn development_config() -> ChainSpec {
 fn local_testnet_genesis() -> GenesisConfig {
 	testnet_genesis(
 		vec![authority_keys_from_seed("Alice"), authority_keys_from_seed("Bob")],
-		get_account_id_from_seed::<sr25519::Public>("Alice"),
+		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		None,
 	)
 }
@@ -295,83 +269,83 @@ pub fn local_testnet_config() -> ChainSpec {
 	)
 }
 
-#[cfg(test)]
-pub(crate) mod tests {
-	use super::*;
-	use crate::service::{new_full_base, NewFullBase};
-	use sc_service_test;
-	use sp_runtime::BuildStorage;
+// #[cfg(test)]
+// pub(crate) mod tests {
+// 	use super::*;
+// 	use crate::service::{new_full_base, NewFullBase};
+// 	use sc_service_test;
+// 	use sp_runtime::BuildStorage;
 
-	fn local_testnet_genesis_instant_single() -> GenesisConfig {
-		testnet_genesis(
-			vec![authority_keys_from_seed("Alice")],
-			get_account_id_from_seed::<sr25519::Public>("Alice"),
-			None,
-		)
-	}
+// 	fn local_testnet_genesis_instant_single() -> GenesisConfig {
+// 		testnet_genesis(
+// 			vec![authority_keys_from_seed("Alice")],
+// 			get_account_id_from_seed::<sr25519::Public>("Alice"),
+// 			None,
+// 		)
+// 	}
 
-	/// Local testnet config (single validator - Alice)
-	pub fn integration_test_config_with_single_authority() -> ChainSpec {
-		ChainSpec::from_genesis(
-			"Integration Test",
-			"test",
-			ChainType::Development,
-			local_testnet_genesis_instant_single,
-			vec![],
-			None,
-			// Protocol ID
-			Some("bar"),
-			None,
-			// Properties
-			Some(barnacle_chain_spec_properties()),
-			// Extensions
-			Default::default(),
-		)
-	}
+// 	/// Local testnet config (single validator - Alice)
+// 	pub fn integration_test_config_with_single_authority() -> ChainSpec {
+// 		ChainSpec::from_genesis(
+// 			"Integration Test",
+// 			"test",
+// 			ChainType::Development,
+// 			local_testnet_genesis_instant_single,
+// 			vec![],
+// 			None,
+// 			// Protocol ID
+// 			Some("bar"),
+// 			None,
+// 			// Properties
+// 			Some(barnacle_chain_spec_properties()),
+// 			// Extensions
+// 			Default::default(),
+// 		)
+// 	}
 
-	/// Local testnet config (multivalidator Alice + Bob)
-	pub fn integration_test_config_with_two_authorities() -> ChainSpec {
-		ChainSpec::from_genesis(
-			"Integration Test",
-			"test",
-			ChainType::Development,
-			local_testnet_genesis,
-			vec![],
-			None,
-			// Protocol ID
-			Some("bar"),
-			None,
-			// Properties
-			Some(barnacle_chain_spec_properties()),
-			// Extensions
-			Default::default(),
-		)
-	}
+// 	/// Local testnet config (multivalidator Alice + Bob)
+// 	pub fn integration_test_config_with_two_authorities() -> ChainSpec {
+// 		ChainSpec::from_genesis(
+// 			"Integration Test",
+// 			"test",
+// 			ChainType::Development,
+// 			local_testnet_genesis,
+// 			vec![],
+// 			None,
+// 			// Protocol ID
+// 			Some("bar"),
+// 			None,
+// 			// Properties
+// 			Some(barnacle_chain_spec_properties()),
+// 			// Extensions
+// 			Default::default(),
+// 		)
+// 	}
 
-	#[test]
-	#[ignore]
-	fn test_connectivity() {
-		sp_tracing::try_init_simple();
+// 	#[test]
+// 	#[ignore]
+// 	fn test_connectivity() {
+// 		sp_tracing::try_init_simple();
 
-		sc_service_test::connectivity(integration_test_config_with_two_authorities(), |config| {
-			let NewFullBase { task_manager, client, network, transaction_pool, .. } =
-				new_full_base(config, false, |_, _| ())?;
-			Ok(sc_service_test::TestNetComponents::new(
-				task_manager,
-				client,
-				network,
-				transaction_pool,
-			))
-		});
-	}
+// 		sc_service_test::connectivity(integration_test_config_with_two_authorities(), |config| {
+// 			let NewFullBase { task_manager, client, network, transaction_pool, .. } =
+// 				new_full_base(config, false, |_, _| ())?;
+// 			Ok(sc_service_test::TestNetComponents::new(
+// 				task_manager,
+// 				client,
+// 				network,
+// 				transaction_pool,
+// 			))
+// 		});
+// 	}
 
-	#[test]
-	fn test_create_development_chain_spec() {
-		development_config().build_storage().unwrap();
-	}
+// 	#[test]
+// 	fn test_create_development_chain_spec() {
+// 		development_config().build_storage().unwrap();
+// 	}
 
-	#[test]
-	fn test_create_local_testnet_chain_spec() {
-		local_testnet_config().build_storage().unwrap();
-	}
-}
+// 	#[test]
+// 	fn test_create_local_testnet_chain_spec() {
+// 		local_testnet_config().build_storage().unwrap();
+// 	}
+// }
