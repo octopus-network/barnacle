@@ -99,6 +99,9 @@ fp-evm = { git = "https://github.com/paritytech/frontier.git", branch = "polkado
 
 account = { path = "../primitives/account/", default-features = false }
 pallet-evm-precompile-balances-erc20 = { path = "../precompiles/balances-erc20", default-features = false }
+pallet-evm-precompileset-assets-erc20 = { path = "../precompiles/assets-erc20", default-features = false }
+pallet-evm-precompile-octopus-session = { path = "../precompiles/octopus-session", default-features = false }
+pallet-evm-precompile-octopus-bridge = { path = "../precompiles/octopus-bridge", default-features = false }
 precompile-utils = { path = "../precompiles/utils", default-features = false }
 
 [build-dependencies]
@@ -172,11 +175,14 @@ std = [
 	"pallet-evm-precompile-simple/std",
 	"account/std",
 	"pallet-evm-precompile-balances-erc20/std",
+	"pallet-evm-precompileset-assets-erc20/std",
 	"precompile-utils/std",
 	"pallet-evm-precompile-blake2/std",
 	"pallet-evm-precompile-bn128/std",
 	"pallet-evm-precompile-dispatch/std",
 	"fp-evm/std",
+	"pallet-evm-precompile-octopus-session/std",
+	"pallet-evm-precompile-octopus-bridge/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",

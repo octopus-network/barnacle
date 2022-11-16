@@ -43,6 +43,7 @@ use frame_system::{
 	limits::{BlockLength, BlockWeights},
 	EnsureRoot, EnsureSigned,
 };
+use pallet_evm_precompileset_assets_erc20::AccountIdAssetIdConversion;
 use pallet_grandpa::{
 	fg_primitives, AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList,
 };
@@ -605,6 +606,39 @@ impl pallet_assets::Config<pallet_assets::Instance1> for Runtime {
 	type Freezer = ();
 	type Extra = ();
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+}
+
+use crate::precompiles::{
+	FOREIGN_ASSET_PRECOMPILE_ADDRESS_PREFIX, LOCAL_ASSET_PRECOMPILE_ADDRESS_PREFIX,
+};
+
+// Instruct how to go from an H160 to an AssetID
+// We just take the lowest 32 bits
+impl AccountIdAssetIdConversion<AccountId, AssetId> for Runtime {
+	/// The way to convert an account to assetId is by ensuring that the prefix is 0XFFFFFFFF
+	/// and by taking the lowest 32 bits as the assetId
+	fn account_to_asset_id(account: AccountId) -> Option<(Vec<u8>, AssetId)> {
+		let h160_account: H160 = account.into();
+		let mut data = [0u8; 4];
+		let (prefix_part, id_part) = h160_account.as_fixed_bytes().split_at(4);
+		if prefix_part == FOREIGN_ASSET_PRECOMPILE_ADDRESS_PREFIX ||
+			prefix_part == LOCAL_ASSET_PRECOMPILE_ADDRESS_PREFIX
+		{
+			data.copy_from_slice(&id_part[12..]);
+			let asset_id: AssetId = u32::from_be_bytes(data).into();
+			Some((prefix_part.to_vec(), asset_id))
+		} else {
+			None
+		}
+	}
+
+	// The opposite conversion
+	fn asset_id_to_account(prefix: &[u8], asset_id: AssetId) -> AccountId {
+		let mut data = [0u8; 20];
+		data[0..16].copy_from_slice(prefix);
+		data[16..20].copy_from_slice(&asset_id.to_be_bytes());
+		AccountId::from(data)
+	}
 }
 
 parameter_types! {
