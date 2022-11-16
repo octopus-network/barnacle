@@ -113,7 +113,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	// and set impl_version to 0. If only runtime
 	// implementation changes and behavior does not, then leave spec_version as
 	// is and increment impl_version.
-	spec_version: 100,
+	spec_version: 101,
 	impl_version: 0,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -434,7 +434,7 @@ impl pallet_grandpa::Config for Runtime {
 parameter_types! {
 	pub const AssetDeposit: Balance = 100 * DOLLARS;
 	pub const ApprovalDeposit: Balance = 1 * DOLLARS;
-	pub const StringLimit: u32 = 50;
+	pub const StringLimit: u32 = 2048;
 	pub const MetadataDepositBase: Balance = 10 * DOLLARS;
 	pub const MetadataDepositPerByte: Balance = 1 * DOLLARS;
 }
@@ -568,6 +568,8 @@ parameter_types! {
 	pub const FeeTh: u64 = 300;
 }
 
+use pallet_octopus_bridge::impls::RmrkBaseMetadataConvertor;
+
 impl pallet_octopus_bridge::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type PalletId = OctopusPalletId;
@@ -581,7 +583,7 @@ impl pallet_octopus_bridge::Config for Runtime {
 	type CollectionId = CollectionId;
 	type ItemId = ItemId;
 	type Nonfungibles = OctopusUniques;
-	type Convertor = ();
+	type Convertor = RmrkBaseMetadataConvertor<Runtime>;
 	type NativeTokenDecimals = NativeTokenDecimals;
 	type Threshold = FeeTh;
 	type WeightInfo = pallet_octopus_bridge::weights::SubstrateWeight<Runtime>;
@@ -606,7 +608,7 @@ impl pallet_octopus_lpos::Config for Runtime {
 }
 
 parameter_types! {
-	pub const MaxMessagePayloadSize: u32 = 256;
+	pub const MaxMessagePayloadSize: u32 = 2048;
 	pub const MaxMessagesPerCommit: u32 = 20;
 }
 
