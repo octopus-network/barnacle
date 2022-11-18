@@ -93,6 +93,9 @@ use sp_runtime::{
 };
 // use sp_std::marker::PhantomData;
 
+/// Import the evm-permission pallet.
+pub use pallet_evm_permission;
+
 #[cfg(any(feature = "std", test))]
 pub use frame_system::Call as SystemCall;
 #[cfg(any(feature = "std", test))]
@@ -429,6 +432,11 @@ impl pallet_evm::Config for Runtime {
 	type OnChargeTransaction = pallet_evm::EVMCurrencyAdapter<Balances, ()>;
 	// type OnChargeTransaction = OnChargeEVMTransaction<DealWithFees<Runtime>>;
 	type FindAuthor = FindAuthorAdapter<Session, Babe>;
+}
+
+/// Configure the pallet-evm-permission in pallets/evm-permission.
+impl pallet_evm_permission::Config for Runtime {
+	type CreateOrigin = EnsureRoot<AccountId>;
 }
 
 impl pallet_ethereum::Config for Runtime {
@@ -826,7 +834,8 @@ construct_runtime!(
 		Session: pallet_session,
 		Grandpa: pallet_grandpa,
 		Ethereum: pallet_ethereum,
-		EVM: pallet_evm,
+		EVM: pallet_evm::{Pallet, Storage, Event<T>, Config},
+		EVMPermission: pallet_evm_permission,
 		DynamicFee: pallet_dynamic_fee,
 		BaseFee: pallet_base_fee,
 		Sudo: pallet_sudo,

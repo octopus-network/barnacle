@@ -17,19 +17,17 @@
 //! Precompile to interact with pallet author mapping through an evm precompile.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-// #![feature(assert_matches)]
 
 use fp_evm::PrecompileHandle;
-use frame_support::traits::ConstU32;
 use frame_support::{
 	dispatch::{Dispatchable, GetDispatchInfo, PostDispatchInfo},
-	// traits::Get,
 	inherent::Vec,
+	traits::ConstU32,
 };
 use pallet_evm::AddressMapping;
 use pallet_session::Call as OctopusSessionCall;
 use precompile_utils::prelude::*;
-use sp_core::{crypto::UncheckedFrom, Decode, H256};
+use sp_core::{Decode, H256};
 use sp_std::marker::PhantomData;
 
 type GetEncodedProposalSizeLimit = ConstU32<2048>; //Andy: Need check

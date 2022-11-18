@@ -17,20 +17,17 @@
 //! Precompile to interact with pallet author mapping through an evm precompile.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-// #![feature(assert_matches)]
 
 use fp_evm::PrecompileHandle;
-use frame_support::traits::ConstU32;
 use frame_support::{
 	dispatch::{Dispatchable, GetDispatchInfo, PostDispatchInfo},
-	// traits::Get,
 	inherent::Vec,
-	traits::Currency,
+	traits::{ConstU32, Currency},
 };
 use pallet_evm::AddressMapping;
 use pallet_octopus_bridge::Call as OctopusBridgeCall;
 use precompile_utils::prelude::*;
-use sp_core::{crypto::UncheckedFrom, Decode, H256, U256};
+use sp_core::{H256, U256};
 use sp_std::marker::PhantomData;
 
 type GetReceiverSizeLimit = ConstU32<2048>; //Andy: Need check

@@ -1,18 +1,13 @@
-use pallet_evm::{AddressMapping, Precompile, PrecompileHandle, PrecompileResult, PrecompileSet};
-use sp_core::H160;
-use sp_std::marker::PhantomData;
-
 use frame_support::parameter_types;
 use pallet_evm_precompile_balances_erc20::{Erc20BalancesPrecompile, Erc20Metadata};
 use pallet_evm_precompile_blake2::Blake2F;
 use pallet_evm_precompile_bn128::{Bn128Add, Bn128Mul, Bn128Pairing};
-use pallet_evm_precompile_dispatch::Dispatch;
 use pallet_evm_precompile_modexp::Modexp;
 use pallet_evm_precompile_octopus_bridge::OctopusBridgePrecompile;
 use pallet_evm_precompile_octopus_session::OctopusSessionPrecompile;
 use pallet_evm_precompile_sha3fips::Sha3FIPS256;
 use pallet_evm_precompile_simple::{ECRecover, ECRecoverPublicKey, Identity, Ripemd160, Sha256};
-use pallet_evm_precompileset_assets_erc20::{Erc20AssetsPrecompileSet, IsForeign, IsLocal};
+use pallet_evm_precompileset_assets_erc20::{Erc20AssetsPrecompileSet, IsLocal};
 use precompile_utils::precompile_set::*;
 
 pub struct NativeErc20Metadata;
