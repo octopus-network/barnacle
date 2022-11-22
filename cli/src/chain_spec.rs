@@ -91,12 +91,12 @@ pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Pu
 		.public()
 }
 
-/// Helper function to generate controller and session key from seed
-pub fn authority_keys_from_seed(
+pub fn authority_keys_from_account_and_seed(
+	account: AccountId,
 	seed: &str,
 ) -> (AccountId, BabeId, GrandpaId, ImOnlineId, BeefyId, OctopusId) {
 	(
-		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+		account,
 		get_from_seed::<BabeId>(seed),
 		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<ImOnlineId>(seed),
@@ -129,7 +129,20 @@ pub fn testnet_genesis(
 	let revert_bytecode = vec![0x60, 0x00, 0x60, 0x00, 0xFD];
 
 	let endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
-		vec![AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap()]
+		vec![
+			// ALITH
+			AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+			// BALTATHAR
+			AccountId::from_str("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0").unwrap(),
+			// CHARLETH
+			AccountId::from_str("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc").unwrap(),
+			// DOROTHY
+			AccountId::from_str("773539d4Ac0e786233D90A233654ccEE26a613D9").unwrap(),
+			// ETHAN
+			AccountId::from_str("Ff64d3F6efE2317EE2807d223a0Bdc4c0c49dfDB").unwrap(),
+			// FAITH
+			AccountId::from_str("C0F0f4ab324C46e55D02D0033343B4Be8A55532d").unwrap(),
+		]
 	});
 
 	const ENDOWMENT: Balance = 10_000_000 * EBAR;
@@ -217,7 +230,10 @@ pub fn testnet_genesis(
 
 fn development_config_genesis() -> GenesisConfig {
 	testnet_genesis(
-		vec![authority_keys_from_seed("Alice")],
+		vec![authority_keys_from_account_and_seed(
+			AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+			"ALITH",
+		)],
 		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		None,
 	)
@@ -244,7 +260,20 @@ pub fn development_config() -> ChainSpec {
 
 fn local_testnet_genesis() -> GenesisConfig {
 	testnet_genesis(
-		vec![authority_keys_from_seed("Alice"), authority_keys_from_seed("Bob")],
+		vec![
+			authority_keys_from_account_and_seed(
+				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+				"ALITH",
+			),
+			authority_keys_from_account_and_seed(
+				AccountId::from_str("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0").unwrap(),
+				"BALTATHAR",
+			),
+			authority_keys_from_account_and_seed(
+				AccountId::from_str("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc").unwrap(),
+				"CHARLETH",
+			),
+		],
 		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		None,
 	)
