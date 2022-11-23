@@ -15,19 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! A set of constant values used in substrate runtime.
-
-/// Money matters.
+/// EBAR, the native token, uses 18 decimals of precision.
 pub mod currency {
 	use appchain_primitives::Balance;
 
-	pub const MILLICENTS: Balance = 10_000_000_000_000;
-	pub const CENTS: Balance = 1_000 * MILLICENTS; // assume this is worth about a cent.
-	pub const DOLLARS: Balance = 100 * CENTS;
-	pub const OCT: Balance = 1_000_000_000_000_000_000;
+	// Provide a common factor between runtimes based on a supply of 10_000_000 tokens.
+	pub const SUPPLY_FACTOR: Balance = 100;
+
+	pub const WEI: Balance = 1;
+	pub const KILOWEI: Balance = 1_000;
+	pub const MEGAWEI: Balance = 1_000_000;
+	pub const GIGAWEI: Balance = 1_000_000_000;
+	pub const MICROEBAR: Balance = 1_000_000_000_000;
+	pub const MILLIEBAR: Balance = 1_000_000_000_000_000;
+	pub const EBAR: Balance = 1_000_000_000_000_000_000;
+	pub const KILOEBAR: Balance = 1_000_000_000_000_000_000_000;
+
+	pub const TRANSACTION_BYTE_FEE: Balance = 10 * MICROEBAR * SUPPLY_FACTOR;
+	pub const STORAGE_BYTE_FEE: Balance = 100 * MICROEBAR * SUPPLY_FACTOR;
+	pub const WEIGHT_FEE: Balance = 100 * KILOWEI * SUPPLY_FACTOR;
 
 	pub const fn deposit(items: u32, bytes: u32) -> Balance {
-		items as Balance * 15 * CENTS + (bytes as Balance) * 6 * CENTS
+		items as Balance * 100 * MILLIEBAR * SUPPLY_FACTOR + (bytes as Balance) * STORAGE_BYTE_FEE
 	}
 }
 

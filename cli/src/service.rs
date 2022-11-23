@@ -23,18 +23,30 @@
 use appchain_barnacle_runtime::RuntimeApi;
 use appchain_executor::ExecutorDispatch;
 use appchain_primitives::Block;
-use codec::Encode;
-use frame_system_rpc_runtime_api::AccountNonceApi;
+// use codec::Encode;
+// use frame_system_rpc_runtime_api::AccountNonceApi;
 use sc_client_api::BlockBackend;
 use sc_consensus_babe::{self, SlotProportion};
 use sc_executor::NativeElseWasmExecutor;
 use sc_network::NetworkService;
 use sc_service::{config::Configuration, error::Error as ServiceError, RpcHandlers, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
-use sp_api::ProvideRuntimeApi;
-use sp_core::crypto::Pair;
-use sp_runtime::{generic, traits::Block as BlockT, SaturatedConversion};
+// use sp_api::ProvideRuntimeApi;
+// use sp_core::crypto::Pair;
+use sp_runtime::traits::Block as BlockT;
 use std::sync::Arc;
+
+use fc_consensus::FrontierBlockImport;
+use fc_mapping_sync::{MappingSyncWorker, SyncStrategy};
+use fc_rpc::EthTask;
+use fc_rpc_core::types::{FeeHistoryCache, FilterPool};
+use futures::StreamExt;
+use sc_cli::SubstrateCli;
+use sc_client_api::BlockchainEvents;
+use sc_keystore::LocalKeystore;
+use sc_service::BasePath;
+use sp_core::U256;
+use std::{collections::BTreeMap, sync::Mutex, time::Duration};
 
 /// The full client type definition.
 pub type FullClient =
@@ -49,83 +61,42 @@ type FullBeefyBlockImport =
 /// The transaction pool type defintion.
 pub type TransactionPool = sc_transaction_pool::FullPool<Block, FullClient>;
 
-/// Fetch the nonce of the given `account` from the chain state.
-///
-/// Note: Should only be used for tests.
-pub fn fetch_nonce(client: &FullClient, account: sp_core::sr25519::Pair) -> u32 {
-	let best_hash = client.chain_info().best_hash;
-	client
-		.runtime_api()
-		.account_nonce(&generic::BlockId::Hash(best_hash), account.public().into())
-		.expect("Fetching account nonce works; qed")
+/// For frontier
+pub fn frontier_database_dir(config: &Configuration) -> std::path::PathBuf {
+	let config_dir = config
+		.base_path
+		.as_ref()
+		.map(|base_path| base_path.config_dir(config.chain_spec.id()))
+		.unwrap_or_else(|| {
+			BasePath::from_project("", "", &crate::cli::Cli::executable_name())
+				.config_dir(config.chain_spec.id())
+		});
+	config_dir.join("frontier").join("db")
 }
 
-/// Create a transaction using the given `call`.
-///
-/// The transaction will be signed by `sender`. If `nonce` is `None` it will be fetched from the
-/// state of the best block.
-///
-/// Note: Should only be used for tests.
-pub fn create_extrinsic(
-	client: &FullClient,
-	sender: sp_core::sr25519::Pair,
-	function: impl Into<appchain_barnacle_runtime::RuntimeCall>,
-	nonce: Option<u32>,
-) -> appchain_barnacle_runtime::UncheckedExtrinsic {
-	let function = function.into();
-	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
-	let best_hash = client.chain_info().best_hash;
-	let best_block = client.chain_info().best_number;
-	let nonce = nonce.unwrap_or_else(|| fetch_nonce(client, sender.clone()));
-
-	let period = appchain_barnacle_runtime::BlockHashCount::get()
-		.checked_next_power_of_two()
-		.map(|c| c / 2)
-		.unwrap_or(2) as u64;
-	let tip = 0;
-	let extra: appchain_barnacle_runtime::SignedExtra =
-		(
-			frame_system::CheckNonZeroSender::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckSpecVersion::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckTxVersion::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckGenesis::<appchain_barnacle_runtime::Runtime>::new(),
-			frame_system::CheckEra::<appchain_barnacle_runtime::Runtime>::from(
-				generic::Era::mortal(period, best_block.saturated_into()),
-			),
-			frame_system::CheckNonce::<appchain_barnacle_runtime::Runtime>::from(nonce),
-			frame_system::CheckWeight::<appchain_barnacle_runtime::Runtime>::new(),
-			pallet_transaction_payment::ChargeTransactionPayment::<
-				appchain_barnacle_runtime::Runtime,
-			>::from(tip),
-		);
-
-	let raw_payload = appchain_barnacle_runtime::SignedPayload::from_raw(
-		function.clone(),
-		extra.clone(),
-		(
-			(),
-			appchain_barnacle_runtime::VERSION.spec_version,
-			appchain_barnacle_runtime::VERSION.transaction_version,
-			genesis_hash,
-			best_hash,
-			(),
-			(),
-			(),
-		),
-	);
-	let signature = raw_payload.using_encoded(|e| sender.sign(e));
-
-	appchain_barnacle_runtime::UncheckedExtrinsic::new_signed(
-		function,
-		sp_runtime::AccountId32::from(sender.public()).into(),
-		appchain_barnacle_runtime::Signature::Sr25519(signature),
-		extra,
-	)
+/// For frontier
+pub fn open_frontier_backend<C>(
+	client: Arc<C>,
+	config: &Configuration,
+) -> Result<Arc<fc_db::Backend<Block>>, String>
+where
+	C: sp_blockchain::HeaderBackend<Block> + Send + Sync,
+{
+	Ok(Arc::new(fc_db::Backend::<Block>::new(
+		client,
+		&fc_db::DatabaseSettings {
+			source: fc_db::DatabaseSource::RocksDb {
+				path: frontier_database_dir(&config),
+				cache_size: 0,
+			},
+		},
+	)?))
 }
 
 /// Creates a new partial node.
 pub fn new_partial(
 	config: &Configuration,
+	cli: &crate::cli::Cli,
 ) -> Result<
 	sc_service::PartialComponents<
 		FullClient,
@@ -134,22 +105,30 @@ pub fn new_partial(
 		sc_consensus::DefaultImportQueue<Block, FullClient>,
 		sc_transaction_pool::FullPool<Block, FullClient>,
 		(
-			impl Fn(
-				appchain_rpc::DenyUnsafe,
-				sc_rpc::SubscriptionTaskExecutor,
-			) -> Result<jsonrpsee::RpcModule<()>, sc_service::Error>,
 			(
 				sc_consensus_babe::BabeBlockImport<Block, FullClient, FullBeefyBlockImport>,
 				grandpa::LinkHalf<Block, FullClient, FullSelectChain>,
 				sc_consensus_babe::BabeLink<Block>,
 				beefy_gadget::BeefyVoterLinks<Block>,
+				beefy_gadget::BeefyRPCLinks<Block>,
 			),
-			grandpa::SharedVoterState,
 			Option<Telemetry>,
+			FrontierBlockImport<
+				Block,
+				sc_consensus_babe::BabeBlockImport<Block, FullClient, FullBeefyBlockImport>,
+				FullClient,
+			>,
+			Option<FilterPool>,
+			Arc<fc_db::Backend<Block>>,
+			FeeHistoryCache,
 		),
 	>,
 	ServiceError,
 > {
+	if config.keystore_remote.is_some() {
+		return Err(ServiceError::Other(format!("Remote Keystores are not supported.")))
+	}
+
 	let telemetry = config
 		.telemetry_endpoints
 		.clone()
@@ -191,6 +170,11 @@ pub fn new_partial(
 		client.clone(),
 	);
 
+	let filter_pool: Option<FilterPool> = Some(Arc::new(Mutex::new(BTreeMap::new())));
+	let fee_history_cache: FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
+
+	let frontier_backend = open_frontier_backend(Arc::clone(&client), config)?;
+
 	let (grandpa_block_import, grandpa_link) = grandpa::block_import(
 		client.clone(),
 		&(client.clone() as Arc<_>),
@@ -198,10 +182,9 @@ pub fn new_partial(
 		telemetry.as_ref().map(|x| x.handle()),
 	)?;
 	let justification_import = grandpa_block_import.clone();
-
 	let (beefy_block_import, beefy_voter_links, beefy_rpc_links) =
 		beefy_gadget::beefy_block_import_and_links(
-			grandpa_block_import,
+			grandpa_block_import.clone(),
 			backend.clone(),
 			client.clone(),
 		);
@@ -212,7 +195,11 @@ pub fn new_partial(
 		client.clone(),
 	)?;
 
+	let frontier_block_import =
+		FrontierBlockImport::new(block_import.clone(), client.clone(), frontier_backend.clone());
+
 	let slot_duration = babe_link.config().slot_duration();
+	let target_gas_price = cli.run.target_gas_price;
 	let import_queue = sc_consensus_babe::import_queue(
 		babe_link.clone(),
 		block_import.clone(),
@@ -231,74 +218,17 @@ pub fn new_partial(
 			let uncles =
 				sp_authorship::InherentDataProvider::<<Block as BlockT>::Header>::check_inherents();
 
-			Ok((slot, timestamp, uncles))
+			let dynamic_fee =
+				pallet_dynamic_fee::InherentDataProvider(U256::from(target_gas_price));
+
+			Ok((slot, timestamp, uncles, dynamic_fee))
 		},
 		&task_manager.spawn_essential_handle(),
 		config.prometheus_registry(),
 		telemetry.as_ref().map(|x| x.handle()),
 	)?;
 
-	let import_setup = (block_import, grandpa_link, babe_link, beefy_voter_links);
-
-	let (rpc_extensions_builder, rpc_setup) = {
-		let (_, grandpa_link, babe_link, _) = &import_setup;
-
-		let justification_stream = grandpa_link.justification_stream();
-		let shared_authority_set = grandpa_link.shared_authority_set().clone();
-		let shared_voter_state = grandpa::SharedVoterState::empty();
-		let shared_voter_state2 = shared_voter_state.clone();
-
-		let finality_proof_provider = grandpa::FinalityProofProvider::new_for_service(
-			backend.clone(),
-			Some(shared_authority_set.clone()),
-		);
-
-		let babe_config = babe_link.config().clone();
-		let shared_epoch_changes = babe_link.epoch_changes().clone();
-
-		let client = client.clone();
-		let pool = transaction_pool.clone();
-		let select_chain = select_chain.clone();
-		let keystore = keystore_container.sync_keystore();
-		let chain_spec = config.chain_spec.cloned_box();
-
-		let rpc_backend = backend.clone();
-		let rpc_extensions_builder =
-			move |deny_unsafe, subscription_executor: sc_rpc::SubscriptionTaskExecutor| {
-				let deps = appchain_rpc::FullDeps {
-					client: client.clone(),
-					pool: pool.clone(),
-					select_chain: select_chain.clone(),
-					chain_spec: chain_spec.cloned_box(),
-					deny_unsafe,
-					babe: appchain_rpc::BabeDeps {
-						babe_config: babe_config.clone(),
-						shared_epoch_changes: shared_epoch_changes.clone(),
-						keystore: keystore.clone(),
-					},
-					grandpa: appchain_rpc::GrandpaDeps {
-						shared_voter_state: shared_voter_state.clone(),
-						shared_authority_set: shared_authority_set.clone(),
-						justification_stream: justification_stream.clone(),
-						subscription_executor: subscription_executor.clone(),
-						finality_provider: finality_proof_provider.clone(),
-					},
-					beefy: appchain_rpc::BeefyDeps {
-						beefy_finality_proof_stream: beefy_rpc_links
-							.from_voter_justif_stream
-							.clone(),
-						beefy_best_block_stream: beefy_rpc_links
-							.from_voter_best_beefy_stream
-							.clone(),
-						subscription_executor,
-					},
-				};
-
-				appchain_rpc::create_full(deps, rpc_backend.clone()).map_err(Into::into)
-			};
-
-		(rpc_extensions_builder, shared_voter_state2)
-	};
+	let import_setup = (block_import, grandpa_link, babe_link, beefy_voter_links, beefy_rpc_links);
 
 	Ok(sc_service::PartialComponents {
 		client,
@@ -308,8 +238,22 @@ pub fn new_partial(
 		select_chain,
 		import_queue,
 		transaction_pool,
-		other: (rpc_extensions_builder, import_setup, rpc_setup, telemetry),
+		other: (
+			import_setup,
+			telemetry,
+			frontier_block_import,
+			filter_pool,
+			frontier_backend,
+			fee_history_cache,
+		),
 	})
+}
+
+fn remote_keystore(_url: &String) -> Result<Arc<LocalKeystore>, &'static str> {
+	// FIXME: here would the concrete keystore be built,
+	//        must return a concrete type (NOT `LocalKeystore`) that
+	//        implements `CryptoStore` and `SyncCryptoStore`
+	Err("Remote Keystore not supported.")
 }
 
 /// Result of [`new_full_base`].
@@ -329,6 +273,7 @@ pub struct NewFullBase {
 /// Creates a full service from the configuration.
 pub fn new_full_base(
 	mut config: Configuration,
+	cli: &crate::cli::Cli,
 	disable_hardware_benchmarks: bool,
 	with_startup_data: impl FnOnce(
 		&sc_consensus_babe::BabeBlockImport<Block, FullClient, FullBeefyBlockImport>,
@@ -349,13 +294,23 @@ pub fn new_full_base(
 		backend,
 		mut task_manager,
 		import_queue,
-		keystore_container,
+		mut keystore_container,
 		select_chain,
 		transaction_pool,
-		other: (rpc_builder, import_setup, rpc_setup, mut telemetry),
-	} = new_partial(&config)?;
+		other: (import_setup, mut telemetry, _, filter_pool, frontier_backend, fee_history_cache),
+	} = new_partial(&config, &cli)?;
 
-	let shared_voter_state = rpc_setup;
+	if let Some(url) = &config.keystore_remote {
+		match remote_keystore(url) {
+			Ok(k) => keystore_container.set_remote_keystore(k),
+			Err(e) =>
+				return Err(ServiceError::Other(format!(
+					"Error hooking up remote keystore for {}: {}",
+					url, e
+				))),
+		};
+	}
+
 	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
 	let grandpa_protocol_name = grandpa::protocol_standard_name(&genesis_hash, &config.chain_spec);
 
@@ -406,6 +361,98 @@ pub fn new_full_base(
 	let enable_grandpa = !config.disable_grandpa;
 	let prometheus_registry = config.prometheus_registry().cloned();
 
+	let is_authority = config.role.is_authority();
+	let enable_dev_signer = cli.run.enable_dev_signer;
+	let overrides = appchain_rpc::overrides_handle(client.clone());
+	let fee_history_limit = cli.run.fee_history_limit;
+
+	let block_data_cache = Arc::new(fc_rpc::EthBlockDataCacheTask::new(
+		task_manager.spawn_handle(),
+		overrides.clone(),
+		50,
+		50,
+		prometheus_registry.clone(),
+	));
+
+	let (block_import, grandpa_link, babe_link, beefy_voter_links, beefy_rpc_links) = import_setup;
+	let (rpc_builder, rpc_setup) = {
+		let justification_stream = grandpa_link.justification_stream();
+		let shared_authority_set = grandpa_link.shared_authority_set().clone();
+		let shared_voter_state = grandpa::SharedVoterState::empty();
+		let rpc_setup = shared_voter_state.clone();
+
+		let finality_proof_provider = grandpa::FinalityProofProvider::new_for_service(
+			backend.clone(),
+			Some(shared_authority_set.clone()),
+		);
+
+		let babe_config = babe_link.config().clone();
+		let shared_epoch_changes = babe_link.epoch_changes().clone();
+
+		let client = client.clone();
+		let pool = transaction_pool.clone();
+		let select_chain = select_chain.clone();
+		let keystore = keystore_container.sync_keystore();
+		let chain_spec = config.chain_spec.cloned_box();
+		let network = network.clone();
+		let filter_pool = filter_pool.clone();
+		let frontier_backend = frontier_backend.clone();
+		let overrides = overrides.clone();
+		let fee_history_cache = fee_history_cache.clone();
+		let max_past_logs = cli.run.max_past_logs;
+
+		(
+			move |deny_unsafe, subscription_executor: sc_rpc::SubscriptionTaskExecutor| {
+				let deps = appchain_rpc::FullDeps {
+					client: client.clone(),
+					pool: pool.clone(),
+					select_chain: select_chain.clone(),
+					chain_spec: chain_spec.cloned_box(),
+					deny_unsafe,
+					babe: appchain_rpc::BabeDeps {
+						babe_config: babe_config.clone(),
+						shared_epoch_changes: shared_epoch_changes.clone(),
+						keystore: keystore.clone(),
+					},
+					grandpa: appchain_rpc::GrandpaDeps {
+						shared_voter_state: shared_voter_state.clone(),
+						shared_authority_set: shared_authority_set.clone(),
+						justification_stream: justification_stream.clone(),
+						subscription_executor: subscription_executor.clone(),
+						finality_provider: finality_proof_provider.clone(),
+					},
+					beefy: appchain_rpc::BeefyDeps {
+						beefy_finality_proof_stream: beefy_rpc_links
+							.from_voter_justif_stream
+							.clone(),
+						beefy_best_block_stream: beefy_rpc_links
+							.from_voter_best_beefy_stream
+							.clone(),
+						subscription_executor: subscription_executor.clone(),
+					},
+					frontier: appchain_rpc::FrontierDeps {
+						graph: pool.pool().clone(),
+						is_authority,
+						enable_dev_signer,
+						network: network.clone(),
+						filter_pool: filter_pool.clone(),
+						backend: frontier_backend.clone(),
+						max_past_logs,
+						fee_history_limit,
+						fee_history_cache: fee_history_cache.clone(),
+						block_data_cache: block_data_cache.clone(),
+					},
+				};
+
+				appchain_rpc::create_full(deps, subscription_executor, overrides.clone())
+					.map_err(Into::into)
+			},
+			rpc_setup,
+		)
+	};
+
+	let shared_voter_state = rpc_setup;
+
 	let rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
 		config,
 		backend: backend.clone(),
@@ -433,7 +480,44 @@ pub fn new_full_base(
 		}
 	}
 
-	let (block_import, grandpa_link, babe_link, beefy_links) = import_setup;
+	task_manager.spawn_essential_handle().spawn(
+		"frontier-mapping-sync-worker",
+		None,
+		MappingSyncWorker::new(
+			client.import_notification_stream(),
+			Duration::new(6, 0),
+			client.clone(),
+			backend.clone(),
+			frontier_backend.clone(),
+			3,
+			0,
+			SyncStrategy::Normal,
+		)
+		.for_each(|()| futures::future::ready(())),
+	);
+
+	// Spawn Frontier EthFilterApi maintenance task.
+	if let Some(filter_pool) = filter_pool {
+		// Each filter is allowed to stay in the pool for 100 blocks.
+		const FILTER_RETAIN_THRESHOLD: u64 = 100;
+		task_manager.spawn_essential_handle().spawn(
+			"frontier-filter-pool",
+			None,
+			EthTask::filter_pool_task(Arc::clone(&client), filter_pool, FILTER_RETAIN_THRESHOLD),
+		);
+	}
+
+	// Spawn Frontier FeeHistory cache maintenance task.
+	task_manager.spawn_essential_handle().spawn(
+		"frontier-fee-history",
+		None,
+		EthTask::fee_history_task(
+			Arc::clone(&client),
+			Arc::clone(&overrides),
+			fee_history_cache,
+			fee_history_limit,
+		),
+	);
 
 	(with_startup_data)(&block_import, &babe_link);
 
@@ -448,6 +532,7 @@ pub fn new_full_base(
 
 		let client_clone = client.clone();
 		let slot_duration = babe_link.config().slot_duration();
+		let target_gas_price = cli.run.target_gas_price;
 		let babe_config = sc_consensus_babe::BabeParams {
 			keystore: keystore_container.sync_keystore(),
 			client: client.clone(),
@@ -472,7 +557,10 @@ pub fn new_full_base(
 							slot_duration,
 						);
 
-					Ok((slot, timestamp, uncles))
+					let dynamic_fee =
+						pallet_dynamic_fee::InherentDataProvider(U256::from(target_gas_price));
+
+					Ok((slot, timestamp, uncles, dynamic_fee))
 				}
 			},
 			force_authoring,
@@ -505,7 +593,7 @@ pub fn new_full_base(
 		min_block_delta: 8,
 		prometheus_registry: prometheus_registry.clone(),
 		protocol_name: beefy_protocol_name,
-		links: beefy_links,
+		links: beefy_voter_links,
 	};
 
 	let gadget = beefy_gadget::start_beefy_gadget::<_, _, _, _, _>(beefy_params);
@@ -557,9 +645,10 @@ pub fn new_full_base(
 /// Builds a new service for a full client.
 pub fn new_full(
 	config: Configuration,
+	cli: &crate::cli::Cli,
 	disable_hardware_benchmarks: bool,
 ) -> Result<TaskManager, ServiceError> {
-	new_full_base(config, disable_hardware_benchmarks, |_, _| ())
+	new_full_base(config, cli, disable_hardware_benchmarks, |_, _| ())
 		.map(|NewFullBase { task_manager, .. }| task_manager)
 }
 

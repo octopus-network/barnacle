@@ -1,0 +1,37 @@
+[package]
+name = "precompile-utils-macro"
+authors = [ "paritytech" ]
+description = ""
+edition = "2021"
+version = "0.1.0"
+
+[lib]
+proc-macro = true
+
+[[test]]
+name = "tests"
+path = "tests/tests.rs"
+
+[[test]]
+name = "precompile-macro"
+path = "tests/precompile.rs"
+
+[dependencies]
+case = "1.0"
+num_enum = { version = "0.5.3", default-features = false }
+prettyplease = "0.1.18"
+proc-macro2 = "1.0"
+quote = "1.0"
+sha3 = "0.8"
+syn = { version = "1.0", features = [ "extra-traits", "fold", "full", "visit" ] }
+
+[dev-dependencies]
+macrotest = "1.0.9"
+trybuild = "1.0"
+
+precompile-utils = { path = "../", features = [ "testing" ] }
+
+fp-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.30" }
+frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30", default-features = false }
+sp-core = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30" }
+sp-std = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30" }
