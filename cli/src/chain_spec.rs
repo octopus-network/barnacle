@@ -90,7 +90,7 @@ pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Pu
 		.expect("static values are valid; qed")
 		.public()
 }
-
+/// Helper function to generate controller and session key
 pub fn authority_keys_from_account_and_seed(
 	account: AccountId,
 	seed: &str,
@@ -232,7 +232,7 @@ fn development_config_genesis() -> GenesisConfig {
 	testnet_genesis(
 		vec![authority_keys_from_account_and_seed(
 			AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
-			"ALITH",
+			"Alice", //"ALITH",
 		)],
 		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		None,
@@ -263,15 +263,15 @@ fn local_testnet_genesis() -> GenesisConfig {
 		vec![
 			authority_keys_from_account_and_seed(
 				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
-				"ALITH",
+				"Alice", //"ALITH",
 			),
 			authority_keys_from_account_and_seed(
 				AccountId::from_str("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0").unwrap(),
-				"BALTATHAR",
+				"Bob", //"BALTATHAR",
 			),
 			authority_keys_from_account_and_seed(
 				AccountId::from_str("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc").unwrap(),
-				"CHARLETH",
+				"Charlie", //"CHARLETH",
 			),
 		],
 		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
