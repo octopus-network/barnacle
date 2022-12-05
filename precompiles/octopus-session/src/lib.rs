@@ -30,7 +30,7 @@ use precompile_utils::prelude::*;
 use sp_core::{Decode, H256};
 use sp_std::marker::PhantomData;
 
-type GetEncodedProposalSizeLimit = ConstU32<2048>; //Andy: Need check
+type GetEncodedProposalSizeLimit = ConstU32<2048>;
 
 /// A precompile to wrap the functionality from pallet session.
 pub struct OctopusSessionPrecompile<Runtime>(PhantomData<Runtime>);
