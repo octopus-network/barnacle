@@ -94,7 +94,7 @@ beefy-primitives = { git = "https://github.com/paritytech/substrate.git", branch
 beefy-gadget = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
 # octopus pallets
-pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "release-v0.9.30" }
 
 [target.'cfg(any(target_arch="x86_64", target_arch="aarch64"))'.dependencies]
 appchain-executor = { version = "3.0.0-dev", path = "../executor", features = ["wasmtime"] }
