@@ -30,13 +30,18 @@ use precompile_utils::prelude::*;
 use sp_core::{Decode, H256};
 use sp_std::marker::PhantomData;
 
+#[cfg(test)]
+mod mock;
+#[cfg(test)]
+mod tests;
+
 type GetEncodedProposalSizeLimit = ConstU32<2048>;
 
 /// A precompile to wrap the functionality from pallet session.
 pub struct OctopusSessionPrecompile<Runtime>(PhantomData<Runtime>);
 
 #[precompile_utils::precompile]
-#[precompile::test_concrete_types(mock::Runtime)]
+#[precompile::test_concrete_types(mock::Test)]
 impl<Runtime> OctopusSessionPrecompile<Runtime>
 where
 	Runtime: pallet_session::Config + pallet_evm::Config + frame_system::Config,

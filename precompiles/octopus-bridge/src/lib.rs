@@ -30,6 +30,11 @@ use precompile_utils::prelude::*;
 use sp_core::{H256, U256};
 use sp_std::marker::PhantomData;
 
+#[cfg(test)]
+mod mock;
+#[cfg(test)]
+mod tests;
+
 type GetReceiverSizeLimit = ConstU32<2048>;
 
 /// A precompile to wrap the functionality from pallet bridge.
@@ -40,7 +45,7 @@ type BalanceOf<Runtime> = <<Runtime as pallet_octopus_bridge::Config>::Currency 
 >>::Balance;
 
 #[precompile_utils::precompile]
-#[precompile::test_concrete_types(mock::Runtime)]
+#[precompile::test_concrete_types(mock::Test)]
 impl<Runtime> OctopusBridgePrecompile<Runtime>
 where
 	Runtime: pallet_octopus_bridge::Config + pallet_evm::Config + frame_system::Config,

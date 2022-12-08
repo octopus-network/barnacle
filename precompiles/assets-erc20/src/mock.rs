@@ -97,14 +97,14 @@ impl AddressMapping<Account> for Account {
 				if prefix_part == &[255u8; 4] {
 					data.copy_from_slice(id_part);
 
-					return Self::ForeignAssetId(u128::from_be_bytes(data));
+					return Self::ForeignAssetId(u128::from_be_bytes(data))
 				} else if prefix_part == &[255u8, 255u8, 255u8, 254u8] {
 					data.copy_from_slice(id_part);
 
-					return Self::LocalAssetId(u128::from_be_bytes(data));
+					return Self::LocalAssetId(u128::from_be_bytes(data))
 				}
 				Self::Bogus
-			}
+			},
 		}
 	}
 }
@@ -115,12 +115,10 @@ impl AccountIdAssetIdConversion<AccountId, AssetId> for Runtime {
 	/// and by taking the lowest 128 bits as the assetId
 	fn account_to_asset_id(account: AccountId) -> Option<(Vec<u8>, AssetId)> {
 		match account {
-			Account::ForeignAssetId(asset_id) => {
-				Some((FOREIGN_ASSET_PRECOMPILE_ADDRESS_PREFIX.to_vec(), asset_id))
-			}
-			Account::LocalAssetId(asset_id) => {
-				Some((LOCAL_ASSET_PRECOMPILE_ADDRESS_PREFIX.to_vec(), asset_id))
-			}
+			Account::ForeignAssetId(asset_id) =>
+				Some((FOREIGN_ASSET_PRECOMPILE_ADDRESS_PREFIX.to_vec(), asset_id)),
+			Account::LocalAssetId(asset_id) =>
+				Some((LOCAL_ASSET_PRECOMPILE_ADDRESS_PREFIX.to_vec(), asset_id)),
 			_ => None,
 		}
 	}
@@ -148,14 +146,14 @@ impl From<Account> for H160 {
 				data[0..4].copy_from_slice(&[255u8; 4]);
 				data[4..20].copy_from_slice(&id_as_bytes);
 				H160::from_slice(&data)
-			}
+			},
 			Account::LocalAssetId(asset_id) => {
 				let mut data = [0u8; 20];
 				let id_as_bytes = asset_id.to_be_bytes();
 				data[0..4].copy_from_slice(&[255u8, 255u8, 255u8, 254u8]);
 				data[4..20].copy_from_slice(&id_as_bytes);
 				H160::from_slice(&data)
-			}
+			},
 			Account::Bogus => Default::default(),
 		}
 	}
@@ -338,11 +336,9 @@ impl ExtBuilder {
 			.build_storage::<Runtime>()
 			.expect("Frame system builds valid default genesis config");
 
-		pallet_balances::GenesisConfig::<Runtime> {
-			balances: self.balances,
-		}
-		.assimilate_storage(&mut t)
-		.expect("Pallet balances storage can be assimilated");
+		pallet_balances::GenesisConfig::<Runtime> { balances: self.balances }
+			.assimilate_storage(&mut t)
+			.expect("Pallet balances storage can be assimilated");
 
 		let mut ext = sp_io::TestExternalities::new(t);
 		ext.execute_with(|| System::set_block_number(1));
@@ -360,16 +356,16 @@ where
 {
 	fn execute(&self, handle: &mut impl PrecompileHandle) -> Option<EvmResult<PrecompileOutput>> {
 		match handle.code_address() {
-			// If the address matches asset prefix, the we route through the foreign  asset precompile set
-			a if &a.to_fixed_bytes()[0..4] == LOCAL_ASSET_PRECOMPILE_ADDRESS_PREFIX => {
+			// If the address matches asset prefix, the we route through the foreign  asset
+			// precompile set
+			a if &a.to_fixed_bytes()[0..4] == LOCAL_ASSET_PRECOMPILE_ADDRESS_PREFIX =>
 				Erc20AssetsPrecompileSet::<R, IsLocal, pallet_assets::Instance2>::new()
-					.execute(handle)
-			}
-			// If the address matches asset prefix, the we route through the local asset precompile set
-			a if &a.to_fixed_bytes()[0..4] == FOREIGN_ASSET_PRECOMPILE_ADDRESS_PREFIX => {
+					.execute(handle),
+			// If the address matches asset prefix, the we route through the local asset precompile
+			// set
+			a if &a.to_fixed_bytes()[0..4] == FOREIGN_ASSET_PRECOMPILE_ADDRESS_PREFIX =>
 				Erc20AssetsPrecompileSet::<R, IsForeign, pallet_assets::Instance1>::new()
-					.execute(handle)
-			}
+					.execute(handle),
 			_ => None,
 		}
 	}

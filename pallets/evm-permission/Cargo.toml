@@ -22,9 +22,15 @@ sp-std = { version = "4.0.0-dev", default-features = false, git = "https://githu
 pallet-evm = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30", default-features = false }
 
 [dev-dependencies]
-sp-core = { default-features = false, version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sp-io = { default-features = false, version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 sp-runtime = { default-features = false, version = "6.0.0", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+pallet-timestamp = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+
+pallet-ethereum = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
+pallet-balances = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+account = { path = "../../primitives/account/" }
+fp-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.30" }
+pallet-sudo = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
 [features]
 default = ["std"]
@@ -36,5 +42,6 @@ std = [
     "sp-core/std",
     "sp-std/std",
 	"frame-benchmarking/std",
+	"pallet-evm/std",
 ]
 
