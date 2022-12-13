@@ -91,7 +91,6 @@ use sp_runtime::{
 	transaction_validity::TransactionValidityError,
 	Permill,
 };
-// use sp_std::marker::PhantomData;
 
 /// Import the evm-permission pallet.
 pub use pallet_evm_permission;
@@ -114,9 +113,6 @@ use sp_runtime::generic::Era;
 use beefy_primitives::{crypto::AuthorityId as BeefyId, mmr::MmrLeafVersion};
 use sp_mmr_primitives as mmr;
 use sp_runtime::traits::Keccak256;
-
-// + octopus pallets
-// use sp_runtime::traits::AccountIdLookup;
 
 // Make the WASM binary available.
 #[cfg(feature = "std")]
@@ -267,7 +263,6 @@ parameter_types! {
 	// This number may need to be adjusted in the future if this assumption no longer holds true.
 	pub const MaxLocks: u32 = 50;
 	pub const MaxReserves: u32 = 50;
-	pub const ExistentialDeposit: Balance = 0;
 }
 
 impl pallet_balances::Config for Runtime {
@@ -277,7 +272,7 @@ impl pallet_balances::Config for Runtime {
 	type Balance = Balance;
 	type DustRemoval = ();
 	type RuntimeEvent = RuntimeEvent;
-	type ExistentialDeposit = ExistentialDeposit;
+	type ExistentialDeposit = ConstU128<0>;
 	type AccountStore = frame_system::Pallet<Runtime>;
 	type WeightInfo = pallet_balances::weights::SubstrateWeight<Runtime>;
 }
@@ -387,17 +382,6 @@ pub const GAS_PER_SECOND: u64 = 40_000_000;
 /// u64 works for approximations because Weight is a very small unit compared to gas.
 pub const WEIGHT_PER_GAS: u64 = WEIGHT_PER_SECOND.ref_time() / GAS_PER_SECOND;
 
-// pub struct MoonbeamGasWeightMapping;
-
-// impl pallet_evm::GasWeightMapping for MoonbeamGasWeightMapping {
-// 	fn gas_to_weight(gas: u64) -> Weight {
-// 		gas.saturating_mul(WEIGHT_PER_GAS)
-// 	}
-// 	fn weight_to_gas(weight: Weight) -> u64 {
-// 		u64::try_from(weight.wrapping_div(WEIGHT_PER_GAS)).unwrap_or(u32::MAX as u64)
-// 	}
-// }
-
 pub struct FixedGasPrice;
 impl FeeCalculator for FixedGasPrice {
 	fn min_gas_price() -> (U256, Weight) {
@@ -430,7 +414,6 @@ impl pallet_evm::Config for Runtime {
 	type BlockGasLimit = BlockGasLimit;
 	type Runner = pallet_evm::runner::stack::Runner<Self>;
 	type OnChargeTransaction = pallet_evm::EVMCurrencyAdapter<Balances, ()>;
-	// type OnChargeTransaction = OnChargeEVMTransaction<DealWithFees<Runtime>>;
 	type FindAuthor = FindAuthorAdapter<Session, Babe>;
 }
 
@@ -816,7 +799,7 @@ construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
 		System: frame_system,
-				// Babe must be before session.
+		// Babe must be before session.
 		Babe: pallet_babe,
 		Timestamp: pallet_timestamp,
 		// Authorship must be before session in order to note author in the correct session and era
@@ -942,7 +925,6 @@ impl fp_self_contained::SelfContainedCall for RuntimeCall {
 		len: usize,
 	) -> Option<TransactionValidity> {
 		match self {
-			//Need Check +++++++
 			RuntimeCall::Ethereum(call) => call.validate_self_contained(info, dispatch_info, len),
 			_ => None,
 		}

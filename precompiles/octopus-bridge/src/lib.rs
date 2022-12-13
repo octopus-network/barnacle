@@ -30,7 +30,7 @@ use precompile_utils::prelude::*;
 use sp_core::{H256, U256};
 use sp_std::marker::PhantomData;
 
-type GetReceiverSizeLimit = ConstU32<2048>; //Andy: Need check
+type GetReceiverSizeLimit = ConstU32<2048>;
 
 /// A precompile to wrap the functionality from pallet bridge.
 pub struct OctopusBridgePrecompile<Runtime>(PhantomData<Runtime>);
