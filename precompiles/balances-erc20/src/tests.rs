@@ -501,7 +501,7 @@ fn deposit(data: Vec<u8>) {
 			// We need to call using EVM pallet so we can check the EVM correctly sends the amount
 			// to the precompile.
 			Evm::call(
-				Origin::root(),
+				RuntimeOrigin::root(),
 				Account::Alice.into(),
 				Account::Precompile.into(),
 				data,
@@ -517,25 +517,27 @@ fn deposit(data: Vec<u8>) {
 			assert_eq!(
 				events(),
 				vec![
-					Event::System(frame_system::Event::NewAccount { account: Account::Precompile }),
-					Event::Balances(pallet_balances::Event::Endowed {
+					RuntimeEvent::System(frame_system::Event::NewAccount {
+						account: Account::Precompile
+					}),
+					RuntimeEvent::Balances(pallet_balances::Event::Endowed {
 						account: Account::Precompile,
 						free_balance: 500
 					}),
 					// EVM make a transfer because some value is provided.
-					Event::Balances(pallet_balances::Event::Transfer {
+					RuntimeEvent::Balances(pallet_balances::Event::Transfer {
 						from: Account::Alice,
 						to: Account::Precompile,
 						amount: 500
 					}),
 					// Precompile send it back since deposit should be a no-op.
-					Event::Balances(pallet_balances::Event::Transfer {
+					RuntimeEvent::Balances(pallet_balances::Event::Transfer {
 						from: Account::Precompile,
 						to: Account::Alice,
 						amount: 500
 					}),
 					// Log is correctly emited.
-					Event::Evm(pallet_evm::Event::Log {
+					RuntimeEvent::Evm(pallet_evm::Event::Log {
 						log: log2(
 							Precompile,
 							SELECTOR_LOG_DEPOSIT,
@@ -543,7 +545,9 @@ fn deposit(data: Vec<u8>) {
 							EvmDataWriter::new().write(U256::from(500)).build(),
 						)
 					}),
-					Event::Evm(pallet_evm::Event::Executed { address: Account::Precompile.into() }),
+					RuntimeEvent::Evm(pallet_evm::Event::Executed {
+						address: Account::Precompile.into()
+					}),
 				]
 			);
 
@@ -607,7 +611,7 @@ fn deposit_zero() {
 			// We need to call using EVM pallet so we can check the EVM correctly sends the amount
 			// to the precompile.
 			Evm::call(
-				Origin::root(),
+				RuntimeOrigin::root(),
 				Account::Alice.into(),
 				Account::Precompile.into(),
 				PCall::deposit {}.into(),
@@ -622,7 +626,7 @@ fn deposit_zero() {
 
 			assert_eq!(
 				events(),
-				vec![Event::Evm(pallet_evm::Event::ExecutedFailed {
+				vec![RuntimeEvent::Evm(pallet_evm::Event::ExecutedFailed {
 					address: Account::Precompile.into()
 				}),]
 			);

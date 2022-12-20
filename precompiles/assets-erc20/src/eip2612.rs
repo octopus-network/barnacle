@@ -222,10 +222,7 @@ where
 			.map_err(|_| revert("Invalid permit"))?;
 		let signer = H160::from(H256::from_slice(keccak_256(&signer).as_slice()));
 
-		ensure!(
-			signer != H160::zero() && signer == owner,
-			revert("Invalid permit")
-		);
+		ensure!(signer != H160::zero() && signer == owner, revert("Invalid permit"));
 
 		NoncesStorage::<Instance>::insert(address, owner, nonce + U256::one());
 

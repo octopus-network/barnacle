@@ -15,17 +15,19 @@
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(test, feature(assert_matches))]
+// #![cfg_attr(test, feature(assert_matches))]
 
 use core::fmt::Display;
 use fp_evm::PrecompileHandle;
-use frame_support::traits::fungibles::approvals::Inspect as ApprovalInspect;
-use frame_support::traits::fungibles::metadata::Inspect as MetadataInspect;
-use frame_support::traits::fungibles::Inspect;
-use frame_support::traits::{ConstBool, Get, OriginTrait};
 use frame_support::{
 	dispatch::{Dispatchable, GetDispatchInfo, PostDispatchInfo},
 	sp_runtime::traits::StaticLookup,
+	traits::{
+		fungibles::{
+			approvals::Inspect as ApprovalInspect, metadata::Inspect as MetadataInspect, Inspect,
+		},
+		ConstBool, Get, OriginTrait,
+	},
 };
 use pallet_evm::AddressMapping;
 use precompile_utils::prelude::*;
@@ -249,8 +251,8 @@ where
 		handle.record_cost(RuntimeHelper::<Runtime>::db_read_gas_cost())?;
 
 		// If previous approval exists, we need to clean it
-		if pallet_assets::Pallet::<Runtime, Instance>::allowance(asset_id, &owner, &spender)
-			!= 0u32.into()
+		if pallet_assets::Pallet::<Runtime, Instance>::allowance(asset_id, &owner, &spender) !=
+			0u32.into()
 		{
 			RuntimeHelper::<Runtime>::try_dispatch(
 				handle,
@@ -384,9 +386,7 @@ where
 	) -> EvmResult<UnboundedBytes> {
 		handle.record_cost(RuntimeHelper::<Runtime>::db_read_gas_cost())?;
 
-		let name = pallet_assets::Pallet::<Runtime, Instance>::name(asset_id)
-			.as_slice()
-			.into();
+		let name = pallet_assets::Pallet::<Runtime, Instance>::name(asset_id).as_slice().into();
 
 		Ok(name)
 	}
@@ -399,9 +399,7 @@ where
 	) -> EvmResult<UnboundedBytes> {
 		handle.record_cost(RuntimeHelper::<Runtime>::db_read_gas_cost())?;
 
-		let symbol = pallet_assets::Pallet::<Runtime, Instance>::symbol(asset_id)
-			.as_slice()
-			.into();
+		let symbol = pallet_assets::Pallet::<Runtime, Instance>::symbol(asset_id).as_slice().into();
 
 		Ok(symbol)
 	}
@@ -414,9 +412,7 @@ where
 	) -> EvmResult<u8> {
 		handle.record_cost(RuntimeHelper::<Runtime>::db_read_gas_cost())?;
 
-		Ok(pallet_assets::Pallet::<Runtime, Instance>::decimals(
-			asset_id,
-		))
+		Ok(pallet_assets::Pallet::<Runtime, Instance>::decimals(asset_id))
 	}
 
 	// From here: only for locals, we need to check whether we are in local assets otherwise fail
@@ -428,7 +424,7 @@ where
 		value: U256,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		handle.record_log_costs_manual(3, 32)?;
@@ -473,7 +469,7 @@ where
 		value: U256,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		handle.record_log_costs_manual(3, 32)?;
@@ -517,7 +513,7 @@ where
 		account: Address,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		let account: H160 = account.into();
@@ -548,7 +544,7 @@ where
 		account: Address,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		let account: H160 = account.into();
@@ -579,7 +575,7 @@ where
 		handle: &mut impl PrecompileHandle,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		// Build call with origin.
@@ -604,7 +600,7 @@ where
 		handle: &mut impl PrecompileHandle,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		// Build call with origin.
@@ -631,7 +627,7 @@ where
 		owner: Address,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		let owner: H160 = owner.into();
@@ -665,7 +661,7 @@ where
 		freezer: Address,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		let issuer: H160 = issuer.into();
@@ -705,7 +701,7 @@ where
 		decimals: u8,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		// Build call with origin.
@@ -735,7 +731,7 @@ where
 		handle: &mut impl PrecompileHandle,
 	) -> EvmResult<bool> {
 		if !IsLocal::get() {
-			return Err(RevertReason::UnknownSelector.into());
+			return Err(RevertReason::UnknownSelector.into())
 		}
 
 		// Build call with origin.
