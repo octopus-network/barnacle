@@ -5,6 +5,7 @@ use pallet_evm_precompile_bn128::{Bn128Add, Bn128Mul, Bn128Pairing};
 use pallet_evm_precompile_modexp::Modexp;
 use pallet_evm_precompile_octopus_bridge::OctopusBridgePrecompile;
 use pallet_evm_precompile_octopus_session::OctopusSessionPrecompile;
+use pallet_evm_precompile_octopus_uniques::OctopusUniquesPrecompile;
 use pallet_evm_precompile_sha3fips::Sha3FIPS256;
 use pallet_evm_precompile_simple::{ECRecover, ECRecoverPublicKey, Identity, Ripemd160, Sha256};
 use pallet_evm_precompileset_assets_erc20::{Erc20AssetsPrecompileSet, IsLocal};
@@ -82,6 +83,7 @@ pub type FrontierPrecompiles<R> = PrecompileSetBuilder<
 				PrecompileAt<AddressU64<2050>, Erc20BalancesPrecompile<R, NativeErc20Metadata>>,
 				PrecompileAt<AddressU64<2051>, OctopusBridgePrecompile<R>>,
 				PrecompileAt<AddressU64<2052>, OctopusSessionPrecompile<R>>,
+				PrecompileAt<AddressU64<2053>, OctopusUniquesPrecompile<R>>,
 			),
 		>,
 		// // Prefixed precompile sets (XC20)

@@ -163,6 +163,7 @@ dependencies = [
  "pallet-evm-precompile-modexp",
  "pallet-evm-precompile-octopus-bridge",
  "pallet-evm-precompile-octopus-session",
+ "pallet-evm-precompile-octopus-uniques",
  "pallet-evm-precompile-sha3fips",
  "pallet-evm-precompile-simple",
  "pallet-evm-precompileset-assets-erc20",
@@ -5556,6 +5557,43 @@ dependencies = [
 
 [[package]]
 name = "pallet-evm-precompile-octopus-session"
+version = "0.1.0"
+dependencies = [
+ "account",
+ "derive_more",
+ "fp-evm",
+ "frame-support",
+ "frame-system",
+ "hex-literal",
+ "libsecp256k1 0.7.0",
+ "log",
+ "num_enum",
+ "pallet-assets",
+ "pallet-balances",
+ "pallet-ethereum",
+ "pallet-evm",
+ "pallet-octopus-appchain",
+ "pallet-octopus-bridge",
+ "pallet-octopus-lpos",
+ "pallet-octopus-support",
+ "pallet-octopus-upward-messages",
+ "pallet-session",
+ "pallet-timestamp",
+ "pallet-uniques",
+ "parity-scale-codec",
+ "precompile-utils",
+ "scale-info",
+ "serde",
+ "sha3 0.8.2",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-staking",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-evm-precompile-octopus-uniques"
 version = "0.1.0"
 dependencies = [
  "account",
