@@ -755,7 +755,7 @@ impl pallet_octopus_bridge::Config for Runtime {
 	type CollectionId = CollectionId;
 	type ItemId = ItemId;
 	type Nonfungibles = OctopusUniques;
-	type Convertor = ();
+	type Convertor = pallet_evm_precompile_octopus_uniques::impls::Erc721MetadataConvertor<Runtime>;
 	type NativeTokenDecimals = NativeTokenDecimals;
 	type Threshold = FeeTh;
 	type WeightInfo = pallet_octopus_bridge::weights::SubstrateWeight<Runtime>;
@@ -1386,6 +1386,33 @@ impl_runtime_apis! {
 			_access_list: Option<Vec<(H160, Vec<H256>)>>,
 		) -> Result<pallet_evm::CreateInfo, sp_runtime::DispatchError> {
 			Err(sp_runtime::DispatchError::Other("Not support use remix to deploy the contract, please use polkadot js apps."))
+
+			// If you want to deploy contract debugging with remix, you can use the following code.
+			// let config = if estimate {
+			// 	let mut config = <Runtime as pallet_evm::Config>::config().clone();
+			// 	config.estimate = true;
+			// 	Some(config)
+			// } else {
+			// 	None
+			// };
+
+			// let is_transactional = false;
+			// let validate = true;
+			// let evm_config = config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config());
+			// #[allow(clippy::or_fun_call)] // suggestion not helpful here
+			// <Runtime as pallet_evm::Config>::Runner::create(
+			// 	from,
+			// 	data,
+			// 	value,
+			// 	gas_limit.unique_saturated_into(),
+			// 	max_fee_per_gas,
+			// 	max_priority_fee_per_gas,
+			// 	nonce,
+			// 	access_list.unwrap_or_default(),
+			// 	is_transactional,
+			// 	validate,
+			// 	evm_config,
+			// ).map_err(|err| err.error.into())
 		}
 
 		fn current_transaction_statuses() -> Option<Vec<TransactionStatus>> {

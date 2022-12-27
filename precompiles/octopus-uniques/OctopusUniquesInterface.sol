@@ -31,12 +31,22 @@ interface OctopusUniques {
 
 	/**
 	 * Set the metadata for an item
-	 * Selector: 0x73deff07
+	 * Selector: 0x527a0032 
 	 * 
 	 * @param collection The collection of nft
 	 * @param item The item of nft
-	 * @param data The metadata of nft
+	 * @param uri The token uri of nft
 	 * 
 	 */
-	function set_metadata(uint256 collection, uint256 item, bytes memory data) external returns (bool);
+	function set_metadata(uint256 collection, uint256 item, string memory uri) external returns (bool);
+
+	/**
+	 * burn nft in uniques pallet
+	 * Selector: 0xb390c0ab
+	 * 
+	 * @param collection The collection of nft
+	 * @param item The item of nft
+	 * 
+	 */
+    function burn(uint256 collection, uint256 item) external returns (bool);
 }

@@ -35,7 +35,9 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
-type GetMetadataSizeLimit = ConstU32<20480>;
+pub mod impls;
+
+type GetMetadataStringLimit = ConstU32<2048>;
 
 /// A precompile to wrap the functionality from pallet uniques.
 pub struct OctopusUniquesPrecompile<Runtime>(PhantomData<Runtime>);
@@ -112,18 +114,19 @@ where
 		Ok(true)
 	}
 
-	#[precompile::public("set_metadata(uint256,uint256,bytes)")]
-	#[precompile::public("setMetadata(uint256,uint256,bytes)")]
+	#[precompile::public("set_metadata(uint256,uint256,string)")]
+	#[precompile::public("setMetadata(uint256,uint256,string)")]
 	fn set_metadata(
 		handle: &mut impl PrecompileHandle,
 		collection: U256,
 		item: U256,
-		data: BoundedBytes<GetMetadataSizeLimit>,
+		uri: BoundedString<GetMetadataStringLimit>,
 	) -> EvmResult<bool> {
 		let collection: <Runtime as pallet_uniques::Config<pallet_uniques::Instance1>>::CollectionId  = collection.checked_into().unwrap();
 		let item: <Runtime as pallet_uniques::Config<pallet_uniques::Instance1>>::ItemId =
 			item.checked_into().unwrap();
-		let data: Vec<u8> = data.into();
+
+		let data: Vec<u8> = uri.into();
 
 		log::trace!(
 			target: "octopus-uniques-precompile",
@@ -136,6 +139,28 @@ where
 			item,
 			data: data.try_into().unwrap(),
 			is_frozen: false,
+		};
+
+		RuntimeHelper::<Runtime>::try_dispatch(handle, Some(origin).into(), call)?;
+		Ok(true)
+	}
+
+	#[precompile::public("burn(uint256,uint256)")]
+	fn burn(handle: &mut impl PrecompileHandle, collection: U256, item: U256) -> EvmResult<bool> {
+		let collection: <Runtime as pallet_uniques::Config<pallet_uniques::Instance1>>::CollectionId  = collection.checked_into().unwrap();
+		let item: <Runtime as pallet_uniques::Config<pallet_uniques::Instance1>>::ItemId =
+			item.checked_into().unwrap();
+
+		log::trace!(
+			target: "octopus-uniques-precompile",
+			"burn in uniques, collection: {:?}, item: {:?}", collection, item,
+		);
+
+		let origin = Runtime::AddressMapping::into_account_id(handle.context().caller);
+		let call = pallet_uniques::Call::<Runtime, pallet_uniques::Instance1>::burn {
+			collection,
+			item,
+			check_owner: None,
 		};
 
 		RuntimeHelper::<Runtime>::try_dispatch(handle, Some(origin).into(), call)?;

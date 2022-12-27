@@ -3,8 +3,8 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import "./OctopusBridgeInterface.sol";
-import "./OctopusUniquesInterface.sol";
+import "../octopus-bridge/OctopusBridgeInterface.sol";
+import "../octopus-uniques/OctopusUniquesInterface.sol";
 import "./ERC721Vault.sol";
 
 contract ERC721App is AccessControl {

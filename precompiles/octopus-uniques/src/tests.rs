@@ -25,7 +25,8 @@ fn evm_call(input: Vec<u8>) -> EvmCall<Test> {
 fn selectors() {
 	assert!(PCall::create_collection_selectors().contains(&0x12d69575));
 	assert!(PCall::mint_selectors().contains(&0xe7d3fe6b));
-	assert!(PCall::set_metadata_selectors().contains(&0x73deff07));
+	assert!(PCall::set_metadata_selectors().contains(&0x527a0032));
+	assert!(PCall::burn_selectors().contains(&0xb390c0ab));
 }
 
 #[test]
@@ -73,26 +74,24 @@ fn set_metadata_works() {
 			let input = PCall::set_metadata {
 				collection: U256::from(1u128),
 				item: U256::from(1u128),
-				data: "nft's metadata".into(),
+				uri: "nft's metadata".into(),
 			}
 			.into();
 
 			assert_ok!(RuntimeCall::EVM(evm_call(input)).dispatch(RuntimeOrigin::root()));
 		})
 }
-// #[test]
-// fn set_keys_works() {
-// 	let alice = AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap();
-// 	ExtBuilder::default()
-// 		.with_balances(vec![(alice, 1000000000000000000000)])
-// 		.build()
-// 		.execute_with(|| {
-// 			let keys =
-// 				"0x03341185f68feb2bc863ebffea367571a79937d39fe8d80796df22091c563c3983".into();
-// 			let proof = "test.testnet".into();
 
-// 			let input = PCall::set_keys { keys, proof }.into();
+#[test]
+fn burn_works() {
+	let alice = AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap();
+	ExtBuilder::default()
+		.with_balances(vec![(alice, 1000000000000000000000)])
+		.build()
+		.execute_with(|| {
+			let input =
+				PCall::burn { collection: U256::from(1u128), item: U256::from(1u128) }.into();
 
-// 			assert_ok!(RuntimeCall::EVM(evm_call(input)).dispatch(RuntimeOrigin::root()));
-// 		})
-// }
+			assert_ok!(RuntimeCall::EVM(evm_call(input)).dispatch(RuntimeOrigin::root()));
+		})
+}
