@@ -3,10 +3,11 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 /// @title ERC721 Vault
 /// @notice Holds ERC721 Tokens on behalf of ERC721App.
-contract ERC721Vault is Ownable {
+contract ERC721Vault is Ownable, IERC721Receiver {
 
     /// @dev Emitted when an ERC721 token is deposited.
     /// @param account The address of the ERC721App contract.
@@ -56,5 +57,19 @@ contract ERC721Vault is Ownable {
     ) external onlyOwner {
         IERC721(_token).safeTransferFrom(address(this), _recipient, _tokenId);
         emit Withdraw(msg.sender, _recipient, _token, _tokenId);
+    }
+
+    /**
+     * @dev See {IERC721Receiver-onERC721Received}.
+     *
+     * Always returns `IERC721Receiver.onERC721Received.selector`.
+     */
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes memory
+    ) public virtual override returns (bytes4) {
+        return this.onERC721Received.selector;
     }
 }
