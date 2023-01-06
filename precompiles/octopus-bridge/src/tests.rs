@@ -24,9 +24,9 @@ fn evm_call(input: Vec<u8>) -> EvmCall<Test> {
 
 #[test]
 fn selectors() {
-	assert!(PCall::lock_selectors().contains(&0x48319966));
-	assert!(PCall::burn_nep141_selectors().contains(&0x9409a9ba));
-	assert!(PCall::lock_nonfungible_selectors().contains(&0x54c4beb4));
+	assert!(PCall::lock_selectors().contains(&0xd8f7c836));
+	assert!(PCall::burn_nep141_selectors().contains(&0x749186c9));
+	assert!(PCall::lock_nonfungible_selectors().contains(&0x7c1978c0));
 }
 
 #[test]
@@ -40,7 +40,6 @@ fn lock_works() {
 
 			let input = PCall::lock {
 				amount: U256::from(100000000000000000000u128),
-				fee: U256::from(100000u64),
 				receiver_id: "test.testnet".into(),
 			}
 			.into();
@@ -80,7 +79,29 @@ fn burn_asset_works() {
 			let input = PCall::burn_nep141 {
 				asset_id: 0u32,
 				amount: U256::from(100000),
-				fee: U256::from(100000u64),
+				receiver_id: "test.testnet".into(),
+			}
+			.into();
+
+			assert_ok!(RuntimeCall::EVM(evm_call(input)).dispatch(RuntimeOrigin::root()));
+		})
+}
+
+#[test]
+fn lock_nonfungiable_works() {
+	let alice = AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap();
+	ExtBuilder::default()
+		.with_balances(vec![(alice, 1000000000000000000000)])
+		.build()
+		.execute_with(|| {
+			assert_ok!(OctopusUniques::force_create(RuntimeOrigin::root(), 1, alice.into(), true,));
+			assert_ok!(OctopusUniques::mint(RuntimeOrigin::signed(alice), 1, 1, alice.into(),));
+
+			assert_ok!(OctopusAppchain::force_set_is_activated(RuntimeOrigin::root(), true));
+
+			let input = PCall::lock_nonfungible {
+				collection: U256::from(1),
+				item: U256::from(1),
 				receiver_id: "test.testnet".into(),
 			}
 			.into();
