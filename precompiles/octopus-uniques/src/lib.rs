@@ -66,11 +66,14 @@ where
 		collection: U256,
 		admin: Address,
 	) -> EvmResult<bool> {
+		log::info!(target: "octopus-uniques-precompile", "0+++++++++++++++++++++++++++++++++++++++  ");
 		let collection:<Runtime as pallet_uniques::Config<pallet_uniques::Instance1>>::CollectionId  = collection.checked_into().unwrap();
+		log::info!(target: "octopus-uniques-precompile", "1+++++++++++++++++++++++++++++++++++++++  ");
 		let admin: H160 = admin.into();
 		let admin = Runtime::Lookup::unlookup(Runtime::AddressMapping::into_account_id(admin));
 
-		log::trace!(
+		// log::trace!(
+		log::info!(
 			target: "octopus-uniques-precompile",
 			"create collection in uniques, collection: {:?}, admin: {:?} ", collection, admin,
 		);
@@ -80,6 +83,7 @@ where
 			collection,
 			admin,
 		};
+		log::info!(target: "octopus-uniques-precompile", "2+++++++++++++++++++++++++++++++++++++++  ");
 
 		RuntimeHelper::<Runtime>::try_dispatch(handle, Some(origin).into(), call)?;
 		Ok(true)
