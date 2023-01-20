@@ -1387,7 +1387,7 @@ impl_runtime_apis! {
 		) -> Result<pallet_evm::CreateInfo, sp_runtime::DispatchError> {
 			// Err(sp_runtime::DispatchError::Other("Not support use remix to deploy the contract, please use polkadot js apps."))
 
-			If you want to deploy contract debugging with remix, you can use the following code.
+			// If you want to deploy contract debugging with remix, you can use the following code.
 			let config = if estimate {
 				let mut config = <Runtime as pallet_evm::Config>::config().clone();
 				config.estimate = true;

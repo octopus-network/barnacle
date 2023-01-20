@@ -209,7 +209,7 @@ dependencies = [
 
 [[package]]
 name = "appchain-cli"
-version = "0.9.30"
+version = "0.9.30-v110"
 dependencies = [
  "appchain-barnacle-runtime",
  "appchain-executor",
