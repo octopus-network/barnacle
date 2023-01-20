@@ -1,13 +1,15 @@
 [package]
-name = "pallet-evm-precompile-octopus-bridge"
+name = "pallet-evm-precompile-octopus-uniques"
 authors = ["Octopus Network <hi@oct.network>"]
-description = "A Precompile to make pallet-octopus-bridge accessible to pallet-evm"
+description = "A Precompile to make pallet-uniques accessible to pallet-evm"
 edition = "2021"
 version = "0.1.0"
 
 [dependencies]
 log = "0.4"
 num_enum = { version = "0.5.3", default-features = false }
+serde = { version = "1.0.136", features = ["derive"], default-features = false }
+scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
 
 # Moonbeam
 precompile-utils = { path = "../utils", default-features = false }
@@ -19,12 +21,15 @@ frame-system = { git = "https://github.com/paritytech/substrate", branch = "polk
 sp-core = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30", default-features = false }
 sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30", default-features = false }
 sp-std = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30", default-features = false }
+sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30", default-features = false }
 
 # Frontier
 fp-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.30", default-features = false }
 pallet-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.30", default-features = false }
 
 # Octopus
+pallet-uniques = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
+pallet-octopus-support = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-bridge = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 
 [dev-dependencies]
@@ -36,18 +41,17 @@ sha3 = "0.8"
 
 pallet-timestamp = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30" }
 scale-info = { version = "2.0", default-features = false, features = [ "derive" ] }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.30" }
 
 sp-staking = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-assets = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-balances = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 pallet-session = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30", features = ["historical"] }
-pallet-uniques = { git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v0.9.30" }
 
 pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-lpos = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-upward-messages = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
 pallet-octopus-support = { git = "https://github.com/octopus-network/octopus-pallets.git", branch = "main" }
+
 account = { path = "../../primitives/account/" }
 
 pallet-ethereum = { git = "https://github.com/paritytech/frontier.git", branch = "polkadot-v0.9.30" }
@@ -64,5 +68,11 @@ std = [
 	"sp-core/std",
 	"sp-io/std",
 	"sp-std/std",
+	"pallet-uniques/std",
+
+	"serde/std",
+	"pallet-octopus-support/std",
 	"pallet-octopus-bridge/std",
+	"sp-runtime/std",
+	"scale-info/std",
 ]

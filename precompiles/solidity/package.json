@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.0"
+  },
+  "name": "barnacle-evm-nft-lock",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "solidity-coverage": "^0.8.2"
+  },
+  "scripts": {
+    "build": "hardhat compile"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

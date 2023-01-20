@@ -90,7 +90,7 @@ pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Pu
 		.expect("static values are valid; qed")
 		.public()
 }
-
+/// Helper function to generate controller and session key
 pub fn authority_keys_from_account_and_seed(
 	account: AccountId,
 	seed: &str,
@@ -232,7 +232,7 @@ fn development_config_genesis() -> GenesisConfig {
 	testnet_genesis(
 		vec![authority_keys_from_account_and_seed(
 			AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
-			"ALITH",
+			"Alice", //"ALITH",
 		)],
 		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
 		None,
@@ -263,15 +263,15 @@ fn local_testnet_genesis() -> GenesisConfig {
 		vec![
 			authority_keys_from_account_and_seed(
 				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
-				"ALITH",
+				"Alice", //"ALITH",
 			),
 			authority_keys_from_account_and_seed(
 				AccountId::from_str("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0").unwrap(),
-				"BALTATHAR",
+				"Bob", //"BALTATHAR",
 			),
 			authority_keys_from_account_and_seed(
 				AccountId::from_str("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc").unwrap(),
-				"CHARLETH",
+				"Charlie", //"CHARLETH",
 			),
 		],
 		AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
@@ -298,83 +298,92 @@ pub fn local_testnet_config() -> ChainSpec {
 	)
 }
 
-// #[cfg(test)]
-// pub(crate) mod tests {
-// 	use super::*;
-// 	use crate::service::{new_full_base, NewFullBase};
-// 	use sc_service_test;
-// 	use sp_runtime::BuildStorage;
+#[cfg(test)]
+pub(crate) mod tests {
+	use super::*;
+	use crate::service::{new_full_base, NewFullBase};
+	use sc_service_test;
+	use sp_runtime::BuildStorage;
+	// use crate::{
+	// Cli, Subcommand,
+	// };
+	use sc_cli::SubstrateCli;
 
-// 	fn local_testnet_genesis_instant_single() -> GenesisConfig {
-// 		testnet_genesis(
-// 			vec![authority_keys_from_seed("Alice")],
-// 			get_account_id_from_seed::<sr25519::Public>("Alice"),
-// 			None,
-// 		)
-// 	}
+	fn local_testnet_genesis_instant_single() -> GenesisConfig {
+		testnet_genesis(
+			vec![authority_keys_from_account_and_seed(
+				AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+				"Alice", //"ALITH",
+			)],
+			AccountId::from_str("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac").unwrap(),
+			None,
+		)
+	}
 
-// 	/// Local testnet config (single validator - Alice)
-// 	pub fn integration_test_config_with_single_authority() -> ChainSpec {
-// 		ChainSpec::from_genesis(
-// 			"Integration Test",
-// 			"test",
-// 			ChainType::Development,
-// 			local_testnet_genesis_instant_single,
-// 			vec![],
-// 			None,
-// 			// Protocol ID
-// 			Some("bar"),
-// 			None,
-// 			// Properties
-// 			Some(barnacle_chain_spec_properties()),
-// 			// Extensions
-// 			Default::default(),
-// 		)
-// 	}
+	/// Local testnet config (single validator - Alice)
+	pub fn integration_test_config_with_single_authority() -> ChainSpec {
+		ChainSpec::from_genesis(
+			"Integration Test",
+			"test",
+			ChainType::Development,
+			local_testnet_genesis_instant_single,
+			vec![],
+			None,
+			// Protocol ID
+			Some("bar"),
+			None,
+			// Properties
+			Some(barnacle_chain_spec_properties()),
+			// Extensions
+			Default::default(),
+		)
+	}
 
-// 	/// Local testnet config (multivalidator Alice + Bob)
-// 	pub fn integration_test_config_with_two_authorities() -> ChainSpec {
-// 		ChainSpec::from_genesis(
-// 			"Integration Test",
-// 			"test",
-// 			ChainType::Development,
-// 			local_testnet_genesis,
-// 			vec![],
-// 			None,
-// 			// Protocol ID
-// 			Some("bar"),
-// 			None,
-// 			// Properties
-// 			Some(barnacle_chain_spec_properties()),
-// 			// Extensions
-// 			Default::default(),
-// 		)
-// 	}
+	/// Local testnet config (multivalidator Alice + Bob)
+	pub fn integration_test_config_with_two_authorities() -> ChainSpec {
+		ChainSpec::from_genesis(
+			"Integration Test",
+			"test",
+			ChainType::Development,
+			local_testnet_genesis,
+			vec![],
+			None,
+			// Protocol ID
+			Some("bar"),
+			None,
+			// Properties
+			Some(barnacle_chain_spec_properties()),
+			// Extensions
+			Default::default(),
+		)
+	}
 
-// 	#[test]
-// 	#[ignore]
-// 	fn test_connectivity() {
-// 		sp_tracing::try_init_simple();
+	#[test]
+	#[ignore]
+	fn test_connectivity() {
+		sp_tracing::try_init_simple();
 
-// 		sc_service_test::connectivity(integration_test_config_with_two_authorities(), |config| {
-// 			let NewFullBase { task_manager, client, network, transaction_pool, .. } =
-// 				new_full_base(config, false, |_, _| ())?;
-// 			Ok(sc_service_test::TestNetComponents::new(
-// 				task_manager,
-// 				client,
-// 				network,
-// 				transaction_pool,
-// 			))
-// 		});
-// 	}
+		let cli = crate::Cli::from_args();
 
-// 	#[test]
-// 	fn test_create_development_chain_spec() {
-// 		development_config().build_storage().unwrap();
-// 	}
+		sc_service_test::connectivity(integration_test_config_with_two_authorities(), |config| {
+			let NewFullBase { task_manager, client, network, transaction_pool, .. } =
+				new_full_base(config, &cli, false, |_, _| ())?;
+			Ok(sc_service_test::TestNetComponents::new(
+				task_manager,
+				client,
+				network,
+				transaction_pool,
+			))
+		});
+	}
 
-// 	#[test]
-// 	fn test_create_local_testnet_chain_spec() {
-// 		local_testnet_config().build_storage().unwrap();
-// 	}
-// }
+	#[test]
+	fn test_create_development_chain_spec() {
+		development_config().build_storage().unwrap();
+	}
+
+	#[test]
+	fn test_create_local_testnet_chain_spec() {
+		local_testnet_config().build_storage().unwrap();
+	}
+}

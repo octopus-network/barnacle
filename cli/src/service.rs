@@ -23,16 +23,12 @@
 use appchain_barnacle_runtime::RuntimeApi;
 use appchain_executor::ExecutorDispatch;
 use appchain_primitives::Block;
-// use codec::Encode;
-// use frame_system_rpc_runtime_api::AccountNonceApi;
 use sc_client_api::BlockBackend;
 use sc_consensus_babe::{self, SlotProportion};
 use sc_executor::NativeElseWasmExecutor;
 use sc_network::NetworkService;
 use sc_service::{config::Configuration, error::Error as ServiceError, RpcHandlers, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker};
-// use sp_api::ProvideRuntimeApi;
-// use sp_core::crypto::Pair;
 use sp_runtime::traits::Block as BlockT;
 use std::sync::Arc;
 
@@ -656,11 +652,12 @@ pub fn new_full(
 mod tests {
 	use crate::service::{new_full_base, NewFullBase};
 	use appchain_barnacle_runtime::{
-		constants::{currency::CENTS, time::SLOT_DURATION},
-		Address, BalancesCall, RuntimeCall, UncheckedExtrinsic,
+		constants::{currency::MICROEBAR, time::SLOT_DURATION},
+		AccountId, Address, BalancesCall, RuntimeCall, UncheckedExtrinsic,
 	};
-	use appchain_primitives::{Block, DigestItem, Signature};
+	use appchain_primitives::{Block, DigestItem};
 	use codec::Encode;
+	use sc_cli::SubstrateCli;
 	use sc_client_api::BlockBackend;
 	use sc_consensus::{BlockImport, BlockImportParams, ForkChoiceStrategy};
 	use sc_consensus_babe::{BabeIntermediate, CompatibleDigestItem, INTERMEDIATE_KEY};
@@ -671,18 +668,15 @@ mod tests {
 	use sp_consensus::{BlockOrigin, Environment, Proposer};
 	use sp_core::{crypto::Pair as CryptoPair, Public};
 	use sp_inherents::InherentDataProvider;
-	use sp_keyring::AccountKeyring;
 	use sp_keystore::{SyncCryptoStore, SyncCryptoStorePtr};
 	use sp_runtime::{
 		generic::{BlockId, Digest, Era, SignedPayload},
 		key_types::BABE,
-		traits::{Block as BlockT, Header as HeaderT, IdentifyAccount, Verify},
+		traits::{Block as BlockT, Header as HeaderT},
 		RuntimeAppPublic,
 	};
 	use sp_timestamp;
-	use std::sync::Arc;
-
-	type AccountPublic = <Signature as Verify>::Signer;
+	use std::{str::FromStr, sync::Arc};
 
 	#[test]
 	// It is "ignored", but the node-cli ignored tests are running on the CI.
@@ -705,9 +699,10 @@ mod tests {
 		let mut slot = 1u64;
 
 		// For the extrinsics factory
-		let bob = Arc::new(AccountKeyring::Bob.pair());
-		let charlie = Arc::new(AccountKeyring::Charlie.pair());
+		let _bob = Arc::new(sp_core::ecdsa::Pair::from_string("//Bob", None).unwrap());
+		let charlie = Arc::new(sp_core::ecdsa::Pair::from_string("//Charlie", None).unwrap());
 		let mut index = 0;
+		let cli = crate::Cli::from_args();
 
 		sc_service_test::sync(
 			chain_spec,
@@ -716,6 +711,7 @@ mod tests {
 				let NewFullBase { task_manager, client, network, transaction_pool, .. } =
 					new_full_base(
 						config,
+						&cli,
 						false,
 						|block_import: &sc_consensus_babe::BabeBlockImport<Block, _, _>,
 						 babe_link: &sc_consensus_babe::BabeLink<Block>| {
@@ -836,9 +832,11 @@ mod tests {
 					.expect("error importing test block");
 			},
 			|service, _| {
-				let amount = 5 * CENTS;
-				let to: Address = AccountPublic::from(bob.public()).into_account().into();
-				let from: Address = AccountPublic::from(charlie.public()).into_account().into();
+				let amount = 5 * MICROEBAR;
+				let to: Address =
+					AccountId::from_str("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0").unwrap();
+				let from: Address =
+					AccountId::from_str("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc").unwrap();
 				let genesis_hash = service.client().block_hash(0).unwrap().unwrap();
 				let best_block_id = BlockId::number(service.client().chain_info().best_number);
 				let (spec_version, transaction_version) = {
@@ -859,7 +857,7 @@ mod tests {
 				let check_era = frame_system::CheckEra::from(Era::Immortal);
 				let check_nonce = frame_system::CheckNonce::from(index);
 				let check_weight = frame_system::CheckWeight::new();
-				let tx_payment = pallet_asset_tx_payment::ChargeAssetTxPayment::from(0, None);
+				let tx_payment = pallet_transaction_payment::ChargeTransactionPayment::from(0);
 				let extra = (
 					check_non_zero_sender,
 					check_spec_version,
@@ -889,11 +887,12 @@ mod tests {
 	fn test_consensus() {
 		sp_tracing::try_init_simple();
 
+		let cli = crate::Cli::from_args();
 		sc_service_test::consensus(
 			crate::chain_spec::tests::integration_test_config_with_two_authorities(),
 			|config| {
 				let NewFullBase { task_manager, client, network, transaction_pool, .. } =
-					new_full_base(config, false, |_, _| ())?;
+					new_full_base(config, &cli, false, |_, _| ())?;
 				Ok(sc_service_test::TestNetComponents::new(
 					task_manager,
 					client,

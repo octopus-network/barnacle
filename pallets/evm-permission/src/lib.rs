@@ -16,7 +16,12 @@ pub use pallet_evm;
 use sp_core::{H160, H256, U256};
 use sp_std::vec::Vec;
 
-use pallet_evm::BalanceOf;
+use pallet_evm::{BalanceOf, GasWeightMapping};
+
+#[cfg(test)]
+mod mock;
+#[cfg(test)]
+mod tests;
 
 #[frame_support::pallet]
 pub mod pallet {
@@ -55,7 +60,10 @@ pub mod pallet {
 
 		/// wrapper call
 		/// Issue an EVM call operation. This is similar to a message call transaction in Ethereum.
-		#[pallet::weight(10_000)]
+		#[pallet::weight({
+			let without_base_extrinsic_weight = true;
+			T::GasWeightMapping::gas_to_weight(*gas_limit, without_base_extrinsic_weight)
+		})]
 		pub fn call(
 			origin: OriginFor<T>,
 			source: H160,
@@ -85,7 +93,10 @@ pub mod pallet {
 		/// wrapper create
 		/// Issue an EVM create operation. This is similar to a contract creation transaction in
 		/// Ethereum.
-		#[pallet::weight(0)]
+		#[pallet::weight({
+			let without_base_extrinsic_weight = true;
+			T::GasWeightMapping::gas_to_weight(*gas_limit, without_base_extrinsic_weight)
+		})]
 		pub fn create(
 			origin: OriginFor<T>,
 			source: H160,
@@ -114,7 +125,10 @@ pub mod pallet {
 
 		/// wrapper create2
 		/// Issue an EVM create2 operation.
-		#[pallet::weight(0)]
+		#[pallet::weight({
+			let without_base_extrinsic_weight = true;
+			T::GasWeightMapping::gas_to_weight(*gas_limit, without_base_extrinsic_weight)
+		})]
 		pub fn create2(
 			origin: OriginFor<T>,
 			source: H160,

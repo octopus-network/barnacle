@@ -1,2 +1,6 @@
 **/target/
 **/*.rs.bk
+
+**/node_modules/
+**/artifacts/
+**/cache/

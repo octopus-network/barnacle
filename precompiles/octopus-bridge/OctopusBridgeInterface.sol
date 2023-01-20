@@ -11,40 +11,36 @@ pragma solidity >=0.8.0 <0.9.0;
 interface OctopusBridge {
     /**
 	 * lock native token 
-     * Selector: 0x48319966
+     * Selector: 0xd8f7c836
 	 *
 	 * @param receiver_id The receiver address in near
 	 * @param amount The amount to cross 
-	 * @param fee The fee for cross 
 	 *
      */
-    function lock(uint256 amount, uint256 fee, bytes memory receiver_id) external;
+    function lock(uint256 amount, bytes memory receiver_id) external;
 
 
     /**
 	 * burn nep141 
-     * Selector: 0x9409a9ba 
+     * Selector: 0x749186c9
 	 *
 	 * @param receiver_id The receiver address in near
 	 * @param amount The amount to cross 
 	 * @param asset_id The id of asset to cross 
-	 * @param fee The fee for cross 
 	 *
      */
-    function burn_nep141(uint32 asset_id, uint256 amount, uint256 fee, bytes memory receiver_id) external;
+    function burn_nep141(uint32 asset_id, uint256 amount, bytes memory receiver_id) external;
 
 
     /**
 	 * lock nonfungible 
-     * Selector: 0x54c4beb4 
+     * Selector: 0x7c1978c0
 	 *
 	 * @param receiver_id The receiver address in near
 	 * @param item The item id of nft 
 	 * @param collection The collection id of nft 
-	 * @param fee The fee for cross 
-	 * @param metadata_length The length of nft's metadata 
 	 *
      */
-    function lock_nonfungible(uint256 collection, uint256 item, uint256 fee, uint32 metadata_length, bytes memory receiver_id) external;
+    function lock_nonfungible(uint256 collection, uint256 item, bytes memory receiver_id) external;
 	
 }
