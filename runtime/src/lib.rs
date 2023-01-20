@@ -138,7 +138,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	// and set impl_version to 0. If only runtime
 	// implementation changes and behavior does not, then leave spec_version as
 	// is and increment impl_version.
-	spec_version: 100,
+	spec_version: 110,
 	impl_version: 0,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
@@ -385,7 +385,7 @@ pub const WEIGHT_PER_GAS: u64 = WEIGHT_PER_SECOND.ref_time() / GAS_PER_SECOND;
 pub struct FixedGasPrice;
 impl FeeCalculator for FixedGasPrice {
 	fn min_gas_price() -> (U256, Weight) {
-		((1 * GIGAWEI * SUPPLY_FACTOR).into(), Weight::zero())
+		((1 * MEGAWEI * SUPPLY_FACTOR).into(), Weight::zero())
 	}
 }
 
@@ -1375,44 +1375,44 @@ impl_runtime_apis! {
 		}
 
 		fn create(
-			_from: H160,
-			_data: Vec<u8>,
-			_value: U256,
-			_gas_limit: U256,
-			_max_fee_per_gas: Option<U256>,
-			_max_priority_fee_per_gas: Option<U256>,
-			_nonce: Option<U256>,
-			_estimate: bool,
-			_access_list: Option<Vec<(H160, Vec<H256>)>>,
+			from: H160,
+			data: Vec<u8>,
+			value: U256,
+			gas_limit: U256,
+			max_fee_per_gas: Option<U256>,
+			max_priority_fee_per_gas: Option<U256>,
+			nonce: Option<U256>,
+			estimate: bool,
+			access_list: Option<Vec<(H160, Vec<H256>)>>,
 		) -> Result<pallet_evm::CreateInfo, sp_runtime::DispatchError> {
-			Err(sp_runtime::DispatchError::Other("Not support use remix to deploy the contract, please use polkadot js apps."))
+			// Err(sp_runtime::DispatchError::Other("Not support use remix to deploy the contract, please use polkadot js apps."))
 
-			// If you want to deploy contract debugging with remix, you can use the following code.
-			// let config = if estimate {
-			// 	let mut config = <Runtime as pallet_evm::Config>::config().clone();
-			// 	config.estimate = true;
-			// 	Some(config)
-			// } else {
-			// 	None
-			// };
+			If you want to deploy contract debugging with remix, you can use the following code.
+			let config = if estimate {
+				let mut config = <Runtime as pallet_evm::Config>::config().clone();
+				config.estimate = true;
+				Some(config)
+			} else {
+				None
+			};
 
-			// let is_transactional = false;
-			// let validate = true;
-			// let evm_config = config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config());
-			// #[allow(clippy::or_fun_call)] // suggestion not helpful here
-			// <Runtime as pallet_evm::Config>::Runner::create(
-			// 	from,
-			// 	data,
-			// 	value,
-			// 	gas_limit.unique_saturated_into(),
-			// 	max_fee_per_gas,
-			// 	max_priority_fee_per_gas,
-			// 	nonce,
-			// 	access_list.unwrap_or_default(),
-			// 	is_transactional,
-			// 	validate,
-			// 	evm_config,
-			// ).map_err(|err| err.error.into())
+			let is_transactional = false;
+			let validate = true;
+			let evm_config = config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config());
+			#[allow(clippy::or_fun_call)] // suggestion not helpful here
+			<Runtime as pallet_evm::Config>::Runner::create(
+				from,
+				data,
+				value,
+				gas_limit.unique_saturated_into(),
+				max_fee_per_gas,
+				max_priority_fee_per_gas,
+				nonce,
+				access_list.unwrap_or_default(),
+				is_transactional,
+				validate,
+				evm_config,
+			).map_err(|err| err.error.into())
 		}
 
 		fn current_transaction_statuses() -> Option<Vec<TransactionStatus>> {

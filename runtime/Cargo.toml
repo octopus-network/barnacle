@@ -1,6 +1,6 @@
 [package]
 name = "appchain-barnacle-runtime"
-version = "3.0.0-dev"
+version = "3.0.0-v110"
 authors = ["Octopus Network <hi@oct.network>"]
 description = "Octopus appchain node runtime."
 edition = "2021"

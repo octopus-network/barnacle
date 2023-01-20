@@ -1,6 +1,6 @@
 [package]
 name = "appchain-cli"
-version = "0.9.30"
+version = "0.9.30-v110"
 authors = ["Octopus Network <hi@oct.network>"]
 description = "A minimal node template for octopus appchain."
 build = "build.rs"
