@@ -115,7 +115,7 @@ dependencies = [
  "pallet-assets",
  "pallet-authorship",
  "pallet-babe",
- "pallet-balances",
+ "pallet-balances 4.0.0-dev",
  "pallet-beefy",
  "pallet-beefy-mmr",
  "pallet-grandpa",
@@ -181,7 +181,7 @@ dependencies = [
  "jsonrpsee",
  "log",
  "nix 0.23.1",
- "pallet-balances",
+ "pallet-balances 4.0.0-dev (git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.30)",
  "pallet-im-online",
  "pallet-octopus-appchain",
  "pallet-timestamp",
@@ -252,7 +252,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "futures",
- "pallet-balances",
+ "pallet-balances 4.0.0-dev (git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.30)",
  "pallet-contracts",
  "pallet-im-online",
  "pallet-sudo",
@@ -4577,6 +4577,22 @@ dependencies = [
 [[package]]
 name = "pallet-balances"
 version = "4.0.0-dev"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-balances"
+version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.30#a3ed0119c45cdd0d571ad34e5b3ee7518c8cef8d"
 dependencies = [
  "frame-benchmarking",
@@ -4897,7 +4913,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "log",
- "pallet-balances",
+ "pallet-balances 4.0.0-dev (git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.30)",
  "parity-scale-codec",
  "scale-info",
  "serde",
@@ -4916,7 +4932,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "pallet-babe",
- "pallet-balances",
+ "pallet-balances 4.0.0-dev (git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.30)",
  "pallet-grandpa",
  "pallet-im-online",
  "pallet-offences",
@@ -5072,7 +5088,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "impl-trait-for-tuples",
- "pallet-balances",
+ "pallet-balances 4.0.0-dev (git+https://github.com/paritytech/substrate.git?branch=polkadot-v0.9.30)",
  "parity-scale-codec",
  "scale-info",
  "serde",

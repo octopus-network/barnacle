@@ -79,8 +79,8 @@ pub use sp_runtime::BuildStorage;
 /// Constant values used within the runtime.
 pub mod constants;
 use constants::{currency::*, time::*};
+pub use pallet_balances;
 use sp_runtime::generic::Era;
-
 // + beefy
 use beefy_primitives::{crypto::AuthorityId as BeefyId, mmr::MmrLeafVersion};
 use sp_mmr_primitives as mmr;
@@ -649,6 +649,7 @@ construct_runtime!(
 		// BEEFY Bridges support.
 		Beefy: pallet_beefy,
 		Mmr: pallet_mmr,
+		//Erc20: pallet_erc20,
 		MmrLeaf: pallet_beefy_mmr,
 	}
 );
