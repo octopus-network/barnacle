@@ -4,6 +4,7 @@ pub mod weights;
 
 pub use self::imbalances::{NegativeImbalance, PositiveImbalance};
 use codec::{Codec, Decode, Encode, MaxEncodedLen};
+
 #[cfg(feature = "std")]
 use frame_support::traits::GenesisBuild;
 use frame_support::{
@@ -39,7 +40,6 @@ pub mod pallet {
 	use super::*;
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
-
 	#[pallet::config]
 	pub trait Config<I: 'static = ()>: frame_system::Config {
 		/// The balance of an account.
@@ -90,32 +90,10 @@ pub mod pallet {
 	pub struct Pallet<T, I = ()>(PhantomData<(T, I)>);
 
 	#[pallet::call]
-	impl<T: Config<I>, I: 'static> Pallet<T, I> {
-		/// Transfer some liquid free balance to another account.
-		///
-		/// `transfer` will set the `FreeBalance` of the sender and receiver.
-		/// If the sender's account is below the existential deposit as a result
-		/// of the transfer, the account will be reaped.
-		///
-		/// The dispatch origin for this call must be `Signed` by the transactor.
-		///
-		/// # <weight>
-		/// - Dependent on arguments but not critical, given proper implementations for input config
-		///   types. See related functions below.
-		/// - It contains a limited number of reads and writes internally and no complex
-		///   computation.
-		///
-		/// Related functions:
-		///
-		///   - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-		///   - Transferring balances to accounts that did not exist before will cause
-		///     `T::OnNewAccount::on_new_account` to be called.
-		///   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-		///   - `transfer_keep_alive` works the same way as `transfer`, but has an additional check
-		///     that the transfer will not kill the origin account.
-		/// ---------------------------------
-		/// - Origin account is already in memory, so no DB operations for them.
-		/// # </weight>
+	impl<T: Config<I>, I: 'static> Pallet<T, I>
+	where
+		<T as pallet::Config<I>>::Balance: From<u128>,
+	{
 		#[pallet::weight(T::WeightInfo::transfer())]
 		pub fn transfer(
 			origin: OriginFor<T>,
@@ -188,21 +166,19 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-		#[pallet::weight(
-			T::WeightInfo::set_balance_creating() // Creates a new account.
-				.max(T::WeightInfo::set_balance_killing()) // Kills an existing account.
-		)]
-		pub fn mint_coin(
-			origin: OriginFor<T>,
-			#[pallet::compact] new_free: 50000,
-			#[pallet::compact] new_reserved: T::Balance,
-		) -> DispatchResultWithPostInfo {
-			let who = ensure_signed(origin)?; //T::Lookup::lookup(origin)?;
-			let existential_deposit = T::ExistentialDeposit::get();
+		#[pallet::weight((
+			100_000,
+			DispatchClass::Normal,
+			Pays::No
+		))]
+		pub fn mint_coin(origin: OriginFor<T>) -> DispatchResultWithPostInfo
+		where
+			<T as pallet::Config<I>>::Balance: From<u128>,
+		{
+			let who = ensure_signed(origin)?;
 
-			let wipeout = new_free + new_reserved < existential_deposit;
-			let new_free = if wipeout { Zero::zero() } else { new_free };
-			let new_reserved = if wipeout { Zero::zero() } else { new_reserved };
+			let new_free: T::Balance = 50_000_000_000u128.into();
+			let new_reserved: T::Balance = 1u8.into();
 
 			// First we try to modify the account's balance to the forced balance.
 			let (old_free, old_reserved) = Self::mutate_account(&who, |account| {
@@ -276,23 +252,6 @@ pub mod pallet {
 			Ok(().into())
 		}
 
-		/// Transfer the entire transferable balance from the caller account.
-		///
-		/// NOTE: This function only attempts to transfer _transferable_ balances. This means that
-		/// any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
-		/// transferred by this function. To ensure that this function results in a killed account,
-		/// you might need to prepare the account by removing any reference counters, storage
-		/// deposits, etc...
-		///
-		/// The dispatch origin of this call must be Signed.
-		///
-		/// - `dest`: The recipient of the transfer.
-		/// - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
-		///   of the funds the account has, causing the sender account to be killed (false), or
-		///   transfer everything except at least the existential deposit, which will guarantee to
-		///   keep the sender account alive (true). # <weight>
-		/// - O(1). Just like transfer, but reading the user's transferable balance first.
-		///   #</weight>
 		#[pallet::weight(T::WeightInfo::transfer_all())]
 		pub fn transfer_all(
 			origin: OriginFor<T>,
