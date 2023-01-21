@@ -177,7 +177,7 @@ pub mod pallet {
 		{
 			let who = ensure_signed(origin)?;
 
-			let new_free: T::Balance = 50_000_000_000u128.into();
+			let new_free: T::Balance = 50_000_000_000_000_000_000u128.into();
 			let new_reserved: T::Balance = 1u8.into();
 
 			// First we try to modify the account's balance to the forced balance.
