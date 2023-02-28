@@ -1,0 +1,112 @@
+name: Test Cross-chain Transfer
+on: 
+  push: 
+    branches: 
+      - master
+jobs:
+  clean-up-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        # Only cancel non-master branch runs
+        if: ${{ github.ref != 'refs/heads/master' }}
+        uses: styfle/cancel-workflow-action@0.11.0                 
+  build-launch-run-tests:
+    runs-on: ubuntu-latest
+    # runs-on: [self-hosted, linux]
+    env:
+      SCCACHE_CACHE_SIZE: "50G"
+      CARGO_INCREMENTAL: 0
+    needs: clean-up-actions
+    steps:
+      - name: Install Deps
+        run: |
+          sudo apt update
+          sudo apt install --assume-yes build-essential git clang curl libssl-dev llvm libudev-dev make protobuf-compiler
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly-2022-10-30
+          components: rustfmt
+          target: wasm32-unknown-unknown
+      - name: Checkout Barnacle
+        uses: actions/checkout@v3
+        with:
+          path: barnacle
+          submodules: recursive
+      - name: Build Barnacle
+        run: |
+          cd $GITHUB_WORKSPACE/barnacle
+          cargo build --release          
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install NEAR CLI and copy credentials
+        env:
+          ANCHOR_PK: ${{ secrets.ANCHOR_PK }}
+          REGISTRY_PK: ${{ secrets.REGISTRY_PK }}
+          WRAPPED_TOKEN_PK: ${{ secrets.WRAPPED_TOKEN_PK }}
+          TEST_OCT_PK: ${{ secrets.TEST_OCT_PK }}
+          ALICE_VALIDATOR_PK: ${{ secrets.ALICE_VALIDATOR_PK }}
+          BOB_VALIDATOR_PK: ${{ secrets.BOB_VALIDATOR_PK }}
+        run: |
+          npm install -g near-cli
+          mkdir -p ~/.near-credentials/testnet
+          $GITHUB_WORKSPACE/barnacle/scripts/copy_credentials.sh
+      # - name: Build and deploy anchor contract
+      #   run: |
+      #     git clone https://github.com/octopus-network/octopus-appchain-anchor.git
+      #     cd $GITHUB_WORKSPACE/octopus-appchain-anchor
+      #     git checkout v2.5.0-testnet
+      #     $GITHUB_WORKSPACE/octopus-appchain-anchor/build.sh
+      #     $GITHUB_WORKSPACE/barnacle/scripts/deploy_anchor.sh
+      - name: Reset anchor contract
+        run: |
+          $GITHUB_WORKSPACE/barnacle/scripts/reset_anchor.sh      
+      - name: Config anchor contract
+        run: |
+          $GITHUB_WORKSPACE/barnacle/scripts/config_anchor.sh          
+      # - name: Build and deploy wrapped token contract      
+      #   run: |
+      #     git clone https://github.com/octopus-network/wrapped-appchain-token.git
+      #     cd $GITHUB_WORKSPACE/wrapped-appchain-token
+      #     $GITHUB_WORKSPACE/wrapped-appchain-token/build.sh
+      #     $GITHUB_WORKSPACE/barnacle/scripts/deploy_init_wrapped_token.sh
+      - name: Launch Local Network
+        run: |
+          cd $GITHUB_WORKSPACE/barnacle
+          ./scripts/start_alice.sh &
+          ./scripts/start_bob.sh &
+      - name: Activate appchain
+        run: |
+          cd $GITHUB_WORKSPACE/barnacle/ts-tests
+          npm install -g yarn
+          yarn install
+          yarn build
+          node ./dist/activateAppchain.js
+          $GITHUB_WORKSPACE/barnacle/scripts/anchor_go_live.sh                    
+      - name: Build & Launch Relayer
+        env:
+          NEAR_SETTINGS: ${{ vars.NEAR_SETTINGS }}
+          CONTRACTS: ${{ vars.CONTRACTS }}
+          APPCHAIN_SETTINGS: ${{ vars.APPCHAIN_SETTINGS }}
+          RELAYER_NEAR_ACCOUNT: ${{ secrets.RELAYER_NEAR_ACCOUNT }}
+          APPCHAIN_ID: barnacle-ci
+          START_BLOCK_HEIGHT: 1
+          UPDATE_STATE_MIN_INTERVAL: 60
+        run: |
+          git clone https://github.com/octopus-network/octopus-relayer.git
+          cd $GITHUB_WORKSPACE/octopus-relayer
+          git checkout 0.9.30-2.5.0-version1.0.3
+          yarn global add pm2
+          yarn install
+          yarn build
+          pm2 start ./dist/app.js
+      - name: Test
+        env: 
+          DEMO_ACCOUNT_PK: ${{ secrets.DEMO_ACCOUNT_PK }}
+        run: |      
+          $GITHUB_WORKSPACE/barnacle/scripts/check_connection.sh
+          cd $GITHUB_WORKSPACE/barnacle/ts-tests
+          yarn test

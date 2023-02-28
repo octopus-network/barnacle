@@ -141,8 +141,8 @@ pub fn testnet_genesis(
 		]
 	});
 
-	const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-	const STASH: Balance = 100 * OCT;
+	const ENDOWMENT: Balance = 10 * DOLLARS;
+	const STASH: Balance = 10 * OCT;
 	let validators = initial_authorities.iter().map(|x| (x.0.clone(), STASH)).collect::<Vec<_>>();
 
 	GenesisConfig {
@@ -178,23 +178,19 @@ pub fn testnet_genesis(
 		grandpa: GrandpaConfig { authorities: vec![] },
 		transaction_payment: Default::default(),
 		octopus_appchain: OctopusAppchainConfig {
-			anchor_contract: "octopus-anchor.testnet".to_string(),
+			anchor_contract: "barnacle-ci.registry.test_oct.testnet".to_string(),
 			validators,
 		},
 		octopus_bridge: OctopusBridgeConfig {
-			premined_amount: 1024 * DOLLARS,
-			asset_id_by_token_id: vec![("usdn.testnet".to_string(), 0)],
+			premined_amount: 100 * DOLLARS,
+			asset_id_by_token_id: vec![],
 		},
-		octopus_lpos: OctopusLposConfig { era_payout: 2 * DOLLARS, ..Default::default() },
+		octopus_lpos: OctopusLposConfig { era_payout: 5 * DOLLARS, ..Default::default() },
 		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
 		octopus_assets: OctopusAssetsConfig {
-			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
-			metadata: vec![(0, "usdn".as_bytes().to_vec(), "usdn".as_bytes().to_vec(), 18)],
-			accounts: vec![(
-				0,
-				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				1_000_000_000_000 * DOLLARS,
-			)],
+			assets: vec![],
+			metadata: vec![],
+			accounts: vec![],
 		},
 	}
 }
