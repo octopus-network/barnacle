@@ -7,7 +7,6 @@ export REGISTRY_ACCOUNT_ID=registry.test_oct.testnet
 export ANCHOR_ACCOUNT_ID=$APPCHAIN_ID'.'$REGISTRY_ACCOUNT_ID
 export OCT_TOKEN_ACCOUNT_ID=oct.beta_oct_relay.testnet
 export WRAPPED_TOKEN_ACCOUNT_ID=$APPCHAIN_ID.testnet
-export TEST_OCT_ACCOUNT_ID=test_oct.testnet
 
 # set gateway endpoint ws://127.0.0.1:9945
 near call $ANCHOR_ACCOUNT_ID set_rpc_endpoint '{"rpc_endpoint": "ws://127.0.0.1:9945"}' --accountId $ANCHOR_ACCOUNT_ID

@@ -183,14 +183,18 @@ pub fn testnet_genesis(
 		},
 		octopus_bridge: OctopusBridgeConfig {
 			premined_amount: 100 * DOLLARS,
-			asset_id_by_token_id: vec![],
+			asset_id_by_token_id: vec![("oct.beta_oct_relay.testnet".to_string(), 0)],
 		},
 		octopus_lpos: OctopusLposConfig { era_payout: 5 * DOLLARS, ..Default::default() },
 		octopus_upward_messages: OctopusUpwardMessagesConfig { interval: 1 },
 		octopus_assets: OctopusAssetsConfig {
-			assets: vec![],
-			metadata: vec![],
-			accounts: vec![],
+			assets: vec![(0, get_account_id_from_seed::<sr25519::Public>("Alice"), true, 100)],
+			metadata: vec![(0, "OCT".as_bytes().to_vec(), "OCT Token".as_bytes().to_vec(), 18)],
+			accounts: vec![(
+				0,
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				10 * DOLLARS,
+			)],
 		},
 	}
 }

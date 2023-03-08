@@ -13,6 +13,7 @@ const { DEMO_ACCOUNT_PK } = process.env;
 export class Appchain {
   api: ApiPromise | null = null;
   nativeTokenDecimal = 18;
+  assetDecimal = 18;
   alice = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
   aliceKeypair: any = null;
 
@@ -47,6 +48,17 @@ export class Appchain {
     return balance;
   }
 
+  async getAssetBalance(account: string) {
+    let balance = ZERO_DECIMAL;
+    if (this.api) {
+      // OCT 0
+      const res = await this.api.query.octopusAssets.account(0, account);
+      const resJSON: any = res?.toJSON();
+      balance = DecimalUtil.fromString(resJSON?.balance, this.assetDecimal);
+    }
+    return balance;
+  }
+
   async lock(amount: string, targetAccount: string, fromAccount: string) {
     const amountInDec = (DecimalUtil.power(new Decimal(amount), this.nativeTokenDecimal)).toFixed(0, Decimal.ROUND_DOWN);
     const targetAccountInHex = stringToHex(targetAccount);
@@ -70,16 +82,36 @@ export class Appchain {
     }
   }
 
+  async burnNep141(amount: string, targetAccount: string, fromAccount: string) {
+    const amountInDec = (DecimalUtil.power(new Decimal(amount), this.assetDecimal)).toFixed(0, Decimal.ROUND_DOWN);
+    const targetAccountInHex = stringToHex(targetAccount);
+    console.log(`octopusBridge.burnNep141 receiverId: ${targetAccountInHex}, amount: ${amountInDec}`);
+    if (this.api) {
+      // OCT 0
+      const lock = this.api.tx.octopusBridge.burnNep141(0, targetAccountInHex, amountInDec);
+      await lock.signAndSend(fromAccount, ({ events = [], status }) => {
+        console.log('Transaction status:', status.type);
+
+        if (status.isInBlock) {
+          console.log('Included at block hash', status.asInBlock.toHex());
+          console.log('Events:');
+  
+          events.forEach(({ event: { data, method, section }, phase }) => {
+            console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+          });
+        } else if (status.isFinalized) {
+          console.log('Finalized block hash', status.asFinalized.toHex());
+        }        
+      });
+    }
+  }  
+
   async disconnect() {
     if (this.api) {
       this.api.disconnect()
     }
   }
 }
-
-export const T_GAS: Decimal = new Decimal(10 ** 12)
-export const SIMPLE_CALL_GAS = T_GAS.mul(50).toString()
-export const COMPLEX_CALL_GAS = T_GAS.mul(200).toFixed()
 
 export class Near {
   provider: providers.JsonRpcProvider | null = null;
@@ -89,9 +121,12 @@ export class Near {
   anchorId = "barnacle-ci.registry.test_oct.testnet"
   wrappedTokenAccount = "barnacle-ci.testnet";
   wrappedTokenDecimal = 18;
+  assetAccount = "oct.beta_oct_relay.testnet";
+  assetDecimal = 18;
   account: Account | null = null;
   DEFAULT_GAS = new BN("300000000000000");
   ZERO_DEPOSIT = new BN("0");
+  ONE_DEPOSIT = new BN("1");
 
   public static yoctoToNearNumber(origin: string) {
     return new BigNumber(origin)
@@ -136,6 +171,23 @@ export class Near {
     return balance;
   }
 
+  async getAssetBalance(accountId: string) {
+    let balance = ZERO_DECIMAL;
+    if (this.provider) {
+      const res = await this.provider.query<CodeResult>({
+        request_type: "call_function",
+        account_id: this.assetAccount,
+        method_name: "ft_balance_of",
+        args_base64: Buffer.from(JSON.stringify({ account_id: accountId })).toString('base64'),
+        finality: "final",
+      });
+      // console.log('ft_balance_of result:', res);
+      const balanceStr = Buffer.from(res.result).toString();
+      balance = DecimalUtil.fromString(JSON.parse(balanceStr), this.assetDecimal);
+    }
+    return balance;
+  }  
+
   async burn(amount: string, targetAccount: string) {
     const amountInU64 = DecimalUtil.toU64(DecimalUtil.fromString(amount), this.wrappedTokenDecimal);
     // decode ss58Address
@@ -158,6 +210,34 @@ export class Near {
       console.log(result);
     }
   }
+
+  async lock(amount: string, targetAccount: string) {
+    const amountInU64 = DecimalUtil.toU64(DecimalUtil.fromString(amount), this.assetDecimal);
+    // decode ss58Address
+    const u8a = decodeAddress(targetAccount);
+    const targetAccountInHex = u8aToHex(u8a);
+    console.log(`lock near provider: ${this.provider}, near account: ${this.account}`);
+    if (this.provider && this.account) {
+      const args = {
+        receiver_id: this.anchorId,
+        amount: amountInU64.toString(),
+        msg: JSON.stringify({
+          BridgeToAppchain: {
+            receiver_id_in_appchain: targetAccountInHex,
+          },
+        })
+      };
+      console.log(`ft_transfer_call args: ${args}`);
+      const result = await this.account.functionCall({
+        contractId: this.assetAccount,
+        methodName: "ft_transfer_call",
+        args,
+        gas: this.DEFAULT_GAS,
+        attachedDeposit: this.ONE_DEPOSIT,
+      });
+      console.log(result);
+    }
+  }  
 
 }
 

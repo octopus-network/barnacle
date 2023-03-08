@@ -12,5 +12,5 @@ export OCT_TOKEN_ACCOUNT_ID=oct.beta_oct_relay.testnet
 # deploy anchor, execute only once!
 # near deploy --accountId $ANCHOR_ACCOUNT_ID --wasmFile res/appchain_anchor.wasm
 # storage_deposit for oct token, execute only once! 
-# near call $OCT_TOKEN_ACCOUNT_ID storage_deposit '{"account_id": "'$ANCHOR_ACCOUNT_ID'", "registration_only": null}' --accountId lester-demo.testnet --amount 0.1
+# near call $OCT_TOKEN_ACCOUNT_ID storage_deposit '{"account_id": "'$ANCHOR_ACCOUNT_ID'", "registration_only": null}' --accountId $ANCHOR_ACCOUNT_ID --amount 0.1
 # https://explorer.testnet.near.org/transactions/CkQ611cPBeUVMAXWqnoWAYAUFng6bGm8PAttc8EaoLc2
