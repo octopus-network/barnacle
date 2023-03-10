@@ -66,7 +66,8 @@ jobs:
           $GITHUB_WORKSPACE/barnacle/scripts/reset_anchor.sh      
       - name: Config anchor contract
         run: |
-          $GITHUB_WORKSPACE/barnacle/scripts/config_anchor.sh          
+          $GITHUB_WORKSPACE/barnacle/scripts/config_anchor.sh
+          $GITHUB_WORKSPACE/barnacle/scripts/config_assets_anchor.sh          
       # - name: Build and deploy wrapped token contract      
       #   run: |
       #     git clone https://github.com/octopus-network/wrapped-appchain-token.git
