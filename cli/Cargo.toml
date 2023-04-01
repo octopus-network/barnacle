@@ -1,14 +1,14 @@
 [package]
 name = "node-cli"
-version = "3.0.0-dev"
-authors = ["Parity Technologies <admin@parity.io>"]
-description = "Generic Substrate node implementation in Rust."
+version = "0.9.40"
+authors = ["Octopus Network <hi@oct.network>"]
+description = "A minimal node template for octopus appchain."
 build = "build.rs"
 edition = "2021"
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
-default-run = "substrate"
-homepage = "https://substrate.io"
-repository = "https://github.com/paritytech/substrate/"
+default-run = "appchain-barnacle"
+homepage = "https://oct.network/"
+repository = "https://github.com/octopus-network/barnacle/"
 publish = false
 
 [package.metadata.wasm-pack.profile.release]
@@ -19,14 +19,8 @@ wasm-opt = false
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
-[badges]
-travis-ci = { repository = "paritytech/substrate" }
-maintenance = { status = "actively-developed" }
-is-it-maintained-issue-resolution = { repository = "paritytech/substrate" }
-is-it-maintained-open-issues = { repository = "paritytech/substrate" }
-
 [[bin]]
-name = "substrate"
+name = "appchain-barnacle"
 path = "bin/main.rs"
 required-features = ["cli"]
 
@@ -91,7 +85,7 @@ pallet-asset-tx-payment = { version = "4.0.0-dev", git = "https://github.com/par
 pallet-im-online = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
 
 # node-specific dependencies
-kitchensink-runtime = { version = "3.0.0-dev", path = "../runtime" }
+barnacle-runtime = { version = "3.0.0-dev", path = "../runtime" }
 node-rpc = { version = "3.0.0-dev", path = "../rpc" }
 node-primitives = { version = "2.0.0", path = "../primitives" }
 node-executor = { version = "3.0.0-dev", path = "../executor" }
@@ -102,6 +96,15 @@ frame-benchmarking-cli = { version = "4.0.0-dev", optional = true, git = "https:
 node-inspect = { version = "0.9.0-dev", optional = true, path = "../inspect" }
 try-runtime-cli = { version = "0.10.0-dev", optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
 serde_json = "1.0.85"
+
+# beefy
+beefy = { package = "sc-consensus-beefy", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
+beefy-primitives = { package = "sp-consensus-beefy", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
+mmr-gadget = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
+sp-mmr-primitives = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
+
+# octopus pallets
+pallet-octopus-appchain = { git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
 
 [dev-dependencies]
 sc-keystore = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
@@ -154,9 +157,9 @@ cli = [
 	"try-runtime-cli",
 ]
 runtime-benchmarks = [
-	"kitchensink-runtime/runtime-benchmarks",
+	"barnacle-runtime/runtime-benchmarks",
 	"frame-benchmarking-cli/runtime-benchmarks"
 ]
 # Enable features that allow the runtime to be tried and debugged. Name might be subject to change
 # in the near future.
-try-runtime = ["kitchensink-runtime/try-runtime", "try-runtime-cli/try-runtime"]
+try-runtime = ["barnacle-runtime/try-runtime", "try-runtime-cli/try-runtime"]

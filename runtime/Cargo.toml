@@ -1,13 +1,13 @@
 [package]
-name = "kitchensink-runtime"
+name = "barnacle-runtime"
 version = "3.0.0-dev"
-authors = ["Parity Technologies <admin@parity.io>"]
-description = "Substrate node kitchensink runtime."
+authors = ["Octopus Network <hi@oct.network>"]
+description = "Octopus appchain node runtime."
 edition = "2021"
 build = "build.rs"
 license = "Apache-2.0"
-homepage = "https://substrate.io"
-repository = "https://github.com/paritytech/substrate/"
+homepage = "https://oct.network"
+repository = "https://github.com/octopus-network/barnacle/"
 publish = false
 
 [package.metadata.docs.rs]
@@ -119,6 +119,18 @@ pallet-uniques = { version = "4.0.0-dev", default-features = false, git = "https
 pallet-vesting = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
 pallet-whitelist = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
 
+# beefy
+beefy-primitives = { package = "sp-consensus-beefy", git = "https://github.com/paritytech/substrate", default-features = false , branch = "polkadot-v0.9.40" }
+sp-mmr-primitives = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "polkadot-v0.9.40" }
+pallet-beefy = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "polkadot-v0.9.40" }
+pallet-beefy-mmr = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "polkadot-v0.9.40" }
+
+# octopus pallets
+pallet-octopus-appchain = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+pallet-octopus-bridge = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+pallet-octopus-lpos = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+pallet-octopus-upward-messages = { default-features = false, git = "https://github.com/octopus-network/octopus-pallets", branch = "main" }
+
 [build-dependencies]
 substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40", optional = true }
 
@@ -220,6 +232,14 @@ std = [
 	"pallet-child-bounties/std",
 	"pallet-alliance/std",
 	"substrate-wasm-builder",
+	"beefy-primitives/std",
+	"sp-mmr-primitives/std",
+	"pallet-beefy/std",
+	"pallet-beefy-mmr/std",
+	"pallet-octopus-appchain/std",
+	"pallet-octopus-bridge/std",
+	"pallet-octopus-lpos/std",
+	"pallet-octopus-upward-messages/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",

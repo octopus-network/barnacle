@@ -38,3 +38,7 @@ sp-keystore = { version = "0.13.0", git = "https://github.com/paritytech/substra
 sp-runtime = { version = "7.0.0", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
 substrate-frame-rpc-system = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
 substrate-state-trie-migration-rpc = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
+
+# beefy
+sc-consensus-beefy = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
+sc-consensus-beefy-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.40" }
