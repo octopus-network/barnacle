@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) Parity Technologies (UK) Ltd.
+// Copyright (C) 2018-2022 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -16,10 +16,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Substrate Node CLI
+//! Runtime API definition for assets.
 
-#![warn(missing_docs)]
+use codec::Codec;
+use sp_std::vec::Vec;
 
-fn main() -> sc_cli::Result<()> {
-	node_cli::run()
+sp_api::decl_runtime_apis! {
+	pub trait AssetsApi<AccountId, AssetBalance, AssetId>
+	where
+		AccountId: Codec,
+		AssetBalance: Codec,
+		AssetId: Codec,
+	{
+		/// Returns the list of `AssetId`s and corresponding balance that an `AccountId` has.
+		fn account_balances(account: AccountId) -> Vec<(AssetId, AssetBalance)>;
+	}
 }

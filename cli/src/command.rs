@@ -1,6 +1,6 @@
 // This file is part of Substrate.
 
-// Copyright (C) 2017-2022 Parity Technologies (UK) Ltd.
+// Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -22,19 +22,25 @@ use crate::{
 	service::{new_partial, FullClient},
 	Cli, Subcommand,
 };
-use appchain_barnacle_runtime::{ExistentialDeposit, RuntimeApi};
-use appchain_executor::ExecutorDispatch;
-use appchain_primitives::Block;
 use frame_benchmarking_cli::*;
+use kitchensink_runtime::{ExistentialDeposit, RuntimeApi};
+use node_executor::ExecutorDispatch;
+use node_primitives::Block;
 use sc_cli::{ChainSpec, Result, RuntimeVersion, SubstrateCli};
 use sc_service::PartialComponents;
 use sp_keyring::Sr25519Keyring;
 
 use std::sync::Arc;
 
+#[cfg(feature = "try-runtime")]
+use {
+	kitchensink_runtime::constants::time::SLOT_DURATION,
+	try_runtime_cli::block_building_info::substrate_info,
+};
+
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Octopus Appchain Node".into()
+		"Substrate Node".into()
 	}
 
 	fn impl_version() -> String {
@@ -50,11 +56,11 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"support.anonymous.an".into()
+		"https://github.com/paritytech/substrate/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
-		2019
+		2017
 	}
 
 	fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
@@ -66,8 +72,8 @@ impl SubstrateCli for Cli {
 				),
 			"dev" => Box::new(chain_spec::development_config()),
 			"local" => Box::new(chain_spec::local_testnet_config()),
-			"octopus-testnet" => Box::new(chain_spec::octopus_testnet_config()?),
-			"octopus-mainnet" => Box::new(chain_spec::octopus_mainnet_config()?),
+			"fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
+			"staging" => Box::new(chain_spec::staging_testnet_config()),
 			path =>
 				Box::new(chain_spec::ChainSpec::from_json_file(std::path::PathBuf::from(path))?),
 		};
@@ -75,7 +81,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn native_runtime_version(_: &Box<dyn ChainSpec>) -> &'static RuntimeVersion {
-		&appchain_barnacle_runtime::VERSION
+		&kitchensink_runtime::VERSION
 	}
 }
 
@@ -87,8 +93,7 @@ pub fn run() -> Result<()> {
 		None => {
 			let runner = cli.create_runner(&cli.run)?;
 			runner.run_node_until_exit(|config| async move {
-				service::new_full(config, cli.no_hardware_benchmarks)
-					.map_err(sc_cli::Error::Service)
+				service::new_full(config, cli).map_err(sc_cli::Error::Service)
 			})
 		},
 		Some(Subcommand::Inspect(cmd)) => {
@@ -227,6 +232,7 @@ pub fn run() -> Result<()> {
 		},
 		#[cfg(feature = "try-runtime")]
 		Some(Subcommand::TryRuntime(cmd)) => {
+			use sc_executor::{sp_wasm_interface::ExtendedHostFunctions, NativeExecutionDispatch};
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				// we don't need any of the components of new_partial, just a runtime, or a task
@@ -236,7 +242,15 @@ pub fn run() -> Result<()> {
 					sc_service::TaskManager::new(config.tokio_handle.clone(), registry)
 						.map_err(|e| sc_cli::Error::Service(sc_service::Error::Prometheus(e)))?;
 
-				Ok((cmd.run::<Block, ExecutorDispatch>(config), task_manager))
+				let info_provider = substrate_info(SLOT_DURATION);
+
+				Ok((
+					cmd.run::<Block, ExtendedHostFunctions<
+						sp_io::SubstrateHostFunctions,
+						<ExecutorDispatch as NativeExecutionDispatch>::ExtendHostFunctions,
+					>, _>(Some(info_provider)),
+					task_manager,
+				))
 			})
 		},
 		#[cfg(not(feature = "try-runtime"))]
