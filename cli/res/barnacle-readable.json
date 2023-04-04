@@ -187,7 +187,8 @@
         "keys": []
       },
       "beefy": {
-        "authorities": []
+        "authorities": [],
+        "genesisBlock": 1
       }
     }
   }
